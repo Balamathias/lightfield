@@ -27,6 +27,10 @@ import {
   Tooltip,
   CartesianGrid
 } from 'recharts';
+import BlogViewsChart from '@/components/dashboard/BlogViewsChart';
+import PostsTimelineChart from '@/components/dashboard/PostsTimelineChart';
+import PostsByCategoryChart from '@/components/dashboard/PostsByCategoryChart';
+import ContactsByStatusChart from '@/components/dashboard/ContactsByStatusChart';
 
 export default function AdminDashboardPage() {
   const { data: stats, isLoading, error } = useDashboardStats();
@@ -153,11 +157,11 @@ export default function AdminDashboardPage() {
 
   // Chart colors from CSS variables
   const CHART_COLORS = [
-    'hsl(var(--chart-1))',
-    'hsl(var(--chart-2))',
-    'hsl(var(--chart-3))',
-    'hsl(var(--chart-4))',
-    'hsl(var(--chart-5))'
+    'var(--chart-1)',
+    'var(--chart-2)',
+    'var(--chart-3)',
+    'var(--chart-4)',
+    'var(--chart-5)'
   ];
 
   return (
@@ -264,13 +268,13 @@ export default function AdminDashboardPage() {
               <YAxis className="text-muted-foreground" />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: 'hsl(var(--card))',
-                  border: '1px solid hsl(var(--border))',
+                  backgroundColor: 'var(--card)',
+                  border: '1px solid var(--border)',
                   borderRadius: '8px',
-                  color: 'hsl(var(--card-foreground))'
+                  color: 'var(--card-foreground)'
                 }}
               />
-              <Bar dataKey="value" fill="hsl(var(--chart-1))" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="value" fill="var(--chart-1)" radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -345,6 +349,31 @@ export default function AdminDashboardPage() {
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Premium Analytics Charts */}
+      <div className="mt-6 border-t border-border/50 pt-6">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600 via-blue-600 to-cyan-600">
+            <Sparkles className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-foreground">Advanced Analytics</h2>
+            <p className="text-sm text-muted-foreground">Detailed insights and trends</p>
+          </div>
+        </div>
+
+        {/* Area Charts Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <BlogViewsChart days={30} />
+          <PostsTimelineChart days={30} />
+        </div>
+
+        {/* Bar and Pie Charts Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <PostsByCategoryChart />
+          <ContactsByStatusChart />
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ import { useCategories } from '@/hooks/useCategories';
 import { blogPostSchema, type BlogPostFormValues } from '@/schemas';
 import RichTextEditor from '@/components/RichTextEditor';
 import ImageUpload from '@/components/ImageUpload';
+import BlogAIAssistant from '@/components/BlogAIAssistant';
 import { ArrowLeft, Save, Loader2, Upload, X, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
@@ -404,6 +405,28 @@ export default function CreateBlogPage() {
           </button>
         </motion.div>
       </form>
+
+      {/* AI Assistant */}
+      <BlogAIAssistant
+        context={{
+          title: formData.title,
+          excerpt: formData.excerpt,
+          content: formData.content,
+        }}
+        onInsertToField={(fieldName, value) => {
+          // Handle different field insertions
+          if (fieldName === 'content') {
+            // For content, append to existing content
+            setFormData({ ...formData, content: formData.content + '\n\n' + value });
+          } else if (fieldName === 'meta_description' || fieldName === 'meta_keywords') {
+            // For meta fields, replace the value
+            setFormData({ ...formData, [fieldName]: value });
+          } else {
+            // For title and excerpt, replace the value
+            setFormData({ ...formData, [fieldName]: value });
+          }
+        }}
+      />
     </div>
   );
 }

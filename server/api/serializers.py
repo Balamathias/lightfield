@@ -158,6 +158,11 @@ class BlogPostWriteSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False
     )
+    author = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(),
+        required=False,
+        allow_null=True
+    )
 
     class Meta:
         model = BlogPost
@@ -172,6 +177,21 @@ class BlogPostWriteSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         category_ids = validated_data.pop('category_ids', [])
+        
+        # If no author provided, use the request user or a default system user
+        if 'author' not in validated_data or validated_data.get('author') is None:
+            # Get or create a default "LightField LP" system user
+            author, _ = User.objects.get_or_create(
+                username='lightfield_lp',
+                defaults={
+                    'first_name': 'LightField',
+                    'last_name': 'LP',
+                    'email': 'info@lightfield.com',
+                    'is_staff': True
+                }
+            )
+            validated_data['author'] = author
+        
         blog_post = BlogPost.objects.create(**validated_data)
         if category_ids:
             blog_post.categories.set(category_ids)
@@ -227,7 +247,7 @@ class ContactSubmissionListSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = ContactSubmission
-        fields = ['id', 'name', 'email', 'subject', 'status', 'created_at']
+        fields = ['id', 'name', 'email', 'subject', 'status', 'created_at', 'message', 'phone']
 
 
 class ReorderSerializer(serializers.Serializer):

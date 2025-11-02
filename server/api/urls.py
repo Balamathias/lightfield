@@ -12,21 +12,22 @@ urlpatterns = [
 
     # Associates
     path('associates/', views.associates_list_create, name='associates-list-create'),
-    path('associates/<slug:slug>/', views.associate_detail, name='associate-detail'),
     path('associates/reorder/', views.reorder_associates, name='reorder-associates'),
+    path('associates/<slug:slug>/', views.associate_detail, name='associate-detail'),
 
     # Blog Categories
     path('categories/', views.categories_list_create, name='categories-list-create'),
+    path('categories/reorder/', views.reorder_categories, name='reorder-categories'),
     path('categories/<int:pk>/', views.category_detail, name='category-detail'),
 
     # Blog Posts
     path('blogs/', views.blogs_list_create, name='blogs-list-create'),
-    path('blogs/<slug:slug>/', views.blog_detail, name='blog-detail'),
     path('blogs/reorder/', views.reorder_blogs, name='reorder-blogs'),
-
-    # AI Features
     path('blogs/ai-assist/', views.blog_ai_assistant, name='blog-ai-assistant'),
     path('blogs/ai-overview/', views.generate_ai_overview, name='generate-ai-overview'),
+    path('blogs/<slug:slug>/', views.blog_detail, name='blog-detail'),
+
+    # AI Features
     path('solo/chat/', views.solo_chat, name='solo-chat'),
 
     # Contact
@@ -36,4 +37,11 @@ urlpatterns = [
 
     # Admin Dashboard
     path('admin/stats/', views.dashboard_stats, name='dashboard-stats'),
+    path('admin/charts/blog-views/', views.blog_views_over_time, name='blog-views-chart'),
+    path('admin/charts/posts-timeline/', views.posts_over_time, name='posts-timeline-chart'),
+    path('admin/charts/posts-by-category/', views.posts_by_category, name='posts-by-category-chart'),
+    path('admin/charts/contacts-by-status/', views.contacts_by_status, name='contacts-by-status-chart'),
+
+    # Image Upload
+    path('upload-image/', views.upload_image, name='upload-image'),
 ]

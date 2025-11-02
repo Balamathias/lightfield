@@ -210,6 +210,21 @@ def category_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@api_view(['POST'])
+@permission_classes([IsStaffOrSuperUser])
+def reorder_categories(request):
+    """
+    Reorder categories by updating their order_priority
+    Expects: { "items": [{"id": 1, "order_priority": 0}, {"id": 2, "order_priority": 1}, ...] }
+    """
+    serializer = ReorderSerializer(data=request.data)
+    if serializer.is_valid():
+        for item in serializer.validated_data['items']:
+            BlogCategory.objects.filter(id=item['id']).update(order_priority=item['order_priority'])
+        return Response({'message': 'Categories reordered successfully'})
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 # ==================== Blog Posts Views ====================
 
 @api_view(['GET', 'POST'])
@@ -256,9 +271,19 @@ def blogs_list_create(request):
     elif request.method == 'POST':
         serializer = BlogPostWriteSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(author=request.user)
+            # Author will be set by serializer to default "LightField LP" if not provided
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Format errors for better readability
+        formatted_errors = {}
+        for field, errors in serializer.errors.items():
+            if isinstance(errors, list) and len(errors) > 0:
+                formatted_errors[field] = str(errors[0])
+            else:
+                formatted_errors[field] = str(errors)
+        
+        return Response(formatted_errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
@@ -405,18 +430,174 @@ def dashboard_stats(request):
     return Response(serializer.data)
 
 
+@api_view(['GET'])
+@permission_classes([IsStaffOrSuperUser])
+def blog_views_over_time(request):
+    """
+    Get blog views data over time for area chart
+    Returns aggregated view counts by date
+    """
+    from django.db.models.functions import TruncDate
+    from datetime import timedelta
+
+    # Get date range (last 30 days by default)
+    days = int(request.GET.get('days', 30))
+    end_date = timezone.now()
+    start_date = end_date - timedelta(days=days)
+
+    # Aggregate by publish_date
+    views_data = (
+        BlogPost.objects
+        .filter(publish_date__gte=start_date, publish_date__lte=end_date, is_published=True)
+        .annotate(date=TruncDate('publish_date'))
+        .values('date')
+        .annotate(views=Sum('view_count'))
+        .order_by('date')
+    )
+
+    # Format for recharts
+    chart_data = [
+        {
+            'date': item['date'].strftime('%Y-%m-%d'),
+            'views': item['views'] or 0
+        }
+        for item in views_data
+    ]
+
+    return Response(chart_data)
+
+
+@api_view(['GET'])
+@permission_classes([IsStaffOrSuperUser])
+def posts_over_time(request):
+    """
+    Get blog posts published over time for area chart
+    Returns count of posts by date
+    """
+    from django.db.models.functions import TruncDate
+    from datetime import timedelta
+
+    # Get date range (last 30 days by default)
+    days = int(request.GET.get('days', 30))
+    end_date = timezone.now()
+    start_date = end_date - timedelta(days=days)
+
+    posts_data = (
+        BlogPost.objects
+        .filter(publish_date__gte=start_date, publish_date__lte=end_date, is_published=True)
+        .annotate(date=TruncDate('publish_date'))
+        .values('date')
+        .annotate(count=Count('id'))
+        .order_by('date')
+    )
+
+    # Format for recharts
+    chart_data = [
+        {
+            'date': item['date'].strftime('%Y-%m-%d'),
+            'posts': item['count']
+        }
+        for item in posts_data
+    ]
+
+    return Response(chart_data)
+
+
+@api_view(['GET'])
+@permission_classes([IsStaffOrSuperUser])
+def posts_by_category(request):
+    """
+    Get blog posts count by category for bar chart
+    """
+    category_data = (
+        BlogCategory.objects
+        .annotate(post_count=Count('blog_posts', filter=Q(blog_posts__is_published=True)))
+        .filter(post_count__gt=0)
+        .order_by('-post_count')
+    )
+
+    # Format for recharts
+    chart_data = [
+        {
+            'category': cat.name,
+            'posts': cat.post_count
+        }
+        for cat in category_data
+    ]
+
+    return Response(chart_data)
+
+
+@api_view(['GET'])
+@permission_classes([IsStaffOrSuperUser])
+def contacts_by_status(request):
+    """
+    Get contact submissions by status for pie chart
+    """
+    status_data = (
+        ContactSubmission.objects
+        .values('status')
+        .annotate(count=Count('id'))
+        .order_by('status')
+    )
+
+    # Format for recharts with proper labels
+    status_labels = {
+        'pending': 'Pending',
+        'reviewed': 'Reviewed',
+        'responded': 'Responded'
+    }
+
+    chart_data = [
+        {
+            'status': status_labels.get(item['status'], item['status'].title()),
+            'value': item['count'],
+            'rawStatus': item['status']
+        }
+        for item in status_data
+    ]
+
+    return Response(chart_data)
+
+
 # ==================== AI Features Views ====================
-# These will be implemented in Phase 6
-# Placeholder views for now
+
+from .ai_service import get_ai_service
+
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def solo_chat(request):
     """
     Solo AI assistant chat endpoint (public)
-    Will be implemented with OpenAI integration
+    Expects: { "message": "user question", "conversation_history": [...] (optional) }
+    Returns: { "response": "AI response" }
     """
-    return Response({'message': 'Solo AI chat endpoint - coming soon'})
+    user_message = request.data.get('message', '').strip()
+
+    if not user_message:
+        return Response(
+            {'error': 'Message is required'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Get conversation history if provided
+    conversation_history = request.data.get('conversation_history', [])
+
+    try:
+        ai_service = get_ai_service()
+        response = ai_service.solo_chat(user_message, conversation_history)
+
+        return Response({
+            'response': response,
+            'message': user_message
+        })
+
+    except Exception as e:
+        return Response(
+            {'error': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 @api_view(['POST'])
@@ -424,9 +605,55 @@ def solo_chat(request):
 def blog_ai_assistant(request):
     """
     AI assistant for blog writing (admin only)
-    Will be implemented with OpenAI integration
+    Expects: {
+        "prompt": "user's request",
+        "context": {
+            "title": "blog title" (optional),
+            "content": "current content" (optional),
+            "excerpt": "current excerpt" (optional)
+        } (optional)
+    }
+    Returns: { "suggestion": "AI-generated suggestion" }
     """
-    return Response({'message': 'Blog AI assistant endpoint - coming soon'})
+    prompt = request.data.get('prompt', '').strip()
+
+    if not prompt:
+        return Response(
+            {'error': 'Prompt is required'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Get context if provided
+    context_data = request.data.get('context', {})
+    context = None
+
+    if context_data:
+        context_parts = []
+        if context_data.get('title'):
+            context_parts.append(f"Title: {context_data['title']}")
+        if context_data.get('excerpt'):
+            context_parts.append(f"Excerpt: {context_data['excerpt']}")
+        if context_data.get('content'):
+            # Limit content length
+            content = context_data['content'][:2000]
+            context_parts.append(f"Content: {content}")
+
+        context = "\n\n".join(context_parts) if context_parts else None
+
+    try:
+        ai_service = get_ai_service()
+        suggestion = ai_service.blog_assistant(prompt, context)
+
+        return Response({
+            'suggestion': suggestion,
+            'prompt': prompt
+        })
+
+    except Exception as e:
+        return Response(
+            {'error': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 @api_view(['POST'])
@@ -434,6 +661,92 @@ def blog_ai_assistant(request):
 def generate_ai_overview(request):
     """
     Generate AI overview for a blog post (public)
-    Will be implemented with OpenAI integration
+    Expects: { "slug": "blog-post-slug" } OR { "title": "...", "content": "..." }
+    Returns: { "overview": "AI-generated overview" }
     """
-    return Response({'message': 'AI overview generation endpoint - coming soon'})
+    slug = request.data.get('slug')
+    title = request.data.get('title')
+    content = request.data.get('content')
+
+    # If slug is provided, fetch the blog post
+    if slug:
+        try:
+            blog_post = BlogPost.objects.get(slug=slug, is_published=True)
+            title = blog_post.title
+            content = blog_post.content
+        except BlogPost.DoesNotExist:
+            return Response(
+                {'error': 'Blog post not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+    # Validate required fields
+    if not title or not content:
+        return Response(
+            {'error': 'Title and content are required'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        ai_service = get_ai_service()
+        overview = ai_service.generate_overview(title, content)
+
+        # If blog post exists, optionally update it
+        if slug:
+            blog_post.ai_overview = overview
+            blog_post.save(update_fields=['ai_overview'])
+
+        return Response({
+            'overview': overview,
+            'title': title
+        })
+
+    except Exception as e:
+        return Response(
+            {'error': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+# ==================== Image Upload View ====================
+
+@api_view(['POST'])
+@permission_classes([IsStaffOrSuperUser])
+def upload_image(request):
+    """
+    Upload image to Cloudinary
+    Admin only endpoint
+    """
+    import cloudinary.uploader
+
+    if 'image' not in request.FILES:
+        return Response(
+            {'error': 'No image file provided'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    image_file = request.FILES['image']
+    folder = request.data.get('folder', 'lightfield')
+
+    try:
+        # Upload to Cloudinary
+        upload_result = cloudinary.uploader.upload(
+            image_file,
+            folder=folder,
+            resource_type='image',
+            allowed_formats=['jpg', 'jpeg', 'png', 'webp', 'gif']
+        )
+
+        return Response({
+            'secure_url': upload_result['secure_url'],
+            'public_id': upload_result['public_id'],
+            'url': upload_result['url'],
+            'format': upload_result['format'],
+            'width': upload_result['width'],
+            'height': upload_result['height']
+        })
+    except Exception as e:
+        return Response(
+            {'error': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )

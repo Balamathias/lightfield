@@ -15,7 +15,7 @@ import os
 from dotenv import load_dotenv
 from datetime import timedelta
 
-load_dotenv()
+load_dotenv('.env.local')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -176,3 +176,4 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # OpenAI Configuration
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '')
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')

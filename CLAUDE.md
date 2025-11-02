@@ -30,3 +30,61 @@ As mentioned earlier; there will be an admin managed section for professionally 
 
 
 Always suggest other innovative features that could be added to the platform to improve it further.
+
+---
+
+## TODO List
+
+### Completed ✅
+- [x] Admin authentication and layout
+- [x] Blog posts CRUD with drag-reorder
+- [x] Associates management with drag-reorder
+- [x] Categories management with drag-reorder
+- [x] Contacts management with status tracking
+- [x] Theme toggle (dark/light mode)
+- [x] Image upload with Cloudinary
+- [x] Rich text editor for blogs
+
+### In Progress 🚧
+- [ ] **Backend AI Integration** (Current)
+  - [ ] Configure OpenAI SDK to use Gemini
+  - [ ] Implement `/blogs/ai-assist/` endpoint for blog writing assistance
+  - [ ] Implement `/blogs/ai-overview/` endpoint for auto-generating summaries
+  - [ ] Implement `/solo/chat/` endpoint for knowledge base assistant
+  - [ ] Implement `/admin/stats/` endpoint for dashboard analytics
+
+### Upcoming 📋
+- [ ] **Admin Dashboard Enhancement**
+  - [ ] Beautiful stats cards with animations
+  - [ ] Charts using Recharts (blog trends, contact stats)
+  - [ ] Recent activity feed
+  - [ ] Quick action buttons
+
+- [ ] **Admin AI Features UI**
+  - [ ] Blog AI assistant modal/sidebar in create/edit pages
+  - [ ] AI suggestions for titles, excerpts, SEO
+  - [ ] Content enhancement tools
+
+- [ ] **Public Frontend Pages**
+  - [ ] Homepage with hero section and animations
+  - [ ] About page
+  - [ ] Public Associates page
+  - [ ] Public Blog listing with categories/filters
+  - [ ] Individual blog post pages
+  - [ ] Contact page with form
+  - [ ] Solo AI assistant chat interface (public)
+
+- [ ] **SEO & Meta**
+  - [ ] Dynamic meta tags for all pages
+  - [ ] Open Graph tags
+  - [ ] Structured data (JSON-LD)
+  - [ ] Sitemap generation
+  - [ ] robots.txt
+
+- [ ] **Final Polish**
+  - [ ] Mobile responsiveness testing
+  - [ ] Performance optimization
+  - [ ] Loading states and skeletons
+  - [ ] Error boundaries and 404 page
+  - [ ] Advanced Framer Motion animations
+  - [ ] Professional SVG background patterns
