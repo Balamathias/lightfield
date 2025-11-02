@@ -8,11 +8,20 @@
     "start": "next start"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@tanstack/react-query": "^5.90.6",
     "@tanstack/react-query-devtools": "^5.90.2",
+    "@tiptap/extension-image": "^3.10.1",
+    "@tiptap/extension-link": "^3.10.1",
+    "@tiptap/extension-placeholder": "^3.10.1",
+    "@tiptap/react": "^3.10.1",
+    "@tiptap/starter-kit": "^3.10.1",
     "axios": "^1.13.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.552.0",
     "next": "15.5.6",
@@ -20,6 +29,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "recharts": "^3.3.0",
+    "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
     "zod": "^4.1.12"
   },

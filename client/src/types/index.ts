@@ -45,8 +45,13 @@ export interface AssociateListItem {
   name: string;
   slug: string;
   title: string;
+  bio: string;
   expertise: string[];
   image_url: string | null;
+  email: string | null;
+  phone: string | null;
+  linkedin_url: string | null;
+  twitter_url: string | null;
   is_active: boolean;
   order_priority: number;
 }

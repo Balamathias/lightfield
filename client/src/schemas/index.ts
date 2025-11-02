@@ -6,6 +6,8 @@ export const loginSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 });
 
+export type LoginFormValues = z.infer<typeof loginSchema>;
+
 // Associate schemas
 export const associateSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(255),

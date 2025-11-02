@@ -1,5 +1,5 @@
 import apiClient from '../api/client';
-import type { BlogCategory, BlogCategoryFormData } from '@/types';
+import type { BlogCategory, BlogCategoryFormData, ReorderRequest } from '@/types';
 
 /**
  * Get all blog categories
@@ -38,4 +38,11 @@ export const updateCategory = async (id: number, data: Partial<BlogCategoryFormD
  */
 export const deleteCategory = async (id: number): Promise<void> => {
   await apiClient.delete(`/categories/${id}/`);
+};
+
+/**
+ * Reorder categories (admin only)
+ */
+export const reorderCategories = async (data: ReorderRequest): Promise<void> => {
+  await apiClient.post('/categories/reorder/', data);
 };

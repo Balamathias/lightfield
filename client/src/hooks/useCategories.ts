@@ -5,8 +5,9 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
+  reorderCategories,
 } from '@/lib/handlers/categoriesHandlers';
-import type { BlogCategoryFormData } from '@/types';
+import type { BlogCategoryFormData, ReorderRequest } from '@/types';
 
 // Query keys
 export const categoriesKeys = {
@@ -76,6 +77,20 @@ export function useDeleteCategory() {
 
   return useMutation({
     mutationFn: (id: number) => deleteCategory(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: categoriesKeys.lists() });
+    },
+  });
+}
+
+/**
+ * Hook to reorder categories
+ */
+export function useReorderCategories() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (items: ReorderRequest) => reorderCategories(items),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: categoriesKeys.lists() });
     },
