@@ -8,6 +8,7 @@ import { blogPostSchema, type BlogPostFormValues } from '@/schemas';
 import RichTextEditor from '@/components/RichTextEditor';
 import ImageUpload from '@/components/ImageUpload';
 import BlogAIAssistant from '@/components/BlogAIAssistant';
+import DateTimePicker from '@/components/DateTimePicker';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
@@ -51,9 +52,7 @@ export default function EditBlogPage() {
         is_published: blog.is_published,
         is_featured: blog.is_featured,
         order_priority: blog.order_priority,
-        publish_date: blog.publish_date
-          ? new Date(blog.publish_date).toISOString().slice(0, 16)
-          : '',
+        publish_date: blog.publish_date || '',
       });
       setSelectedCategories(blog.categories?.map((c) => c.id) || []);
     }
@@ -67,9 +66,7 @@ export default function EditBlogPage() {
     const submitData = {
       ...formData,
       category_ids: selectedCategories,
-      publish_date: formData.publish_date
-        ? new Date(formData.publish_date).toISOString()
-        : '',
+      publish_date: formData.publish_date || '',
     };
 
     // Validate with Zod
@@ -315,18 +312,12 @@ export default function EditBlogPage() {
               </label>
 
               {/* Publish Date */}
-              <div>
-                <label htmlFor="publish_date" className="block text-sm font-medium text-foreground mb-2">
-                  Publish Date
-                </label>
-                <input
-                  id="publish_date"
-                  type="datetime-local"
-                  value={formData.publish_date}
-                  onChange={(e) => setFormData({ ...formData, publish_date: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border border-input bg-background text-foreground text-sm focus:ring-2 focus:ring-ring focus:border-transparent transition"
-                />
-              </div>
+              <DateTimePicker
+                label="Publish Date"
+                value={formData.publish_date || ''}
+                onChange={(value) => setFormData({ ...formData, publish_date: value })}
+                placeholder="Select publish date and time"
+              />
 
               {/* Order Priority */}
               <div>

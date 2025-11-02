@@ -31,11 +31,13 @@ import BlogViewsChart from '@/components/dashboard/BlogViewsChart';
 import PostsTimelineChart from '@/components/dashboard/PostsTimelineChart';
 import PostsByCategoryChart from '@/components/dashboard/PostsByCategoryChart';
 import ContactsByStatusChart from '@/components/dashboard/ContactsByStatusChart';
+import { useRouter } from 'next/navigation';
 
 export default function AdminDashboardPage() {
   const { data: stats, isLoading, error } = useDashboardStats();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter()
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -54,7 +56,7 @@ export default function AdminDashboardPage() {
       label: 'Create New Blog',
       description: 'Write and publish a new blog post',
       icon: FileText,
-      href: '/admin/blogs',
+      href: '/admin/blogs/create',
       color: 'text-blue-600 dark:text-blue-400',
       bgColor: 'bg-blue-50 dark:bg-blue-950/30',
       hoverBg: 'hover:bg-blue-100 dark:hover:bg-blue-900/40',
@@ -207,7 +209,7 @@ export default function AdminDashboardPage() {
                   <button
                     key={index}
                     onClick={() => {
-                      window.location.href = action.href;
+                      router.push(action.href);
                       setDropdownOpen(false);
                     }}
                     className={`w-full flex items-start gap-4 p-4 rounded-xl transition-all duration-200 ${action.hoverBg} group`}
@@ -360,7 +362,6 @@ export default function AdminDashboardPage() {
           </div>
           <div>
             <h2 className="text-xl font-bold text-foreground">Advanced Analytics</h2>
-            <p className="text-sm text-muted-foreground">Detailed insights and trends</p>
           </div>
         </div>
 

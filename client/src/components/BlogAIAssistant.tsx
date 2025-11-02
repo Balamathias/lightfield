@@ -155,7 +155,7 @@ export default function BlogAIAssistant({ context, onInsert, onInsertToField }: 
                           )}
                         </h2>
                         <p className="text-xs text-muted-foreground">
-                          Powered by Gemini 2.0
+                          Brainstorm with Solo.
                         </p>
                       </div>
                     </div>

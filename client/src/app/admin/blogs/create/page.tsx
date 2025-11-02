@@ -8,7 +8,8 @@ import { blogPostSchema, type BlogPostFormValues } from '@/schemas';
 import RichTextEditor from '@/components/RichTextEditor';
 import ImageUpload from '@/components/ImageUpload';
 import BlogAIAssistant from '@/components/BlogAIAssistant';
-import { ArrowLeft, Save, Loader2, Upload, X, Sparkles } from 'lucide-react';
+import DateTimePicker from '@/components/DateTimePicker';
+import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 
@@ -38,13 +39,11 @@ export default function CreateBlogPage() {
     e.preventDefault();
     setErrors({});
 
-    // Prepare data with proper ISO format for publish_date
+    // Prepare data - publish_date is already in ISO format from DateTimePicker
     const submitData = {
       ...formData,
       category_ids: selectedCategories,
-      publish_date: formData.publish_date 
-        ? new Date(formData.publish_date).toISOString() 
-        : '',
+      publish_date: formData.publish_date || '',
     };
 
     // Validate with Zod
@@ -239,7 +238,12 @@ export default function CreateBlogPage() {
                     </label>
                   ))
                 ) : (
-                  <p className="text-sm text-muted-foreground">No categories available</p>
+                  <div className="flex flex-col gap-2 items-center justify-center">
+                    <p className="text-sm text-muted-foreground">No categories available</p>
+                    <button onClick={() => router.push(`/admin/categories?create=async`)} className="bg-transparent border border-primary/10 p-2.5 rounded-xl">
+                      Create Category
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
@@ -279,18 +283,12 @@ export default function CreateBlogPage() {
               </label>
 
               {/* Publish Date */}
-              <div>
-                <label htmlFor="publish_date" className="block text-sm font-medium text-foreground mb-2">
-                  Publish Date
-                </label>
-                <input
-                  id="publish_date"
-                  type="datetime-local"
-                  value={formData.publish_date}
-                  onChange={(e) => setFormData({ ...formData, publish_date: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border border-input bg-background text-foreground text-sm focus:ring-2 focus:ring-ring focus:border-transparent transition"
-                />
-              </div>
+              <DateTimePicker
+                label="Publish Date"
+                value={formData.publish_date || ''}
+                onChange={(value) => setFormData({ ...formData, publish_date: value })}
+                placeholder="Select publish date and time"
+              />
 
               {/* Order Priority */}
               <div>
