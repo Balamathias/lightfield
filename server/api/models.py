@@ -94,7 +94,7 @@ class BlogPost(models.Model):
     excerpt = models.TextField(max_length=500, help_text="Short summary of the blog post")
     content = models.TextField()
 
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
+    author = models.ForeignKey(User, on_delete=models.PROTECT, related_name='blog_posts')
     categories = models.ManyToManyField(BlogCategory, related_name='blog_posts', blank=True)
 
     featured_image_url = models.URLField(blank=True, null=True, help_text="Cloudinary URL")
