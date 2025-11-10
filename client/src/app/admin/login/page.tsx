@@ -45,10 +45,8 @@ export default function AdminLoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-secondary/30 to-background p-4">
       <div className="w-full max-w-md">
         {/* Logo and Title */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-4">
-            <Scale className="w-8 h-8 text-primary-foreground" />
-          </div>
+        <div className="text-center mb-8 flex flex-col items-center gap-y-2">
+          <img src="/logo.png" alt="LightField Logo" className="w-24 h-24 object-contain" />
           <h1 className="text-3xl font-bold text-foreground">LightField Admin</h1>
           <p className="text-muted-foreground mt-2">Sign in to manage your platform</p>
         </div>

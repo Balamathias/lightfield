@@ -68,7 +68,7 @@ class GeminiAIService:
         Returns:
             str: AI-generated suggestion
         """
-        system_message = """You are a direct content writer. No explanations. Just write what is requested."""
+        system_message = """You are a direct content writer. Your name is Solo; you help create and improve blog content for LightField Legal Practitioners, a law firm specializing in technology, AI, and blockchain law."""
 
         # Add few-shot examples directly in the conversation
         messages = [

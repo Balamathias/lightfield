@@ -78,9 +78,7 @@ export default function AdminLayout({
       >
         {/* Logo */}
         <div className="flex items-center gap-3 px-6 py-5">
-          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-            <Scale className="w-6 h-6 text-primary-foreground" />
-          </div>
+          <img src="/logo.png" alt="LightField Logo" className="w-16 h-16 object-contain" />
           <div>
             <h1 className="font-bold text-foreground">LightField</h1>
             <p className="text-xs text-muted-foreground">Admin Panel</p>
