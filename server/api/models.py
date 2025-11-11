@@ -256,3 +256,47 @@ class Testimonial(models.Model):
 
     def __str__(self):
         return f"{self.client_name} - {self.client_company or 'Individual'}"
+
+
+class ChatAnalytics(models.Model):
+    """
+    Model for tracking Solo AI chat analytics
+    """
+    session_id = models.CharField(max_length=255, db_index=True)
+    user_message = models.TextField()
+    ai_response = models.TextField()
+    response_time_ms = models.IntegerField(help_text="Response time in milliseconds")
+
+    # Context tracking
+    context_used = models.JSONField(
+        default=dict,
+        help_text="What context was injected (blog_posts, associates, etc)"
+    )
+
+    # User engagement
+    user_clicked_action = models.BooleanField(
+        default=False,
+        help_text="Did user click any action button/link in response"
+    )
+    action_clicked = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="What action was clicked"
+    )
+
+    # Metadata
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'chat_analytics'
+        ordering = ['-created_at']
+        verbose_name = 'Chat Analytics'
+        verbose_name_plural = 'Chat Analytics'
+        indexes = [
+            models.Index(fields=['-created_at']),
+            models.Index(fields=['session_id']),
+        ]
+
+    def __str__(self):
+        return f"Chat {self.session_id[:8]}... - {self.created_at.strftime('%Y-%m-%d %H:%M')}"

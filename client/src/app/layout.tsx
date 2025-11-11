@@ -4,6 +4,7 @@ import "./globals.css";
 import QueryProvider from "@/lib/providers/QueryProvider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import SoloChatWrapper from "@/components/SoloChatWrapper";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -40,6 +41,7 @@ export default function RootLayout({
         >
           <QueryProvider>
             {children}
+            <SoloChatWrapper />
           </QueryProvider>
           <Toaster position="top-right" />
         </ThemeProvider>

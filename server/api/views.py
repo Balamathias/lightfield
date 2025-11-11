@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate
 from django.db.models import Q, Count, Sum
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
+from django.http import StreamingHttpResponse
+import json
 
 from .models import Associate, BlogCategory, BlogPost, AIConversation, ContactSubmission, Testimonial, User
 from .serializers import (
@@ -663,11 +665,23 @@ from .ai_service import get_ai_service
 @permission_classes([AllowAny])
 def solo_chat(request):
     """
-    Solo AI assistant chat endpoint (public)
-    Expects: { "message": "user question", "conversation_history": [...] (optional) }
-    Returns: { "response": "AI response" }
+    Solo AI assistant chat endpoint with streaming support (public)
+    Expects: { "message": "user question", "session_id": "session_id" (optional) }
+    Returns: Streaming text response
     """
-    user_message = request.data.get('message', '').strip()
+    import time
+    from .models import AIConversation, ChatAnalytics
+
+    try:
+        # Parse request body
+        data = json.loads(request.body) if request.body else {}
+    except json.JSONDecodeError:
+        return Response(
+            {'error': 'Invalid JSON'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    user_message = data.get('message', '').strip()
 
     if not user_message:
         return Response(
@@ -675,23 +689,87 @@ def solo_chat(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    # Get conversation history if provided
-    conversation_history = request.data.get('conversation_history', [])
+    # Get or create session_id
+    session_id = data.get('session_id')
+    if not session_id:
+        import uuid
+        session_id = str(uuid.uuid4())
 
-    try:
-        ai_service = get_ai_service()
-        response = ai_service.solo_chat(user_message, conversation_history)
+    # Get or create conversation
+    conversation, created = AIConversation.objects.get_or_create(
+        session_id=session_id,
+        defaults={'messages': []}
+    )
 
-        return Response({
-            'response': response,
-            'message': user_message
-        })
+    # Get conversation history (last 10 messages)
+    conversation_history = conversation.messages[-10:] if conversation.messages else []
 
-    except Exception as e:
-        return Response(
-            {'error': str(e)},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+    # Track start time for analytics
+    start_time = time.time()
+
+    def stream_response():
+        """Generator function to stream AI responses and collect for analytics"""
+        full_response = []
+        context_used = {}
+
+        try:
+            ai_service = get_ai_service()
+            stream_generator, context = ai_service.solo_chat_stream(
+                user_message,
+                conversation_history,
+                inject_context=True
+            )
+
+            context_used = context
+
+            for chunk in stream_generator:
+                full_response.append(chunk)
+                yield chunk
+
+            # After streaming completes, save to conversation and analytics
+            final_response = ''.join(full_response)
+            response_time_ms = int((time.time() - start_time) * 1000)
+
+            # Save messages to conversation
+            conversation.add_message('user', user_message)
+            conversation.add_message('assistant', final_response)
+
+            # Save analytics
+            ChatAnalytics.objects.create(
+                session_id=session_id,
+                user_message=user_message,
+                ai_response=final_response,
+                response_time_ms=response_time_ms,
+                context_used=context_used
+            )
+
+        except Exception as e:
+            error_msg = f"Error: {str(e)}"
+            yield error_msg
+
+            # Still try to save error to analytics
+            try:
+                ChatAnalytics.objects.create(
+                    session_id=session_id,
+                    user_message=user_message,
+                    ai_response=error_msg,
+                    response_time_ms=int((time.time() - start_time) * 1000),
+                    context_used=context_used
+                )
+            except:
+                pass
+
+    # Return streaming response
+    response = StreamingHttpResponse(
+        stream_response(),
+        content_type='text/plain',
+        status=200
+    )
+    response['Cache-Control'] = 'no-cache'
+    response['X-Accel-Buffering'] = 'no'
+    response['X-Session-Id'] = session_id  # Send session ID back to client
+
+    return response
 
 
 @api_view(['POST'])
