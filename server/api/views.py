@@ -8,13 +8,14 @@ from django.db.models import Q, Count, Sum
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
 
-from .models import Associate, BlogCategory, BlogPost, AIConversation, ContactSubmission, User
+from .models import Associate, BlogCategory, BlogPost, AIConversation, ContactSubmission, Testimonial, User
 from .serializers import (
     AssociateListSerializer, AssociateDetailSerializer, AssociateWriteSerializer,
     BlogCategorySerializer, BlogCategoryWriteSerializer,
     BlogPostListSerializer, BlogPostDetailSerializer, BlogPostWriteSerializer,
     AIConversationSerializer, AIMessageSerializer,
     ContactSubmissionSerializer, ContactSubmissionListSerializer,
+    TestimonialListSerializer, TestimonialDetailSerializer, TestimonialWriteSerializer,
     ReorderSerializer, DashboardStatsSerializer, UserSerializer
 )
 from .permissions import IsAdminOrReadOnly, IsStaffOrSuperUser
@@ -407,6 +408,97 @@ def contact_detail(request, pk):
         )
 
 
+# ==================== Testimonials Views ====================
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAdminOrReadOnly])
+def testimonials_list_create(request):
+    """
+    GET: List all active testimonials (public) or all testimonials (admin)
+    POST: Create new testimonial (admin only)
+    """
+    if request.method == 'GET':
+        # Get query parameters
+        is_featured = request.query_params.get('is_featured', '')
+        is_active = request.query_params.get('is_active', 'true')
+
+        # Build queryset
+        queryset = Testimonial.objects.all()
+
+        # If not admin, show only active testimonials
+        if not (request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser)):
+            queryset = queryset.filter(is_active=True)
+
+        # Filters
+        if is_featured:
+            queryset = queryset.filter(is_featured=True)
+
+        if is_active.lower() == 'true':
+            queryset = queryset.filter(is_active=True)
+        elif is_active.lower() == 'false':
+            queryset = queryset.filter(is_active=False)
+
+        serializer = TestimonialListSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = TestimonialWriteSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
+@permission_classes([IsAdminOrReadOnly])
+def testimonial_detail(request, pk):
+    """
+    GET: Retrieve testimonial detail (public)
+    PUT/PATCH: Update testimonial (admin only)
+    DELETE: Delete testimonial (admin only)
+    """
+    testimonial = get_object_or_404(Testimonial, pk=pk)
+
+    # Check if testimonial is active for non-admin users
+    if request.method == 'GET':
+        if not (request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser)):
+            if not testimonial.is_active:
+                return Response(
+                    {'error': 'Testimonial not found'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+        serializer = TestimonialDetailSerializer(testimonial)
+        return Response(serializer.data)
+
+    elif request.method in ['PUT', 'PATCH']:
+        partial = request.method == 'PATCH'
+        serializer = TestimonialWriteSerializer(testimonial, data=request.data, partial=partial)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        testimonial.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+@permission_classes([IsStaffOrSuperUser])
+def reorder_testimonials(request):
+    """
+    Reorder testimonials by updating their order_priority
+    Expects: { "items": [{"id": 1, "order_priority": 0}, {"id": 2, "order_priority": 1}, ...] }
+    """
+    serializer = ReorderSerializer(data=request.data)
+    if serializer.is_valid():
+        for item in serializer.validated_data['items']:
+            Testimonial.objects.filter(id=item['id']).update(order_priority=item['order_priority'])
+        return Response({'message': 'Testimonials reordered successfully'})
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 # ==================== Dashboard Stats View ====================
 
 @api_view(['GET'])
@@ -423,7 +515,9 @@ def dashboard_stats(request):
         'active_associates': Associate.objects.filter(is_active=True).count(),
         'total_contacts': ContactSubmission.objects.count(),
         'unread_contacts': ContactSubmission.objects.filter(status='unread').count(),
-        'total_views': BlogPost.objects.aggregate(Sum('view_count'))['view_count__sum'] or 0
+        'total_views': BlogPost.objects.aggregate(Sum('view_count'))['view_count__sum'] or 0,
+        'total_testimonials': Testimonial.objects.count(),
+        'active_testimonials': Testimonial.objects.filter(is_active=True).count(),
     }
 
     serializer = DashboardStatsSerializer(stats)

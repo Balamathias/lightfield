@@ -1,9 +1,19 @@
-import Image from "next/image";
+import Navbar from '@/components/public/Navbar';
+import HeroSection from '@/components/public/HeroSection';
+import FeaturesSection from '@/components/public/FeaturesSection';
+import TestimonialsSection from '@/components/public/TestimonialsSection';
+import TeamSection from '@/components/public/TeamSection';
+import Footer from '@/components/public/Footer';
 
 export default function Home() {
   return (
-    <div>
-      <h1 className="text-muted-foreground">Welcome to the Home Page</h1>
-    </div>
+    <main className="min-h-screen">
+      <Navbar />
+      <HeroSection />
+      <FeaturesSection />
+      <TeamSection />
+      <TestimonialsSection />
+      <Footer />
+    </main>
   );
 }

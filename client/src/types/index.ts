@@ -165,6 +165,51 @@ export interface ContactFormData {
   message: string;
 }
 
+// Testimonial types
+export interface Testimonial {
+  id: number;
+  client_name: string;
+  client_title: string;
+  client_company: string | null;
+  testimonial_text: string;
+  client_image_url: string | null;
+  rating: number;
+  case_type: string | null;
+  order_priority: number;
+  is_featured: boolean;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TestimonialListItem {
+  id: number;
+  client_name: string;
+  client_title: string;
+  client_company: string | null;
+  testimonial_text: string;
+  client_image_url: string | null;
+  rating: number;
+  case_type: string | null;
+  is_featured: boolean;
+  is_active: boolean;
+  order_priority: number;
+  created_at: string;
+}
+
+export interface TestimonialFormData {
+  client_name: string;
+  client_title: string;
+  client_company?: string | null;
+  testimonial_text: string;
+  client_image_url?: string | null;
+  rating?: number;
+  case_type?: string | null;
+  order_priority?: number;
+  is_featured?: boolean;
+  is_active?: boolean;
+}
+
 // AI Conversation types
 export interface AIMessage {
   role: 'user' | 'assistant';
@@ -200,6 +245,8 @@ export interface DashboardStats {
   total_contacts: number;
   unread_contacts: number;
   total_views: number;
+  total_testimonials: number;
+  active_testimonials: number;
 }
 
 // Reorder types
@@ -239,4 +286,9 @@ export interface AssociateFilters {
 export interface ContactFilters {
   status?: 'unread' | 'read' | 'responded';
   search?: string;
+}
+
+export interface TestimonialFilters {
+  is_featured?: boolean;
+  is_active?: boolean;
 }

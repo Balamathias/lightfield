@@ -35,6 +35,11 @@ urlpatterns = [
     path('contact/list/', views.list_contacts, name='list-contacts'),
     path('contact/<int:pk>/', views.contact_detail, name='contact-detail'),
 
+    # Testimonials
+    path('testimonials/', views.testimonials_list_create, name='testimonials-list-create'),
+    path('testimonials/reorder/', views.reorder_testimonials, name='reorder-testimonials'),
+    path('testimonials/<int:pk>/', views.testimonial_detail, name='testimonial-detail'),
+
     # Admin Dashboard
     path('admin/stats/', views.dashboard_stats, name='dashboard-stats'),
     path('admin/charts/blog-views/', views.blog_views_over_time, name='blog-views-chart'),

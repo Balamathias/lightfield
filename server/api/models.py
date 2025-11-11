@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.text import slugify
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class User(AbstractUser):
@@ -207,3 +208,51 @@ class ContactSubmission(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.subject}"
+
+
+class Testimonial(models.Model):
+    """
+    Model for client testimonials
+    """
+    client_name = models.CharField(max_length=255)
+    client_title = models.CharField(max_length=255, help_text="e.g., 'CEO of Tech Corp', 'Individual Client'")
+    client_company = models.CharField(max_length=255, blank=True, null=True)
+    testimonial_text = models.TextField(help_text="The testimonial content")
+
+    client_image_url = models.URLField(blank=True, null=True, help_text="Cloudinary URL for client photo")
+
+    rating = models.IntegerField(
+        default=5,
+        help_text="Rating out of 5 stars",
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(5)
+        ]
+    )
+
+    case_type = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text="e.g., 'Blockchain Law', 'AI Regulation'"
+    )
+
+    order_priority = models.IntegerField(default=0, help_text="Lower numbers appear first")
+    is_featured = models.BooleanField(default=False, help_text="Show on homepage")
+    is_active = models.BooleanField(default=True, help_text="Show on website")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'testimonials'
+        ordering = ['order_priority', '-created_at']
+        verbose_name = 'Testimonial'
+        verbose_name_plural = 'Testimonials'
+        indexes = [
+            models.Index(fields=['order_priority']),
+            models.Index(fields=['is_active', 'is_featured']),
+        ]
+
+    def __str__(self):
+        return f"{self.client_name} - {self.client_company or 'Individual'}"

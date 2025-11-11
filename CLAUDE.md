@@ -33,6 +33,12 @@ Always suggest other innovative features that could be added to the platform to 
 
 ---
 
+Follow NextJS best practices while implementing this. Ensure that you modularize components as needed. Stufy the code to know what we are aiming for;; and as we go over it one step a time.
+
+The primary color to be used for this main facing side is the --brand-primary color defined in @client/src/app/globals.css  
+
+Animate professionally with framer motion
+
 ## TODO List
 
 ### Completed ✅
@@ -45,26 +51,25 @@ Always suggest other innovative features that could be added to the platform to 
 - [x] Image upload with Cloudinary
 - [x] Rich text editor for blogs
 
-### In Progress 🚧
-- [ ] **Backend AI Integration** (Current)
-  - [ ] Configure OpenAI SDK to use Gemini
-  - [ ] Implement `/blogs/ai-assist/` endpoint for blog writing assistance
-  - [ ] Implement `/blogs/ai-overview/` endpoint for auto-generating summaries
-  - [ ] Implement `/solo/chat/` endpoint for knowledge base assistant
-  - [ ] Implement `/admin/stats/` endpoint for dashboard analytics
+- [x] **Backend AI Integration** (Current)
+  - [x] Configure OpenAI SDK to use Gemini
+  - [x] Implement `/blogs/ai-assist/` endpoint for blog writing assistance
+  - [x] Implement `/blogs/ai-overview/` endpoint for auto-generating summaries
+  - [x] Implement `/solo/chat/` endpoint for knowledge base assistant
+  - [x] Implement `/admin/stats/` endpoint for dashboard analytics
 
-### Upcoming 📋
-- [ ] **Admin Dashboard Enhancement**
-  - [ ] Beautiful stats cards with animations
-  - [ ] Charts using Recharts (blog trends, contact stats)
-  - [ ] Recent activity feed
-  - [ ] Quick action buttons
+- [x] **Admin Dashboard Enhancement**
+  - [x] Beautiful stats cards with animations
+  - [x] Charts using Recharts (blog trends, contact stats)
+  - [x] Recent activity feed
+  - [x] Quick action buttons
 
-- [ ] **Admin AI Features UI**
-  - [ ] Blog AI assistant modal/sidebar in create/edit pages
-  - [ ] AI suggestions for titles, excerpts, SEO
-  - [ ] Content enhancement tools
+- [x] **Admin AI Features UI**
+  - [x] Blog AI assistant modal/sidebar in create/edit pages
+  - [x] AI suggestions for titles, excerpts, SEO
+  - [x] Content enhancement tools
 
+### In Progress
 - [ ] **Public Frontend Pages**
   - [ ] Homepage with hero section and animations
   - [ ] About page

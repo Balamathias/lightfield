@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Associate, BlogCategory, BlogPost, AIConversation, ContactSubmission
+from .models import Associate, BlogCategory, BlogPost, AIConversation, ContactSubmission, Testimonial
 
 User = get_user_model()
 
@@ -43,7 +43,7 @@ class AssociateListSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Associate
-        fields = ['id', 'name', 'slug', 'title', 'expertise', 'image_url', 'is_active', 'order_priority']
+        fields = ['id', 'name', 'slug', 'title', 'expertise', 'bio', 'image_url', 'is_active', 'order_priority', 'linkedin_url', 'twitter_url', 'phone']
 
 
 class AssociateDetailSerializer(serializers.ModelSerializer):
@@ -250,6 +250,50 @@ class ContactSubmissionListSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'email', 'subject', 'status', 'created_at', 'message', 'phone']
 
 
+class TestimonialListSerializer(serializers.ModelSerializer):
+    """
+    Serializer for listing testimonials (lighter version)
+    """
+    class Meta:
+        model = Testimonial
+        fields = [
+            'id', 'client_name', 'client_title', 'client_company',
+            'testimonial_text', 'client_image_url', 'rating', 'case_type',
+            'is_featured', 'is_active', 'order_priority', 'created_at'
+        ]
+
+
+class TestimonialDetailSerializer(serializers.ModelSerializer):
+    """
+    Serializer for testimonial detail view (complete data)
+    """
+    class Meta:
+        model = Testimonial
+        fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class TestimonialWriteSerializer(serializers.ModelSerializer):
+    """
+    Serializer for creating/updating testimonials
+    """
+    class Meta:
+        model = Testimonial
+        exclude = ['created_at', 'updated_at']
+
+    def validate_rating(self, value):
+        if value < 1 or value > 5:
+            raise serializers.ValidationError("Rating must be between 1 and 5")
+        return value
+
+    def validate_testimonial_text(self, value):
+        if len(value) < 20:
+            raise serializers.ValidationError(
+                "Testimonial text must be at least 20 characters"
+            )
+        return value
+
+
 class ReorderSerializer(serializers.Serializer):
     """
     Generic serializer for reordering items
@@ -279,3 +323,5 @@ class DashboardStatsSerializer(serializers.Serializer):
     total_contacts = serializers.IntegerField()
     unread_contacts = serializers.IntegerField()
     total_views = serializers.IntegerField()
+    total_testimonials = serializers.IntegerField()
+    active_testimonials = serializers.IntegerField()

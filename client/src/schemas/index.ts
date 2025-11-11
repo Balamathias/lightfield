@@ -63,6 +63,22 @@ export const contactFormSchema = z.object({
 
 export type ContactFormValues = z.infer<typeof contactFormSchema>;
 
+// Testimonial schema
+export const testimonialSchema = z.object({
+  client_name: z.string().min(2, 'Client name must be at least 2 characters').max(255),
+  client_title: z.string().min(2, 'Client title must be at least 2 characters').max(255),
+  client_company: z.string().max(255).optional().or(z.literal('')),
+  testimonial_text: z.string().min(20, 'Testimonial must be at least 20 characters'),
+  client_image_url: z.string().url('Invalid URL').optional().or(z.literal('')),
+  rating: z.number().int().min(1, 'Rating must be at least 1').max(5, 'Rating must be at most 5').default(5),
+  case_type: z.string().max(100).optional().or(z.literal('')),
+  order_priority: z.number().int().min(0).optional(),
+  is_featured: z.boolean().optional(),
+  is_active: z.boolean().optional(),
+});
+
+export type TestimonialFormValues = z.infer<typeof testimonialSchema>;
+
 // Solo Chat schema
 export const soloChatSchema = z.object({
   message: z.string().min(1, 'Message cannot be empty').max(1000, 'Message is too long'),
