@@ -5,7 +5,7 @@ import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
 import Placeholder from '@tiptap/extension-placeholder';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Bold,
   Italic,
@@ -64,6 +64,23 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     },
     immediatelyRender: false,
   });
+
+  // CRITICAL FIX: Update editor content when prop changes externally
+  useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      const { from, to } = editor.state.selection;
+      editor.commands.setContent(content, false);
+
+      // Restore cursor position if possible
+      if (from === to) {
+        try {
+          editor.commands.setTextSelection(from);
+        } catch (e) {
+          // Cursor position may be invalid, ignore
+        }
+      }
+    }
+  }, [content, editor]);
 
   if (!editor) {
     return null;

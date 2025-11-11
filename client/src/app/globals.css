@@ -241,3 +241,119 @@
   height: 0;
   pointer-events: none;
 }
+
+/* Blog Content Display Styles */
+.blog-content h1 {
+  font-size: 2.25em;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: var(--foreground);
+  font-family: var(--font-serif);
+}
+
+.blog-content h2 {
+  font-size: 1.875em;
+  font-weight: 700;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+  color: var(--foreground);
+  font-family: var(--font-serif);
+}
+
+.blog-content h3 {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: var(--foreground);
+  font-family: var(--font-serif);
+}
+
+.blog-content p {
+  margin: 1.5em 0;
+  line-height: 1.75;
+  color: var(--foreground);
+}
+
+.blog-content ul,
+.blog-content ol {
+  padding-left: 1.5em;
+  margin: 1.5em 0;
+}
+
+.blog-content ul {
+  list-style-type: disc;
+}
+
+.blog-content ol {
+  list-style-type: decimal;
+}
+
+.blog-content li {
+  margin: 0.5em 0;
+  line-height: 1.75;
+  color: var(--foreground);
+}
+
+.blog-content blockquote {
+  border-left: 4px solid var(--brand-primary);
+  padding-left: 1.5em;
+  margin: 1.5em 0;
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+
+.blog-content pre {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  color: var(--foreground);
+  font-family: 'JetBrains Mono', monospace;
+  padding: 1rem;
+  margin: 1.5em 0;
+  overflow-x: auto;
+}
+
+.blog-content code {
+  background: var(--muted);
+  border-radius: 0.25rem;
+  color: var(--brand-primary);
+  font-size: 0.875em;
+  padding: 0.2em 0.4em;
+}
+
+.blog-content pre code {
+  background: none;
+  color: inherit;
+  font-size: inherit;
+  padding: 0;
+}
+
+.blog-content a {
+  color: var(--brand-primary);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.blog-content a:hover {
+  text-decoration: underline;
+}
+
+.blog-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+  margin: 2em 0;
+}
+
+.blog-content strong {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.blog-content em {
+  font-style: italic;
+  color: var(--foreground);
+}

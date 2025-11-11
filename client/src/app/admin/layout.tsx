@@ -13,7 +13,8 @@ import {
   Menu,
   X,
   Scale,
-  MessageSquare
+  MessageSquare,
+  BarChart3,
 } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
@@ -49,6 +50,7 @@ export default function AdminLayout({
     { href: '/admin/associates', icon: Users, label: 'Associates' },
     { href: '/admin/categories', icon: FolderOpen, label: 'Categories' },
     { href: '/admin/testimonials', icon: MessageSquare, label: 'Testimonials' },
+    { href: '/admin/analytics', icon: BarChart3, label: 'AI Analytics' },
     { href: '/admin/contacts', icon: Mail, label: 'Contacts' },
   ];
 

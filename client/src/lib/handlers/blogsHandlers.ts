@@ -7,18 +7,27 @@ import type {
   ReorderRequest
 } from '@/types';
 
+export interface PaginatedBlogResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: BlogPostListItem[];
+}
+
 /**
- * Get all blog posts with optional filters
+ * Get all blog posts with optional filters (paginated)
  */
-export const getBlogs = async (filters?: BlogFilters): Promise<BlogPostListItem[]> => {
+export const getBlogs = async (filters?: BlogFilters & { page?: number; page_size?: number }): Promise<PaginatedBlogResponse> => {
   const params = new URLSearchParams();
 
   if (filters?.search) params.append('search', filters.search);
   if (filters?.category) params.append('category', filters.category);
   if (filters?.is_featured !== undefined) params.append('is_featured', filters.is_featured.toString());
   if (filters?.ordering) params.append('ordering', filters.ordering);
+  if (filters?.page) params.append('page', filters.page.toString());
+  if (filters?.page_size) params.append('page_size', filters.page_size.toString());
 
-  const response = await apiClient.get<BlogPostListItem[]>('/blogs/', { params });
+  const response = await apiClient.get<PaginatedBlogResponse>('/blogs/', { params });
   return response.data;
 };
 

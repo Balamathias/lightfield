@@ -29,6 +29,8 @@ urlpatterns = [
 
     # AI Features
     path('solo/chat/', views.solo_chat, name='solo-chat'),
+    path('solo/analytics/', views.solo_analytics, name='solo-analytics'),
+    path('solo/analytics/trends/', views.solo_analytics_trends, name='solo-analytics-trends'),
 
     # Contact
     path('contact/submit/', views.submit_contact, name='submit-contact'),

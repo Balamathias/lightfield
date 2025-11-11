@@ -7,7 +7,8 @@ import { useCategories } from '@/hooks/useCategories';
 import { blogPostSchema, type BlogPostFormValues } from '@/schemas';
 import RichTextEditor from '@/components/RichTextEditor';
 import ImageUpload from '@/components/ImageUpload';
-import BlogAIAssistant from '@/components/BlogAIAssistant';
+import BlogAIAssistant from '@/components/admin/BlogAIAssistant';
+import InlineAIHelper from '@/components/admin/InlineAIHelper';
 import DateTimePicker from '@/components/DateTimePicker';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -177,14 +178,27 @@ export default function EditBlogPage() {
         >
           {/* Title */}
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-foreground mb-2">
-              Title <span className="text-destructive">*</span>
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label htmlFor="title" className="block text-sm font-medium text-foreground">
+                Title <span className="text-destructive">*</span>
+              </label>
+              <InlineAIHelper
+                fieldName="title"
+                currentValue={formData.title}
+                context={formData}
+                onInsert={(value) => setFormData({ ...formData, title: value })}
+                suggestions={[
+                  'Generate SEO-optimized title',
+                  'Make title more engaging',
+                  'Improve title clarity',
+                ]}
+              />
+            </div>
             <input
               id="title"
               type="text"
               value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
               className={`w-full px-4 py-3 rounded-lg border ${
                 errors.title ? 'border-destructive' : 'border-input'
               } bg-background text-foreground text-lg font-semibold focus:ring-2 focus:ring-ring focus:border-transparent transition`}
@@ -195,13 +209,26 @@ export default function EditBlogPage() {
 
           {/* Excerpt */}
           <div>
-            <label htmlFor="excerpt" className="block text-sm font-medium text-foreground mb-2">
-              Excerpt <span className="text-destructive">*</span>
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label htmlFor="excerpt" className="block text-sm font-medium text-foreground">
+                Excerpt <span className="text-destructive">*</span>
+              </label>
+              <InlineAIHelper
+                fieldName="excerpt"
+                currentValue={formData.excerpt}
+                context={formData}
+                onInsert={(value) => setFormData({ ...formData, excerpt: value })}
+                suggestions={[
+                  'Generate compelling excerpt',
+                  'Create summary from content',
+                  'Make excerpt more engaging',
+                ]}
+              />
+            </div>
             <textarea
               id="excerpt"
               value={formData.excerpt}
-              onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+              onChange={(e) => setFormData((prev) => ({ ...prev, excerpt: e.target.value }))}
               rows={3}
               className={`w-full px-4 py-3 rounded-lg border ${
                 errors.excerpt ? 'border-destructive' : 'border-input'
@@ -221,7 +248,7 @@ export default function EditBlogPage() {
             </label>
             <RichTextEditor
               content={formData.content || ''}
-              onChange={(content) => setFormData({ ...formData, content })}
+              onChange={(content) => setFormData((prev) => ({ ...prev, content }))}
               placeholder="Write your blog post content here..."
             />
             {errors.content && <p className="text-destructive text-sm mt-1">{errors.content}</p>}
@@ -362,9 +389,21 @@ export default function EditBlogPage() {
 
               {/* Meta Description */}
               <div>
-                <label htmlFor="meta_description" className="block text-sm font-medium text-foreground mb-2">
-                  Meta Description
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label htmlFor="meta_description" className="block text-sm font-medium text-foreground">
+                    Meta Description
+                  </label>
+                  <InlineAIHelper
+                    fieldName="meta_description"
+                    currentValue={formData.meta_description}
+                    context={formData}
+                    onInsert={(value) => setFormData({ ...formData, meta_description: value })}
+                    suggestions={[
+                      'Generate SEO meta description',
+                      'Optimize for click-through',
+                    ]}
+                  />
+                </div>
                 <textarea
                   id="meta_description"
                   value={formData.meta_description}
@@ -383,9 +422,21 @@ export default function EditBlogPage() {
 
               {/* Meta Keywords */}
               <div>
-                <label htmlFor="meta_keywords" className="block text-sm font-medium text-foreground mb-2">
-                  Meta Keywords
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label htmlFor="meta_keywords" className="block text-sm font-medium text-foreground">
+                    Meta Keywords
+                  </label>
+                  <InlineAIHelper
+                    fieldName="meta_keywords"
+                    currentValue={formData.meta_keywords}
+                    context={formData}
+                    onInsert={(value) => setFormData({ ...formData, meta_keywords: value })}
+                    suggestions={[
+                      'Suggest relevant SEO keywords',
+                      'Generate keyword variations',
+                    ]}
+                  />
+                </div>
                 <input
                   id="meta_keywords"
                   type="text"
@@ -441,17 +492,41 @@ export default function EditBlogPage() {
           content: formData.content,
         }}
         onInsertToField={(fieldName, value) => {
-          // Handle different field insertions
-          if (fieldName === 'content') {
-            // For content, append to existing content
-            setFormData({ ...formData, content: formData.content + '\n\n' + value });
-          } else if (fieldName === 'meta_description' || fieldName === 'meta_keywords') {
-            // For meta fields, replace the value
-            setFormData({ ...formData, [fieldName]: value });
-          } else {
-            // For title and excerpt, replace the value
-            setFormData({ ...formData, [fieldName]: value });
-          }
+          console.log('onInsertToField called:', { fieldName, value: value?.substring(0, 100) });
+
+          // Use functional setState to avoid stale state issues
+          setFormData((prev) => {
+            let newData;
+
+            if (fieldName === 'content') {
+              // Convert plain text to HTML paragraphs for TipTap
+              const textToHtml = (text: string) => {
+                return text
+                  .split('\n\n')
+                  .map(para => para.trim())
+                  .filter(para => para.length > 0)
+                  .map(para => `<p>${para.replace(/\n/g, '<br>')}</p>`)
+                  .join('');
+              };
+
+              const htmlValue = textToHtml(value);
+              const currentContent = prev.content || '';
+
+              // Append HTML content
+              newData = {
+                ...prev,
+                content: currentContent + htmlValue,
+              };
+            } else {
+              // For other fields, replace the value
+              newData = { ...prev, [fieldName]: value };
+            }
+
+            console.log('New formData:', { ...newData, content: newData.content?.substring(0, 100) });
+            return newData;
+          });
+
+          toast.success(`Content inserted into ${fieldName}!`);
         }}
       />
     </div>

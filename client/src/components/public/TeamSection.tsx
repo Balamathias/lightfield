@@ -12,7 +12,7 @@ function TeamMemberSkeleton() {
     <div className="group relative">
       <div className="relative bg-card border border-border/60 rounded-2xl overflow-hidden animate-pulse">
         {/* Image Skeleton */}
-        <div className="relative aspect-[3/4] bg-muted" />
+        <div className="relative aspect-[3/3] bg-muted" />
 
         {/* Content Skeleton */}
         <div className="p-8 space-y-4">

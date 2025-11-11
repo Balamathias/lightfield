@@ -292,3 +292,40 @@ export interface TestimonialFilters {
   is_featured?: boolean;
   is_active?: boolean;
 }
+
+// Solo AI Analytics types
+export interface SoloAnalyticsOverview {
+  total_chats: number;
+  total_sessions: number;
+  avg_response_time_ms: number;
+  recent_chats_30d: number;
+  engagement_rate: number;
+}
+
+export interface PopularQuestion {
+  user_message: string;
+  count: number;
+}
+
+export interface ContextUsage {
+  blog_posts_used: number;
+  associates_used: number;
+  services_used: number;
+}
+
+export interface SoloAnalytics {
+  overview: SoloAnalyticsOverview;
+  popular_questions: PopularQuestion[];
+  context_usage: ContextUsage;
+}
+
+export interface TrendDataPoint {
+  date: string;
+  chats: number;
+  avg_response_time: number;
+}
+
+export interface SoloAnalyticsTrends {
+  trends: TrendDataPoint[];
+  period_days: number;
+}

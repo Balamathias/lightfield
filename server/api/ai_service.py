@@ -61,55 +61,214 @@ class GeminiAIService:
 
     def blog_assistant(self, prompt, context=None):
         """
-        AI assistant for blog writing
+        Enhanced AI assistant for blog writing with specialized capabilities
 
         Args:
             prompt: User's request/question
             context: Optional context (current blog content, title, etc.)
 
         Returns:
-            str: AI-generated suggestion
+            str: AI-generated suggestion with markdown formatting
         """
-        system_message = """You are a direct content writer. Your name is Solo; you help create and improve blog content for LightField Legal Practitioners, a law firm specializing in technology, AI, and blockchain law."""
+        # Determine the type of request for specialized handling
+        prompt_lower = prompt.lower()
 
-        # Add few-shot examples directly in the conversation
+        # Build context intelligently
+        has_title = context and context.get('title')
+        has_content = context and context.get('content') and len(context.get('content', '')) > 50
+        has_excerpt = context and context.get('excerpt')
+
+        # Specialized system messages based on request type
+        if any(word in prompt_lower for word in ['title', 'headline', 'heading']):
+            system_message = """You are an expert SEO copywriter for LightField Legal Practitioners, a law firm specializing in AI and blockchain law.
+
+CRITICAL INSTRUCTIONS:
+- Output ONLY the optimized title, nothing else
+- No explanations, no options, no questions
+- Be decisive and direct
+- Make it compelling and SEO-friendly
+- 50-70 characters optimal
+- Professional legal tone for emerging tech topics
+
+If you have content context, base the title on that. If not, create a compelling title about legal tech topics."""
+
+        elif any(word in prompt_lower for word in ['excerpt', 'summary']):
+            system_message = """You are a content strategist for LightField Legal Practitioners, a tech law firm.
+
+CRITICAL INSTRUCTIONS:
+- Output ONLY the excerpt, nothing else
+- No questions, no options, no meta-commentary
+- Be decisive - just write it
+- 60-120 words optimal
+- Hook the reader immediately with value
+- Professional yet engaging tone
+- End with intrigue or subtle call-to-action
+
+If you have title/content context, summarize it. If not, create an excerpt about a relevant legal tech topic."""
+
+        elif any(word in prompt_lower for word in ['meta description', 'seo description']):
+            system_message = """You are an SEO specialist for a premium tech law firm.
+
+CRITICAL INSTRUCTIONS:
+- Output ONLY the meta description, nothing else
+- Exactly 150-155 characters
+- No questions, no explanations
+- Include relevant keywords naturally
+- Make it compelling and action-oriented
+- Professional tone
+
+If you have context, use it. If not, create one about tech law services."""
+
+        elif any(word in prompt_lower for word in ['keyword', 'seo keyword']):
+            system_message = """You are an SEO keyword specialist for legal tech content.
+
+CRITICAL INSTRUCTIONS:
+- Output ONLY comma-separated keywords
+- No explanations, no categories, no formatting except commas
+- 8-12 keywords total
+- Mix of short-tail and long-tail keywords
+- Include: legal terms, tech terms, industry terms
+- Relevant to blockchain, AI, or tech law
+
+Example format: blockchain law, smart contract regulation, cryptocurrency compliance, AI legal frameworks"""
+
+        elif any(word in prompt_lower for word in ['introduction', 'intro', 'opening']):
+            system_message = """You are a legal content writer for LightField Legal Practitioners.
+
+CRITICAL INSTRUCTIONS:
+- Output ONLY the introduction paragraphs
+- No meta-commentary, just write it
+- 2-3 compelling paragraphs
+- Hook with relevant question, statistic, or insight
+- Preview what article covers
+- Professional but engaging
+- Use **bold** for key terms
+- If you have context, reference it. If not, write about a relevant tech law topic."""
+
+        elif any(word in prompt_lower for word in ['outline', 'structure', 'key points', 'points to cover']):
+            system_message = """You are a content strategist for legal blog posts.
+
+CRITICAL INSTRUCTIONS:
+- Output ONLY the structured outline using markdown
+- No questions, no options
+- Format: ## Main Section, ### Subsection, - bullet points
+- 4-6 main sections
+- Professional legal content structure
+- Each section should have 2-4 key points
+
+If you have context, create outline based on it. If not, create outline for a tech law topic."""
+
+        else:
+            # General blog writing assistant
+            system_message = """You are Solo, an expert legal content writer for LightField Legal Practitioners, a law firm specializing in AI, blockchain, and emerging technology law.
+
+CRITICAL INSTRUCTIONS:
+- Output ONLY the requested content
+- NO meta-commentary, NO questions, NO "here's a suggestion"
+- Be decisive and direct
+- Professional, authoritative yet accessible
+- Use markdown formatting (**bold**, lists, etc.)
+- Focus on practical insights and real-world implications
+
+If you have context, use it intelligently. If not, generate high-quality content about tech law topics."""
+
         messages = [
             {"role": "system", "content": system_message},
         ]
 
+        # Add context if provided - be more specific about what's available
         if context:
-            messages.append({
-                "role": "system",
-                "content": f"Blog context: {context}"
-            })
+            context_parts = []
 
-        # Add few-shot examples
+            if has_title:
+                context_parts.append(f"Blog Title: {context['title']}")
+
+            if has_excerpt:
+                context_parts.append(f"Excerpt: {context['excerpt']}")
+
+            if has_content:
+                # Limit content to avoid token limits
+                content_preview = context['content'][:1500]
+                context_parts.append(f"Content: {content_preview}")
+
+            if context_parts:
+                context_message = "USE THIS CONTEXT TO GENERATE YOUR RESPONSE:\n\n" + "\n\n".join(context_parts)
+                context_message += "\n\nIMPORTANT: Generate content directly based on this context. Do NOT ask for more information."
+
+                messages.append({
+                    "role": "system",
+                    "content": context_message
+                })
+            else:
+                # No meaningful context provided
+                messages.append({
+                    "role": "system",
+                    "content": "No context provided. Generate high-quality content about AI law, blockchain law, or technology law topics. Be specific and professional."
+                })
+
+        # Add few-shot example to reinforce direct responses
         messages.extend([
-            {"role": "user", "content": "Improve title for SEO"},
-            {"role": "assistant", "content": "Blockchain Revolution: How Web3 Transforms Aviation"},
-            {"role": "user", "content": "Suggest keywords"},
-            {"role": "assistant", "content": "blockchain aviation, web3 technology, decentralized booking, smart contracts, tokenized assets, flight data security"},
-            {"role": "user", "content": "Generate meta description"},
-            {"role": "assistant", "content": "Explore how blockchain and Web3 are revolutionizing aviation through enhanced security, transparency, and decentralized operations."},
+            {"role": "user", "content": "Generate compelling excerpt"},
+            {"role": "assistant", "content": "Discover how artificial intelligence is reshaping legal compliance in 2025. From automated contract review to predictive risk analysis, AI technologies are revolutionizing how law firms serve clients. Learn the key implications, regulatory challenges, and opportunities that every business leader needs to understand in this rapidly evolving landscape."},
         ])
 
+        # Add user prompt
         messages.append({"role": "user", "content": prompt})
 
-        response = self.generate_completion(messages, temperature=0.3, max_tokens=400)
+        # Generate with appropriate temperature based on task
+        if any(word in prompt_lower for word in ['creative', 'headline', 'title']):
+            temperature = 0.7  # Balanced creativity for titles
+        elif any(word in prompt_lower for word in ['seo', 'keyword', 'meta']):
+            temperature = 0.4  # More focused for SEO
+        else:
+            temperature = 0.6  # Conservative for general content
 
-        # Post-process to clean up common issues
-        import re
+        response = self.generate_completion(messages, temperature=temperature, max_tokens=500)
 
-        # Remove common meta-commentary patterns
-        response = re.sub(r'^(Here are?|I suggest|You could|Consider|Option \d+).*?:', '', response, flags=re.IGNORECASE)
-        response = re.sub(r'\(.*?\)', '', response)  # Remove parentheses
-        response = re.sub(r'\*\*', '', response)  # Remove bold markdown
-        response = re.sub(r'\*', '', response)  # Remove asterisks
-        response = re.sub(r'^-\s+', '', response, flags=re.MULTILINE)  # Remove bullet points
+        # Aggressive post-processing to remove ALL meta-commentary
+        # Remove questions
+        response = re.sub(r'^.*\?.*$', '', response, flags=re.MULTILINE)
 
-        # Clean up extra whitespace
+        # Remove lines with "I need", "Tell me", "Give me", "Let me know", etc.
+        response = re.sub(r'^.*?(I need|Tell me|Give me|Let me know|Please provide|Could you|Can you|Would you).*$', '', response, flags=re.MULTILINE | re.IGNORECASE)
+
+        # Remove option headers
+        response = re.sub(r'\*\*Option \d+.*?\*\*', '', response, flags=re.IGNORECASE)
+        response = re.sub(r'^Option \d+.*?:', '', response, flags=re.MULTILINE | re.IGNORECASE)
+
+        # Remove "Here's", "Here are" at start
+        response = re.sub(r'^(Here\'s?|Here are?|I suggest|You could|Consider|Meanwhile|In the meantime).*?:\s*', '', response, flags=re.IGNORECASE | re.MULTILINE)
+
+        # Remove lines that are instructions or questions
+        response = re.sub(r'^.*?(once I have|give me the|tell me about|what is the).*$', '', response, flags=re.MULTILINE | re.IGNORECASE)
+
+        # Remove blockquote markers for inline content
+        if any(word in prompt_lower for word in ['title', 'keyword', 'meta']):
+            response = re.sub(r'^>\s*', '', response, flags=re.MULTILINE)
+
+        # Remove asterisks for titles and keywords (keep for content)
+        if any(word in prompt_lower for word in ['title', 'keyword', 'meta description']):
+            response = re.sub(r'\*', '', response)
+
+        # Clean up excessive whitespace
         response = re.sub(r'\n{3,}', '\n\n', response)
+
+        # Remove empty lines at start and end
+        lines = [line for line in response.split('\n') if line.strip()]
+        response = '\n'.join(lines)
+
         response = response.strip()
+
+        # If response is still empty or has questions, provide default
+        if not response or '?' in response[:50]:
+            if 'title' in prompt_lower:
+                response = "Navigating AI and Blockchain Law: Expert Legal Guidance for Emerging Technologies"
+            elif 'excerpt' in prompt_lower:
+                response = "Explore the intersection of law and cutting-edge technology. LightField Legal Practitioners provides specialized counsel in AI regulation, blockchain compliance, and digital asset law. Discover how expert legal guidance can protect your innovation."
+            elif 'keyword' in prompt_lower:
+                response = "AI law, blockchain legal services, cryptocurrency regulation, smart contract law, technology compliance, digital asset law, Web3 legal counsel, emerging tech law"
+            elif 'meta' in prompt_lower:
+                response = "Expert legal counsel for AI, blockchain, and emerging technologies. LightField Legal Practitioners delivers specialized guidance for tech innovation."
 
         return response
 

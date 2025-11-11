@@ -196,7 +196,7 @@ export default function HeroSection() {
               <Button
                 asChild
                 size="lg"
-                className="bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold text-base px-8 py-6 shadow-lg shadow-[var(--brand-primary)]/20 hover:shadow-xl hover:shadow-[var(--brand-primary)]/30 transition-all duration-300 group"
+                className="bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 cursor-pointer text-white font-semibold text-base px-8 py-6 shadow-lg shadow-[var(--brand-primary)]/20 hover:shadow-xl hover:shadow-[var(--brand-primary)]/30 transition-all duration-300 group"
               >
                 <Link href="/services">
                   <span>Our Services</span>
@@ -207,7 +207,7 @@ export default function HeroSection() {
                 asChild
                 size="lg"
                 variant="outline"
-                className="border-2 border-foreground/20 hover:border-[var(--brand-primary)]/50 font-semibold text-base px-8 py-6 hover:bg-[var(--brand-primary)]/5 transition-all duration-300"
+                className="border-2 border-foreground/20 hover:border-[var(--brand-primary)]/50 cursor-pointer font-semibold text-base px-8 py-6 hover:bg-[var(--brand-primary)]/5 transition-all duration-300"
               >
                 <Link href="/contact">Schedule Consultation</Link>
               </Button>

@@ -70,7 +70,7 @@ export default function AdminBlogsPage() {
   // Sync local blogs with server data
   useEffect(() => {
     if (blogs) {
-      setLocalBlogs(blogs);
+      setLocalBlogs(blogs.results);
     }
   }, [blogs]);
 
@@ -134,7 +134,7 @@ export default function AdminBlogsPage() {
   };
 
   // Filter blogs by status
-  const filteredBlogs = (searchQuery || selectedCategory || statusFilter !== 'all' ? blogs : localBlogs)?.filter((blog) => {
+  const filteredBlogs = (searchQuery || selectedCategory || statusFilter !== 'all' ? blogs?.results : localBlogs)?.filter((blog) => {
     if (statusFilter === 'published') return blog.is_published;
     if (statusFilter === 'draft') return !blog.is_published;
     return true;

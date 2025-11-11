@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.db.models import Q, Count, Sum
@@ -268,14 +269,33 @@ def blogs_list_create(request):
         # Ordering
         queryset = queryset.order_by(ordering).distinct()
 
-        serializer = BlogPostListSerializer(queryset, many=True)
-        return Response(serializer.data)
+        # Pagination
+        paginator = PageNumberPagination()
+        paginator.page_size = request.query_params.get('page_size', 20)
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+
+        serializer = BlogPostListSerializer(paginated_queryset, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     elif request.method == 'POST':
         serializer = BlogPostWriteSerializer(data=request.data)
         if serializer.is_valid():
             # Author will be set by serializer to default "LightField LP" if not provided
-            serializer.save()
+            blog_post = serializer.save()
+
+            # Auto-generate AI overview if not provided and content exists
+            if not blog_post.ai_overview and blog_post.content:
+                try:
+                    ai_service = get_ai_service()
+                    blog_post.ai_overview = ai_service.generate_overview(
+                        blog_post.title,
+                        blog_post.content
+                    )
+                    blog_post.save(update_fields=['ai_overview'])
+                except Exception as e:
+                    # Log error but don't fail the request
+                    print(f"Failed to generate AI overview: {str(e)}")
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         # Format errors for better readability
@@ -285,7 +305,7 @@ def blogs_list_create(request):
                 formatted_errors[field] = str(errors[0])
             else:
                 formatted_errors[field] = str(errors)
-        
+
         return Response(formatted_errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -317,9 +337,30 @@ def blog_detail(request, slug):
 
     elif request.method in ['PUT', 'PATCH']:
         partial = request.method == 'PATCH'
+        old_content = blog.content
         serializer = BlogPostWriteSerializer(blog, data=request.data, partial=partial)
         if serializer.is_valid():
-            serializer.save()
+            updated_blog = serializer.save()
+
+            # Regenerate AI overview if:
+            # 1. Content has changed significantly, OR
+            # 2. Client explicitly requests regeneration via 'regenerate_ai_overview' param, OR
+            # 3. No AI overview exists yet
+            regenerate = request.data.get('regenerate_ai_overview', False)
+            content_changed = old_content != updated_blog.content
+
+            if (not updated_blog.ai_overview or regenerate or (content_changed and len(updated_blog.content) > 100)):
+                try:
+                    ai_service = get_ai_service()
+                    updated_blog.ai_overview = ai_service.generate_overview(
+                        updated_blog.title,
+                        updated_blog.content
+                    )
+                    updated_blog.save(update_fields=['ai_overview'])
+                except Exception as e:
+                    # Log error but don't fail the request
+                    print(f"Failed to regenerate AI overview: {str(e)}")
+
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -795,22 +836,8 @@ def blog_ai_assistant(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    # Get context if provided
-    context_data = request.data.get('context', {})
-    context = None
-
-    if context_data:
-        context_parts = []
-        if context_data.get('title'):
-            context_parts.append(f"Title: {context_data['title']}")
-        if context_data.get('excerpt'):
-            context_parts.append(f"Excerpt: {context_data['excerpt']}")
-        if context_data.get('content'):
-            # Limit content length
-            content = context_data['content'][:2000]
-            context_parts.append(f"Content: {content}")
-
-        context = "\n\n".join(context_parts) if context_parts else None
+    # Get context if provided (pass as dict, not string)
+    context = request.data.get('context', {})
 
     try:
         ai_service = get_ai_service()
@@ -922,3 +949,105 @@ def upload_image(request):
             {'error': str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+
+# ==================== Solo AI Analytics Views ====================
+
+@api_view(['GET'])
+@permission_classes([IsStaffOrSuperUser])
+def solo_analytics(request):
+    """
+    Get comprehensive Solo AI chat analytics (admin only)
+    Returns: Overview stats and breakdowns
+    """
+    from .models import ChatAnalytics, AIConversation
+    from django.db.models import Avg, Count
+    from datetime import timedelta
+
+    # Overall stats
+    total_chats = ChatAnalytics.objects.count()
+    total_sessions = AIConversation.objects.count()
+    avg_response_time = ChatAnalytics.objects.aggregate(avg_time=Avg('response_time_ms'))['avg_time'] or 0
+
+    # Get recent data (last 30 days)
+    thirty_days_ago = timezone.now() - timedelta(days=30)
+    recent_chats = ChatAnalytics.objects.filter(created_at__gte=thirty_days_ago)
+
+    # Popular topics/questions
+    popular_questions = ChatAnalytics.objects.values('user_message').annotate(
+        count=Count('id')
+    ).order_by('-count')[:10]
+
+    # Context usage breakdown
+    context_stats = {
+        'blog_posts_used': 0,
+        'associates_used': 0,
+        'services_used': 0,
+    }
+
+    for chat in ChatAnalytics.objects.all():
+        if chat.context_used:
+            if chat.context_used.get('blog_posts'):
+                context_stats['blog_posts_used'] += len(chat.context_used['blog_posts'])
+            if chat.context_used.get('associates'):
+                context_stats['associates_used'] += len(chat.context_used['associates'])
+            if chat.context_used.get('services'):
+                context_stats['services_used'] += len(chat.context_used['services'])
+
+    # Engagement stats
+    total_with_actions = ChatAnalytics.objects.filter(user_clicked_action=True).count()
+    engagement_rate = (total_with_actions / total_chats * 100) if total_chats > 0 else 0
+
+    return Response({
+        'overview': {
+            'total_chats': total_chats,
+            'total_sessions': total_sessions,
+            'avg_response_time_ms': round(avg_response_time, 2),
+            'recent_chats_30d': recent_chats.count(),
+            'engagement_rate': round(engagement_rate, 2),
+        },
+        'popular_questions': list(popular_questions),
+        'context_usage': context_stats,
+    })
+
+
+@api_view(['GET'])
+@permission_classes([IsStaffOrSuperUser])
+def solo_analytics_trends(request):
+    """
+    Get Solo AI usage trends over time (admin only)
+    Returns: Daily chat volumes, response times, etc.
+    """
+    from .models import ChatAnalytics
+    from django.db.models import Count, Avg
+    from django.db.models.functions import TruncDate
+    from datetime import timedelta
+
+    # Get date range from query params (default: last 30 days)
+    days = int(request.GET.get('days', 30))
+    start_date = timezone.now() - timedelta(days=days)
+
+    # Daily chat volumes
+    daily_volumes = ChatAnalytics.objects.filter(
+        created_at__gte=start_date
+    ).annotate(
+        date=TruncDate('created_at')
+    ).values('date').annotate(
+        count=Count('id'),
+        avg_response_time=Avg('response_time_ms')
+    ).order_by('date')
+
+    # Format for frontend
+    trends_data = [
+        {
+            'date': item['date'].isoformat(),
+            'chats': item['count'],
+            'avg_response_time': round(item['avg_response_time'], 2) if item['avg_response_time'] else 0,
+        }
+        for item in daily_volumes
+    ]
+
+    return Response({
+        'trends': trends_data,
+        'period_days': days,
+    })
