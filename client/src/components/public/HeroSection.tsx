@@ -196,7 +196,7 @@ export default function HeroSection() {
               <Button
                 asChild
                 size="lg"
-                className="bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 cursor-pointer text-white font-semibold text-base px-8 py-6 shadow-lg shadow-[var(--brand-primary)]/20 hover:shadow-xl hover:shadow-[var(--brand-primary)]/30 transition-all duration-300 group"
+                className="bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 cursor-pointer text-white font-semibold text-base px-8 py-6 shadow-lg shadow-[var(--brand-primary)]/20 hover:shadow-xl hover:shadow-[var(--brand-primary)]/30 transition-all duration-300 group z-10"
               >
                 <Link href="/services">
                   <span>Our Services</span>
@@ -207,7 +207,7 @@ export default function HeroSection() {
                 asChild
                 size="lg"
                 variant="outline"
-                className="border-2 border-foreground/20 hover:border-[var(--brand-primary)]/50 cursor-pointer font-semibold text-base px-8 py-6 hover:bg-[var(--brand-primary)]/5 transition-all duration-300"
+                className="border-2 border-foreground/20 hover:border-[var(--brand-primary)]/50 cursor-pointer font-semibold text-base px-8 py-6 hover:bg-[var(--brand-primary)]/5 transition-all duration-300 z-10"
               >
                 <Link href="/contact">Schedule Consultation</Link>
               </Button>
@@ -288,14 +288,14 @@ export default function HeroSection() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.4 }}
                 transition={{ duration: 1.5, delay: 0.6 }}
-                className="absolute top-0 right-0 w-[450px] h-[350px] bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] rounded-2xl blur-2xl -z-10"
+                className="absolute top-0 right-0 w-[450px] h-[350px] bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] rounded-2xl blur-2xl"
               />
 
               {/* Overlapping Image - Two Lawyers (Foreground) */}
               <motion.img
                 src="/people/two-lawyers.png"
                 alt="Professional Legal Team"
-                initial={{ opacity: 0, scale: 0.9, x: -30, y: 30 }}
+                initial={{ opacity: 0.1, scale: 0.9, x: -30, y: 30 }}
                 animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
                 transition={{ duration: 1.2, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 className="absolute bottom-0 left-0 w-[380px] h-[420px] object-cover rounded-2xl shadow-2xl border-4 border-background"
@@ -306,7 +306,7 @@ export default function HeroSection() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.3 }}
                 transition={{ duration: 1.5, delay: 0.9 }}
-                className="absolute bottom-0 left-0 w-[380px] h-[420px] bg-gradient-to-tl from-[var(--brand-primary)] to-[var(--brand-secondary)] rounded-2xl blur-2xl -z-10"
+                className="absolute bottom-0 left-0 w-[380px] h-[420px] bg-gradient-to-tl from-[var(--brand-primary)] to-[var(--brand-secondary)] rounded-2xl blur-2xl"
               />
 
               {/* Floating Stat Badges */}
@@ -368,7 +368,7 @@ export default function HeroSection() {
               </svg>
 
               {/* Decorative Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none" />
+              {/* <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none" /> */}
             </div>
           </motion.div>
         </div>
