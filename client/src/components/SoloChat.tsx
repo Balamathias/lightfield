@@ -26,7 +26,7 @@ const SUGGESTED_QUESTIONS = [
   },
   {
     icon: UsersIcon,
-    question: "Who are your attorneys?",
+    question: "Who are your team members?",
     category: "Team"
   },
   {

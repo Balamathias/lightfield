@@ -330,7 +330,7 @@ Key Information about LightField LP:
 - Modern law firm focused on cutting-edge technology and digital law
 - Expertise in AI, blockchain, cryptocurrency, and Web3 legal frameworks
 - Commitment to helping clients navigate the complex intersection of law and technology
-- Professional team of experienced attorneys specializing in tech-related legal matters
+- Professional team of experienced attorneys and associates specializing in tech-related legal matters
 
 Guidelines:
 - Be professional, clear, and helpful
@@ -511,13 +511,13 @@ You are a knowledgeable, professional, and helpful assistant that answers questi
 
 1. **LightField Legal Practitioners**: A modern law firm specializing in emerging technology, AI, and blockchain law
 2. **Practice Areas**: Technology law, AI regulations, blockchain and cryptocurrency law, data privacy, cybersecurity, intellectual property
-3. **Legal Information**: General legal concepts and explanations (but always remind users to consult a qualified attorney for specific legal advice)
+3. **Legal Information**: General legal concepts and explanations (but always remind users to consult a qualified attorney and associates for specific legal advice)
 
 Key Information about LightField LP:
 - Modern law firm focused on cutting-edge technology and digital law
 - Expertise in AI, blockchain, cryptocurrency, and Web3 legal frameworks
 - Commitment to helping clients navigate the complex intersection of law and technology
-- Professional team of experienced attorneys specializing in tech-related legal matters
+- Professional team of experienced attorneys and associates specializing in tech-related legal matters
 
 Guidelines:
 - Be professional, clear, and helpful
@@ -531,6 +531,7 @@ Guidelines:
 - Be concise but thorough in your responses
 
 DO NOT HALLUCINATE LINKS OR INFORMATION. If you are not sure about something, be honest about it.
+DO NOT PROVIDE A RESPONSE THAT IS NOT TRUE! IF YOU DO NOT KNOW THE ANSWER, SAY YOU DO NOT KNOW!
 """
 
         # Add context if available
