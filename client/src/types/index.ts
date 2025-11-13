@@ -276,6 +276,8 @@ export interface BlogFilters {
   category?: string;
   is_featured?: boolean;
   ordering?: string;
+  page?: number;
+  page_size?: number;
 }
 
 export interface AssociateFilters {

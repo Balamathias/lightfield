@@ -404,7 +404,7 @@ export default function CategoriesPage() {
                   </label>
                   <textarea
                     id="description"
-                    value={formData.description}
+                    value={formData.description!}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     rows={4}
                     className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent transition resize-none"

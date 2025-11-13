@@ -69,7 +69,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
       const { from, to } = editor.state.selection;
-      editor.commands.setContent(content, false);
+      editor.commands.setContent(content, {});
 
       // Restore cursor position if possible
       if (from === to) {
