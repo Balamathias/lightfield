@@ -56,7 +56,8 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(52.055% 0.1932 32.158);
+  /* --primary: oklch(52.055% 0.1932 32.158); */
+  --primary: oklch(69.186% 0.15865 61.623);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -83,13 +84,14 @@
   --sidebar-ring: oklch(0.708 0 0);
 
   /* Custom */
-  --brand-primary: oklch(52.055% 0.1932 32.158);
+  /* --brand-primary: oklch(52.055% 0.1932 32.158); */
   /* Demo brand-primary options — uncomment one to try */
-  /* --brand-primary: oklch(58% 0.22 254);  Blue */
-  /* --brand-primary: oklch(58% 0.18 145);  Green */
-  /* --brand-primary: oklch(60% 0.22 300);  Purple */
-  /* --brand-primary: oklch(65% 0.20 350);  Pink */
-  /* --brand-primary: oklch(60% 0.18 195);  Teal */
+  /* --brand-primary: oklch(58% 0.22 254); */
+  /* --brand-primary: oklch(58% 0.18 145); */
+  /* --brand-primary: oklch(60% 0.22 300);  */
+  /* --brand-primary: oklch(65% 0.20 350); */
+  /* --brand-primary: oklch(60% 0.18 195);  */
+  --brand-primary: oklch(69.186% 0.15865 61.623);
 
 
 
@@ -103,7 +105,8 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(64.866% 0.23847 32.21);
+  /* --primary: oklch(64.866% 0.23847 32.21); */
+  --primary: oklch(69.186% 0.15865 61.623);
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
@@ -132,6 +135,8 @@
   /* Custom */
   --brand-primary: oklch(64.866% 0.23847 32.21);
   --brand-secondary: oklch(83.447% 0.09259 33.013);
+
+  --brand-primary: oklch(69.186% 0.15865 61.623);
 }
 
 @layer base {
