@@ -275,7 +275,7 @@ export default function HeroSection() {
 
               {/* Main Image - Nigerian Justice (Background) */}
               <motion.img
-                src="/people/nig-key.png"
+                src="/people/eth.jpg"
                 alt="Nigerian Legal Justice"
                 initial={{ opacity: 0, scale: 1.1, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
