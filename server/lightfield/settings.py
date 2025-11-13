@@ -21,7 +21,7 @@ from typing import Any, cast
 
 load_dotenv()
 
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
 if DEBUG:
     load_dotenv('.env.local')
