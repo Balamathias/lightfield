@@ -47,7 +47,12 @@ export const blogPostSchema = z.object({
   is_published: z.boolean().optional(),
   is_featured: z.boolean().optional(),
   order_priority: z.number().int().min(0).optional(),
-  publish_date: z.string().datetime().optional().or(z.literal('')),
+  publish_date: z.union([
+    z.string().datetime(),
+    z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/),
+    z.literal(''),
+    z.null()
+  ]).optional().transform(val => val === null ? '' : val),
 });
 
 export type BlogPostFormValues = z.infer<typeof blogPostSchema>;

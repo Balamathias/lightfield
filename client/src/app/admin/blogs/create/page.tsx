@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCreateBlog } from '@/hooks/useBlogs';
 import { useCategories } from '@/hooks/useCategories';
@@ -40,11 +40,11 @@ export default function CreateBlogPage() {
     e.preventDefault();
     setErrors({});
 
-    // Prepare data - publish_date is already in ISO format from DateTimePicker
+    // Prepare data - handle publish_date format
     const submitData = {
       ...formData,
       category_ids: selectedCategories,
-      publish_date: formData.publish_date || '',
+      publish_date: formData.publish_date || null,
     };
 
     // Validate with Zod
@@ -59,11 +59,12 @@ export default function CreateBlogPage() {
         }
       });
       setErrors(fieldErrors);
-      
-      // Show toast for validation errors
-      const firstError = Object.values(fieldErrors)[0];
+
+      // Show toast for validation errors with more detail
+      const firstError = validation.error.issues[0];
+      console.error('Validation errors:', validation.error.issues);
       toast.error('Validation Error', {
-        description: firstError || 'Please check the form for errors',
+        description: firstError ? `${firstError.path.join('.')}: ${firstError.message}` : 'Please check the form for errors',
       });
       return;
     }

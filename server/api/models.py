@@ -91,7 +91,7 @@ class BlogPost(models.Model):
     Model for blog posts
     """
     title = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True, blank=True)
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
     excerpt = models.TextField(max_length=500, help_text="Short summary of the blog post")
     content = models.TextField()
 

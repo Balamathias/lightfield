@@ -163,6 +163,11 @@ class BlogPostWriteSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True
     )
+    publish_date = serializers.DateTimeField(
+        required=False,
+        allow_null=True,
+        input_formats=['iso-8601', '%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ']
+    )
 
     class Meta:
         model = BlogPost
