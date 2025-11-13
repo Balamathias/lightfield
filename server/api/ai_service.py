@@ -528,7 +528,10 @@ Guidelines:
 - For specific legal advice, always recommend contacting the firm directly
 - Use markdown formatting: **bold** for emphasis, bullet points for lists
 - Stay focused on legal topics related to technology, AI, and blockchain
-- Be concise but thorough in your responses"""
+- Be concise but thorough in your responses
+
+DO NOT HALLUCINATE LINKS OR INFORMATION. If you are not sure about something, be honest about it.
+"""
 
         # Add context if available
         if context_text:
