@@ -14,14 +14,22 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 from datetime import timedelta
+import dj_database_url
+from typing import Any, cast
 
-load_dotenv('.env.local')
+
+
+load_dotenv()
+
+DEBUG = True
+
+if DEBUG:
+    load_dotenv('.env.local')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-e)!hjphkmmm1dtx2fzb6vs@wyd5g9dg!n#o@#lggo&@#2zncng'
 
-DEBUG = True
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'your-default-secret-key')
 
 ALLOWED_HOSTS = []
 
@@ -93,6 +101,11 @@ DATABASES = {
     }
 }
 
+db_config = dj_database_url.config(default=os.getenv('DB_URL'))
+
+if db_config:
+    DATABASES['default'] = cast(dict[str, Any], dict(db_config))
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -136,6 +149,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://localhost:3001",
     "http://127.0.0.1:3001",
+    "https://lightfield.vercel.app",
+    "https://lightfieldlp.vercel.app",
+    "https://lightfieldlp.com",
 ]
 CORS_ALLOW_CREDENTIALS = True
 
