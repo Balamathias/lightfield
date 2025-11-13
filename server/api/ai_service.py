@@ -32,7 +32,7 @@ class GeminiAIService:
         )
 
         # Default model
-        self.model = "gemini-2.0-flash"
+        self.model = "gemini-2.5-flash"
 
     def generate_completion(self, messages, temperature=0.7, max_tokens=2000):
         """
@@ -518,6 +518,7 @@ Key Information about LightField LP:
 - Expertise in AI, blockchain, cryptocurrency, and Web3 legal frameworks
 - Commitment to helping clients navigate the complex intersection of law and technology
 - Professional team of experienced attorneys and associates specializing in tech-related legal matters
+- LightField LP is accessible at https://lightfieldlegal.com
 
 Guidelines:
 - Be professional, clear, and helpful
@@ -530,13 +531,11 @@ Guidelines:
 - Stay focused on legal topics related to technology, AI, and blockchain
 - Be concise but thorough in your responses
 
-DO NOT HALLUCINATE LINKS OR INFORMATION. If you are not sure about something, be honest about it.
-DO NOT PROVIDE A RESPONSE THAT IS NOT TRUE! IF YOU DO NOT KNOW THE ANSWER, SAY YOU DO NOT KNOW!
 """
 
         # Add context if available
         if context_text:
-            system_message += f"\n\n{context_text}\n\nIMPORTANT: Reference the above information when relevant to the user's question."
+            system_message += f"\n\n{context_text}\n\n**IMPORTANT**: Reference the above information when relevant to the user's question."
 
         messages = [
             {"role": "system", "content": system_message}
