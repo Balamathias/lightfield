@@ -20,6 +20,14 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 const statusConfig = {
   unread: {
@@ -321,65 +329,90 @@ export default function ContactsPage() {
               <p className="mt-4 text-muted-foreground font-medium">Loading contacts...</p>
             </div>
           ) : contacts && contacts.length > 0 ? (
-            <div className="p-6 space-y-2">
-              {contacts.map((contact, index) => {
-                const StatusIcon = statusConfig[contact.status].icon;
-                return (
-                  <motion.div
-                    key={contact.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    onClick={() => openContactModal(contact)}
-                    className="group relative overflow-hidden bg-card border border-border/50 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-200 p-5 cursor-pointer"
-                  >
-                    <div className="flex items-start gap-4">
-                      {/* Status Icon */}
-                      <div
-                        className={`p-2.5 rounded-xl border ${statusConfig[contact.status].color} flex-shrink-0`}
-                      >
-                        <StatusIcon className="w-5 h-5" />
-                      </div>
-
-                      {/* Content */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-4 mb-2">
-                          <div className="flex-1 min-w-0">
-                            <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1">
-                              {contact.subject}
-                            </h3>
-                            <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
-                              <div className="flex items-center gap-1.5">
-                                <User className="w-4 h-4" />
-                                <span>{contact.name}</span>
-                              </div>
-                              <div className="flex items-center gap-1.5">
-                                <Mail className="w-4 h-4" />
-                                <span className="truncate">{contact.email}</span>
-                              </div>
-                              {contact.phone && (
-                                <div className="flex items-center gap-1.5">
-                                  <Phone className="w-4 h-4" />
-                                  <span>{contact.phone}</span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground flex-shrink-0">
-                            <Calendar className="w-3.5 h-3.5" />
-                            <span>{format(new Date(contact.created_at), 'MMM dd, yyyy')}</span>
-                          </div>
+            <>
+              {/* Desktop View */}
+              <div className="hidden lg:block p-6 space-y-2">
+                {contacts.map((contact, index) => {
+                  const StatusIcon = statusConfig[contact.status].icon;
+                  return (
+                    <motion.div
+                      key={contact.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      onClick={() => openContactModal(contact)}
+                      className="group relative overflow-hidden bg-card border border-border/50 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-200 p-5 cursor-pointer"
+                    >
+                      <div className="flex items-start gap-4">
+                        {/* Status Icon */}
+                        <div
+                          className={`p-2.5 rounded-xl border ${statusConfig[contact.status].color} flex-shrink-0`}
+                        >
+                          <StatusIcon className="w-5 h-5" />
                         </div>
 
-                        <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
-                          {contact.message}
-                        </p>
+                        {/* Content */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-4 mb-2">
+                            <div className="flex-1 min-w-0">
+                              <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                                {contact.subject}
+                              </h3>
+                              <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
+                                <div className="flex items-center gap-1.5">
+                                  <User className="w-4 h-4" />
+                                  <span>{contact.name}</span>
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                  <Mail className="w-4 h-4" />
+                                  <span className="truncate">{contact.email}</span>
+                                </div>
+                                {contact.phone && (
+                                  <div className="flex items-center gap-1.5">
+                                    <Phone className="w-4 h-4" />
+                                    <span>{contact.phone}</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground flex-shrink-0">
+                              <Calendar className="w-3.5 h-3.5" />
+                              <span>{format(new Date(contact.created_at), 'MMM dd, yyyy')}</span>
+                            </div>
+                          </div>
+
+                          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                            {contact.message}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+
+              {/* Mobile View with Table */}
+              <div className="lg:hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="hover:bg-transparent border-border/50">
+                      <TableHead className="text-foreground font-semibold">Contact</TableHead>
+                      <TableHead className="text-foreground font-semibold text-center">Status</TableHead>
+                      <TableHead className="text-foreground font-semibold text-right">Date</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {contacts.map((contact) => (
+                      <ContactMobileRow
+                        key={contact.id}
+                        contact={contact}
+                        onClick={() => openContactModal(contact)}
+                      />
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
           ) : (
             <div className="flex flex-col items-center justify-center py-20">
               <div className="p-6 bg-primary/5 rounded-3xl mb-6 ring-1 ring-primary/10">
@@ -534,5 +567,60 @@ export default function ContactsPage() {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+// Mobile Contact Row Component
+interface ContactMobileRowProps {
+  contact: ContactSubmission;
+  onClick: () => void;
+}
+
+function ContactMobileRow({ contact, onClick }: ContactMobileRowProps) {
+  const StatusIcon = statusConfig[contact.status].icon;
+
+  return (
+    <TableRow
+      onClick={onClick}
+      className="hover:bg-muted/50 border-border/50 cursor-pointer"
+    >
+      <TableCell>
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <div className={`p-1.5 rounded-lg border ${statusConfig[contact.status].color}`}>
+              <StatusIcon className="w-3.5 h-3.5" />
+            </div>
+            <div className="min-w-0">
+              <h3 className="font-semibold text-foreground truncate text-sm">
+                {contact.subject}
+              </h3>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <User className="w-3 h-3" />
+                <span className="truncate">{contact.name}</span>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground line-clamp-2">{contact.message}</p>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Mail className="w-3 h-3" />
+            <span className="truncate">{contact.email}</span>
+          </div>
+        </div>
+      </TableCell>
+
+      <TableCell className="text-center">
+        <span
+          className={`inline-flex items-center justify-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold border ${
+            statusConfig[contact.status].color
+          }`}
+        >
+          <StatusIcon className="w-3 h-3" />
+        </span>
+      </TableCell>
+
+      <TableCell className="text-right text-xs text-muted-foreground whitespace-nowrap">
+        {format(new Date(contact.created_at), 'MMM dd')}
+      </TableCell>
+    </TableRow>
   );
 }

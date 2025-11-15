@@ -52,6 +52,14 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 type ModalMode = 'create' | 'edit' | null;
 
@@ -436,30 +444,73 @@ export default function AdminAssociatesPage() {
               <p className="mt-4 text-muted-foreground font-medium">Loading associates...</p>
             </div>
           ) : filteredAssociates && filteredAssociates.length > 0 ? (
-            <div className="p-6">
-              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                <SortableContext
-                  items={filteredAssociates.map((a) => a.id)}
-                  strategy={verticalListSortingStrategy}
-                >
-                  <div className="space-y-2">
-                    {filteredAssociates.map((associate) => (
-                      <AssociateTableRow
-                        key={associate.id}
-                        associate={associate}
-                        isDraggable={isDraggable}
-                        onEdit={() => openEditModal(associate)}
-                        onView={() => router.push(`/team/${associate.slug}`)}
-                        onDelete={() => {
-                          setAssociateToDelete(associate);
-                          setShowDeleteModal(true);
-                        }}
-                      />
-                    ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
-            </div>
+            <>
+              {/* Desktop View */}
+              <div className="hidden lg:block p-6">
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                  <SortableContext
+                    items={filteredAssociates.map((a) => a.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    <div className="space-y-2">
+                      {filteredAssociates.map((associate) => (
+                        <AssociateTableRow
+                          key={associate.id}
+                          associate={associate}
+                          isDraggable={isDraggable}
+                          onEdit={() => openEditModal(associate)}
+                          onView={() => router.push(`/team/${associate.slug}`)}
+                          onDelete={() => {
+                            setAssociateToDelete(associate);
+                            setShowDeleteModal(true);
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
+              </div>
+
+              {/* Mobile View with Table */}
+              <div className="lg:hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="hover:bg-transparent border-border/50">
+                      {isDraggable && (
+                        <TableHead className="w-12 text-foreground font-semibold">
+                          <GripVertical className="w-4 h-4 text-muted-foreground" />
+                        </TableHead>
+                      )}
+                      <TableHead className="text-foreground font-semibold">Associate</TableHead>
+                      <TableHead className="text-foreground font-semibold text-center">Status</TableHead>
+                      <TableHead className="text-foreground font-semibold text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                      <SortableContext
+                        items={filteredAssociates.map((a) => a.id)}
+                        strategy={verticalListSortingStrategy}
+                      >
+                        {filteredAssociates.map((associate) => (
+                          <AssociateMobileRow
+                            key={associate.id}
+                            associate={associate}
+                            isDraggable={isDraggable}
+                            onEdit={() => openEditModal(associate)}
+                            onView={() => router.push(`/team/${associate.slug}`)}
+                            onDelete={() => {
+                              setAssociateToDelete(associate);
+                              setShowDeleteModal(true);
+                            }}
+                          />
+                        ))}
+                      </SortableContext>
+                    </DndContext>
+                  </TableBody>
+                </Table>
+              </div>
+            </>
           ) : (
             <div className="flex flex-col items-center justify-center py-20">
               <div className="p-6 bg-primary/5 rounded-3xl mb-6 ring-1 ring-primary/10">
@@ -879,7 +930,131 @@ export default function AdminAssociatesPage() {
   );
 }
 
-// Sortable Associate Table Row Component
+// Mobile Associate Row Component
+interface AssociateMobileRowProps {
+  associate: AssociateListItem;
+  isDraggable: boolean;
+  onEdit: () => void;
+  onView: () => void;
+  onDelete: () => void;
+}
+
+function AssociateMobileRow({ associate, isDraggable, onEdit, onView, onDelete }: AssociateMobileRowProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: associate.id,
+    disabled: !isDraggable,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <TableRow
+      ref={setNodeRef}
+      style={style}
+      className="hover:bg-muted/50 border-border/50"
+    >
+      {isDraggable && (
+        <TableCell className="w-12">
+          <button
+            {...attributes}
+            {...listeners}
+            className="cursor-grab active:cursor-grabbing p-1"
+          >
+            <GripVertical className="w-4 h-4 text-muted-foreground" />
+          </button>
+        </TableCell>
+      )}
+
+      <TableCell>
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            {associate.image_url ? (
+              <img
+                src={associate.image_url}
+                alt={associate.name}
+                className="w-10 h-10 rounded-lg object-cover"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+                <Users className="w-5 h-5 text-primary/30" />
+              </div>
+            )}
+            <div className="min-w-0">
+              <h3 className="font-semibold text-foreground truncate">{associate.name}</h3>
+              <p className="text-xs text-muted-foreground truncate flex items-center gap-1">
+                <Briefcase className="w-3 h-3" />
+                {associate.title}
+              </p>
+            </div>
+          </div>
+          {associate.expertise && associate.expertise.length > 0 && (
+            <div className="flex items-center gap-1 flex-wrap">
+              {associate.expertise.slice(0, 2).map((exp, idx) => (
+                <span
+                  key={idx}
+                  className="text-xs px-1.5 py-0.5 bg-secondary/50 text-secondary-foreground rounded"
+                >
+                  {exp}
+                </span>
+              ))}
+              {associate.expertise.length > 2 && (
+                <span className="text-xs text-muted-foreground">
+                  +{associate.expertise.length - 2}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+      </TableCell>
+
+      <TableCell className="text-center">
+        {associate.is_active ? (
+          <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-lg text-xs font-semibold">
+            <Eye className="w-3 h-3" />
+            <span className="hidden sm:inline">Active</span>
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1 px-2 py-1 bg-muted text-muted-foreground rounded-lg text-xs font-semibold">
+            <EyeOff className="w-3 h-3" />
+            <span className="hidden sm:inline">Inactive</span>
+          </span>
+        )}
+      </TableCell>
+
+      <TableCell className="text-right">
+        <div className="flex items-center justify-end gap-1">
+          <button
+            onClick={onEdit}
+            className="p-1.5 hover:bg-accent rounded-lg transition-colors"
+            aria-label="Edit"
+          >
+            <Edit className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={onView}
+            className="p-1.5 hover:bg-accent rounded-lg transition-colors"
+            aria-label="View"
+          >
+            <Eye className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={onDelete}
+            className="p-1.5 hover:bg-destructive/10 text-destructive rounded-lg transition-colors"
+            aria-label="Delete"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </TableCell>
+    </TableRow>
+  );
+}
+
+// Desktop Associate Table Row Component
 interface AssociateTableRowProps {
   associate: AssociateListItem;
   isDraggable: boolean;

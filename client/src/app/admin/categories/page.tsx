@@ -38,6 +38,14 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 type ModalMode = 'create' | 'edit' | null;
 
@@ -288,29 +296,71 @@ export default function CategoriesPage() {
               <p className="mt-4 text-muted-foreground font-medium">Loading categories...</p>
             </div>
           ) : filteredCategories && filteredCategories.length > 0 ? (
-            <div className="p-6">
-              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                <SortableContext
-                  items={filteredCategories.map((c) => c.id)}
-                  strategy={verticalListSortingStrategy}
-                >
-                  <div className="space-y-2">
-                    {filteredCategories.map((category) => (
-                      <CategoryTableRow
-                        key={category.id}
-                        category={category}
-                        isDraggable={isDraggable}
-                        onEdit={() => openEditModal(category)}
-                        onDelete={() => {
-                          setCategoryToDelete(category);
-                          setShowDeleteModal(true);
-                        }}
-                      />
-                    ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
-            </div>
+            <>
+              {/* Desktop View */}
+              <div className="hidden lg:block p-6">
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                  <SortableContext
+                    items={filteredCategories.map((c) => c.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    <div className="space-y-2">
+                      {filteredCategories.map((category) => (
+                        <CategoryTableRow
+                          key={category.id}
+                          category={category}
+                          isDraggable={isDraggable}
+                          onEdit={() => openEditModal(category)}
+                          onDelete={() => {
+                            setCategoryToDelete(category);
+                            setShowDeleteModal(true);
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
+              </div>
+
+              {/* Mobile View with Table */}
+              <div className="lg:hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="hover:bg-transparent border-border/50">
+                      {isDraggable && (
+                        <TableHead className="w-12 text-foreground font-semibold">
+                          <GripVertical className="w-4 h-4 text-muted-foreground" />
+                        </TableHead>
+                      )}
+                      <TableHead className="text-foreground font-semibold">Category</TableHead>
+                      <TableHead className="text-foreground font-semibold text-center">Posts</TableHead>
+                      <TableHead className="text-foreground font-semibold text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                      <SortableContext
+                        items={filteredCategories.map((c) => c.id)}
+                        strategy={verticalListSortingStrategy}
+                      >
+                        {filteredCategories.map((category) => (
+                          <CategoryMobileRow
+                            key={category.id}
+                            category={category}
+                            isDraggable={isDraggable}
+                            onEdit={() => openEditModal(category)}
+                            onDelete={() => {
+                              setCategoryToDelete(category);
+                              setShowDeleteModal(true);
+                            }}
+                          />
+                        ))}
+                      </SortableContext>
+                    </DndContext>
+                  </TableBody>
+                </Table>
+              </div>
+            </>
           ) : (
             <div className="flex flex-col items-center justify-center py-20">
               <div className="p-6 bg-primary/5 rounded-3xl mb-6 ring-1 ring-primary/10">
@@ -534,7 +584,83 @@ export default function CategoriesPage() {
   );
 }
 
-// Sortable Category Table Row Component
+// Mobile Category Row Component
+interface CategoryMobileRowProps {
+  category: BlogCategory;
+  isDraggable: boolean;
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
+function CategoryMobileRow({ category, isDraggable, onEdit, onDelete }: CategoryMobileRowProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: category.id,
+    disabled: !isDraggable,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <TableRow
+      ref={setNodeRef}
+      style={style}
+      className="hover:bg-muted/50 border-border/50"
+    >
+      {isDraggable && (
+        <TableCell className="w-12">
+          <button
+            {...attributes}
+            {...listeners}
+            className="cursor-grab active:cursor-grabbing p-1"
+          >
+            <GripVertical className="w-4 h-4 text-muted-foreground" />
+          </button>
+        </TableCell>
+      )}
+
+      <TableCell>
+        <div className="space-y-1">
+          <h3 className="font-semibold text-foreground">{category.name}</h3>
+          {category.description && (
+            <p className="text-xs text-muted-foreground line-clamp-2">{category.description}</p>
+          )}
+          <span className="text-xs text-muted-foreground">Priority: {category.order_priority}</span>
+        </div>
+      </TableCell>
+
+      <TableCell className="text-center">
+        <span className="inline-flex items-center justify-center px-2 py-1 bg-secondary/50 text-secondary-foreground rounded-lg text-xs font-medium">
+          {category.blog_count}
+        </span>
+      </TableCell>
+
+      <TableCell className="text-right">
+        <div className="flex items-center justify-end gap-1">
+          <button
+            onClick={onEdit}
+            className="p-1.5 hover:bg-accent rounded-lg transition-colors"
+            aria-label="Edit"
+          >
+            <Edit className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={onDelete}
+            className="p-1.5 hover:bg-destructive/10 text-destructive rounded-lg transition-colors"
+            aria-label="Delete"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </TableCell>
+    </TableRow>
+  );
+}
+
+// Desktop Category Table Row Component
 interface CategoryTableRowProps {
   category: BlogCategory;
   isDraggable: boolean;
