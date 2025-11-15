@@ -60,7 +60,7 @@ export default function FAQSection() {
     <section className="relative py-20 lg:py-28 bg-gradient-to-b from-muted/20 to-background">
       {/* Subtle Background Pattern */}
       <div className="absolute inset-0 -z-10">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-brand-primary/5 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full md:w-[800px] h-[800px] bg-gradient-radial from-brand-primary/5 to-transparent rounded-full blur-3xl" />
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -58,7 +58,7 @@ export default function TestimonialsSection() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/20 mb-8 animate-pulse">
+            <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-brand-primary/5 border border-brand-primary/20 mb-8 animate-pulse">
               <div className="w-4 h-4 bg-muted rounded" />
               <div className="w-32 h-4 bg-muted rounded" />
             </div>
@@ -119,16 +119,16 @@ export default function TestimonialsSection() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/20 mb-8">
-            <Award className="w-4 h-4 text-[var(--brand-primary)]" />
-            <span className="text-sm font-medium text-[var(--brand-primary)] tracking-wide">
+          <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-brand-primary/5 border border-brand-primary/20 mb-8">
+            <Award className="w-4 h-4 text-brand-primary" />
+            <span className="text-sm font-medium text-brand-primary tracking-wide">
               Client Testimonials
             </span>
           </div>
 
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold mb-6 leading-tight">
             What Our{' '}
-            <span className="text-[var(--brand-primary)]">Clients Think</span>
+            <span className="text-brand-primary">Clients Think</span>
           </h2>
 
           <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
@@ -167,7 +167,7 @@ export default function TestimonialsSection() {
                         key={i}
                         className={`w-5 h-5 ${
                           i < currentTestimonial.rating
-                            ? 'fill-[var(--brand-primary)] text-[var(--brand-primary)]'
+                            ? 'fill-brand-primary text-brand-primary'
                             : 'fill-muted text-muted'
                         }`}
                       />
@@ -195,10 +195,10 @@ export default function TestimonialsSection() {
                       <img
                         src={currentTestimonial.client_image_url}
                         alt={currentTestimonial.client_name}
-                        className="w-16 h-16 rounded-full object-cover border-2 border-[var(--brand-primary)]/20"
+                        className="w-16 h-16 rounded-full object-cover border-2 border-brand-primary/20"
                       />
                     ) : (
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] flex items-center justify-center text-white text-xl font-bold">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-brand-primary to-[var(--brand-secondary)] flex items-center justify-center text-white text-xl font-bold">
                         {currentTestimonial.client_name.charAt(0)}
                       </div>
                     )}
@@ -209,7 +209,7 @@ export default function TestimonialsSection() {
                       <div className="text-sm text-muted-foreground">
                         {currentTestimonial.client_title}
                         {currentTestimonial.client_company && (
-                          <span className="text-[var(--brand-primary)] font-medium">
+                          <span className="text-brand-primary font-medium">
                             {' '}
                             - {currentTestimonial.client_company}
                           </span>
@@ -224,9 +224,9 @@ export default function TestimonialsSection() {
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.6, delay: 0.6 }}
-                      className="px-4 py-2 rounded-full bg-[var(--brand-primary)]/10 border border-[var(--brand-primary)]/20"
+                      className="px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20"
                     >
-                      <span className="text-xs font-semibold text-[var(--brand-primary)] tracking-wider uppercase">
+                      <span className="text-xs font-semibold text-brand-primary tracking-wider uppercase">
                         {currentTestimonial.case_type}
                       </span>
                     </motion.div>
@@ -243,7 +243,7 @@ export default function TestimonialsSection() {
                 whileHover={{ scale: 1.1, x: -5 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={handlePrevious}
-                className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-background/80 backdrop-blur-sm border border-border/50 flex items-center justify-center text-foreground hover:bg-[var(--brand-primary)] hover:text-white hover:border-[var(--brand-primary)] transition-all duration-300 shadow-lg z-10"
+                className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-background/80 backdrop-blur-sm border border-border/50 flex items-center justify-center text-foreground hover:bg-brand-primary hover:text-white hover:border-brand-primary transition-all duration-300 shadow-lg z-10"
                 aria-label="Previous testimonial"
               >
                 <ChevronLeft className="w-6 h-6" />
@@ -253,7 +253,7 @@ export default function TestimonialsSection() {
                 whileHover={{ scale: 1.1, x: 5 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={handleNext}
-                className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-background/80 backdrop-blur-sm border border-border/50 flex items-center justify-center text-foreground hover:bg-[var(--brand-primary)] hover:text-white hover:border-[var(--brand-primary)] transition-all duration-300 shadow-lg z-10"
+                className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-background/80 backdrop-blur-sm border border-border/50 flex items-center justify-center text-foreground hover:bg-brand-primary hover:text-white hover:border-brand-primary transition-all duration-300 shadow-lg z-10"
                 aria-label="Next testimonial"
               >
                 <ChevronRight className="w-6 h-6" />
@@ -279,8 +279,8 @@ export default function TestimonialsSection() {
                 }}
                 className={`h-2 rounded-full transition-all duration-300 ${
                   index === currentIndex
-                    ? 'w-8 bg-[var(--brand-primary)]'
-                    : 'w-2 bg-border hover:bg-[var(--brand-primary)]/50'
+                    ? 'w-8 bg-brand-primary'
+                    : 'w-2 bg-border hover:bg-brand-primary/50'
                 }`}
                 aria-label={`Go to testimonial ${index + 1}`}
               />
@@ -298,7 +298,7 @@ export default function TestimonialsSection() {
         >
           <Button
             asChild
-            className="bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-semibold text-base px-10 py-6 rounded-lg shadow-lg shadow-[var(--brand-primary)]/20 hover:shadow-xl hover:shadow-[var(--brand-primary)]/30 transition-all duration-300"
+            className="bg-brand-primary hover:bg-brand-primary/90 text-white font-semibold text-base px-10 py-6 rounded-lg shadow-lg shadow-brand-primary/20 hover:shadow-xl hover:shadow-brand-primary/30 transition-all duration-300"
           >
             <Link href="/contact">Share Your Experience</Link>
           </Button>
@@ -313,7 +313,7 @@ function CobwebBackground() {
   return (
     <div className="absolute inset-0">
       {/* Subtle Gradient Overlay */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-[var(--brand-primary)]/3 to-transparent blur-3xl" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full md:w-[800px] h-[400px] bg-gradient-to-b from-brand-primary/3 to-transparent blur-3xl" />
 
       {/* Network/Cobweb Pattern */}
       <svg
@@ -372,7 +372,7 @@ function CobwebBackground() {
       {[...Array(8)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute w-1.5 h-1.5 rounded-full bg-[var(--brand-primary)]"
+          className="absolute w-1.5 h-1.5 rounded-full bg-brand-primary"
           style={{
             left: `${20 + Math.random() * 60}%`,
             top: `${20 + Math.random() * 60}%`,

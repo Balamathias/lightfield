@@ -341,7 +341,7 @@ function NetworkBackground() {
   return (
     <div className="absolute inset-0 -z-10">
       {/* Subtle Gradient Overlay */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-brand-primary/3 via-transparent to-[var(--brand-secondary)]/3 blur-3xl" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-full md:w-[1000px] h-[600px] bg-gradient-to-b from-brand-primary/3 via-transparent to-[var(--brand-secondary)]/3 blur-3xl" />
 
       {/* Neural Network Pattern */}
       <svg

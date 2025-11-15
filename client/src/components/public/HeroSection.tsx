@@ -15,13 +15,13 @@ export default function HeroSection() {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 0.12, scale: 1 }}
           transition={{ duration: 2, ease: 'easeOut' }}
-          className="absolute top-0 right-0 w-[900px] h-[900px] rounded-full bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] blur-3xl"
+          className="absolute top-0 right-0 sm:w-[900px] sm:h-[900px] rounded-full bg-gradient-to-br from-primary to-brand-secondary blur-3xl"
         />
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 0.08, scale: 1 }}
           transition={{ duration: 2.5, delay: 0.3, ease: 'easeOut' }}
-          className="absolute bottom-0 left-0 w-[700px] h-[700px] rounded-full bg-gradient-to-tr from-[var(--brand-secondary)] to-[var(--brand-primary)] blur-3xl"
+          className="absolute bottom-0 left-0 sm:w-[700px] sm:h-[700px] rounded-full bg-gradient-to-tr from-brand-secondary to-primary blur-3xl"
         />
 
         {/* Hexagonal Grid Pattern (Blockchain Vibes) */}
@@ -61,7 +61,7 @@ export default function HeroSection() {
         {[...Array(15)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-2 h-2 rounded-full bg-[var(--brand-primary)]"
+            className="absolute w-2 h-2 rounded-full bg-primary"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
@@ -151,10 +151,10 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/20"
+              className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-primary/5 border border-primary/20"
             >
-              <Award className="w-4 h-4 text-[var(--brand-primary)]" />
-              <span className="text-sm font-medium text-[var(--brand-primary)] tracking-wide">
+              <Award className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-primary tracking-wide">
                 Premier Legal Counsel
               </span>
             </motion.div>
@@ -169,7 +169,7 @@ export default function HeroSection() {
               >
                 <span className="block text-foreground">Expert Legal</span>
                 <span className="block text-foreground">Guidance for</span>
-                <span className="block text-[var(--brand-primary)]">
+                <span className="block text-primary">
                   Emerging Technologies
                 </span>
               </motion.h1>
@@ -196,7 +196,7 @@ export default function HeroSection() {
               <Button
                 asChild
                 size="lg"
-                className="bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 cursor-pointer text-white font-semibold text-base px-8 py-6 shadow-lg shadow-[var(--brand-primary)]/20 hover:shadow-xl hover:shadow-[var(--brand-primary)]/30 transition-all duration-300 group z-10"
+                className="bg-primary hover:bg-primary/90 cursor-pointer text-white font-semibold text-base px-8 py-6 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 group z-10"
               >
                 <Link href="/services">
                   <span>Our Services</span>
@@ -207,7 +207,7 @@ export default function HeroSection() {
                 asChild
                 size="lg"
                 variant="outline"
-                className="border-2 border-foreground/20 hover:border-[var(--brand-primary)]/50 cursor-pointer font-semibold text-base px-8 py-6 hover:bg-[var(--brand-primary)]/5 transition-all duration-300 z-10"
+                className="border-2 border-foreground/20 hover:border-primary/50 cursor-pointer font-semibold text-base px-8 py-6 hover:bg-primary/5 transition-all duration-300 z-10"
               >
                 <Link href="/contact">Schedule Consultation</Link>
               </Button>
@@ -263,13 +263,13 @@ export default function HeroSection() {
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
-                className="absolute inset-0 rounded-full border border-[var(--brand-primary)]/10"
+                className="absolute inset-0 rounded-full border border-primary/10"
                 style={{ transform: 'scale(0.9)' }}
               />
               <motion.div
                 animate={{ rotate: -360 }}
                 transition={{ duration: 80, repeat: Infinity, ease: 'linear' }}
-                className="absolute inset-0 rounded-full border border-dashed border-[var(--brand-primary)]/5"
+                className="absolute inset-0 rounded-full border border-dashed border-primary/5"
                 style={{ transform: 'scale(1.1)' }}
               />
 
@@ -280,7 +280,7 @@ export default function HeroSection() {
                 initial={{ opacity: 0, scale: 1.1, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ duration: 1.2, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute top-0 right-0 w-[450px] h-[350px] object-cover rounded-2xl shadow-2xl border-4 border-background"
+                className="absolute top-0 right-0 w-full sm:w-[450px] h-[350px] object-cover rounded-2xl shadow-2xl border-4 border-background"
               />
 
               {/* Accent Glow Behind Main Image */}
@@ -288,7 +288,7 @@ export default function HeroSection() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.4 }}
                 transition={{ duration: 1.5, delay: 0.6 }}
-                className="absolute top-0 right-0 w-[450px] h-[350px] bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] rounded-2xl blur-2xl"
+                className="absolute top-0 right-0 sm:w-[450px] sm:h-[350px] bg-gradient-to-br from-primary to-brand-secondary rounded-2xl blur-2xl"
               />
 
               {/* Overlapping Image - Two Lawyers (Foreground) */}
@@ -298,7 +298,7 @@ export default function HeroSection() {
                 initial={{ opacity: 0.1, scale: 0.9, x: -30, y: 30 }}
                 animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
                 transition={{ duration: 1.2, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute bottom-0 left-0 w-[380px] h-[420px] object-cover rounded-2xl shadow-2xl border-4 border-background"
+                className="absolute bottom-0 left-0 w-full sm:w-[380px] h-[420px] object-cover rounded-2xl shadow-2xl border-4 border-background"
               />
 
               {/* Accent Glow Behind Foreground Image */}
@@ -306,7 +306,7 @@ export default function HeroSection() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.3 }}
                 transition={{ duration: 1.5, delay: 0.9 }}
-                className="absolute bottom-0 left-0 w-[380px] h-[420px] bg-gradient-to-tl from-[var(--brand-primary)] to-[var(--brand-secondary)] rounded-2xl blur-2xl"
+                className="absolute bottom-0 left-0 w-full sm:w-[380px] h-[420px] bg-gradient-to-tl from-primary to-brand-secondary rounded-2xl blur-2xl"
               />
 
               {/* Floating Stat Badges */}
@@ -330,7 +330,7 @@ export default function HeroSection() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 1.4, ease: [0.16, 1, 0.3, 1] }}
                 whileHover={{ scale: 1.05, rotate: 5 }}
-                className="absolute top-4 right-12 bg-[var(--brand-primary)] text-white rounded-lg px-4 py-2 shadow-lg cursor-default"
+                className="absolute top-4 right-12 bg-primary text-white rounded-lg px-4 py-2 shadow-lg cursor-default"
               >
                 <div className="text-xs font-bold tracking-widest uppercase">
                   AI & Blockchain Experts
@@ -343,7 +343,7 @@ export default function HeroSection() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 1.6, ease: [0.16, 1, 0.3, 1] }}
                 whileHover={{ scale: 1.05, rotate: -5 }}
-                className="absolute bottom-16 left-12 bg-background/95 backdrop-blur-md border border-[var(--brand-primary)]/30 rounded-lg px-4 py-2 shadow-lg cursor-default"
+                className="absolute bottom-16 left-12 bg-background/95 backdrop-blur-md border border-primary/30 rounded-lg px-4 py-2 shadow-lg cursor-default"
               >
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
@@ -384,9 +384,9 @@ export default function HeroSection() {
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          className="w-6 h-10 rounded-full border-2 border-[var(--brand-primary)]/30 flex justify-center p-2"
+          className="w-6 h-10 rounded-full border-2 border-primary/30 flex justify-center p-2"
         >
-          <motion.div className="w-1 h-2 rounded-full bg-[var(--brand-primary)]/50" />
+          <motion.div className="w-1 h-2 rounded-full bg-primary/50" />
         </motion.div>
       </motion.div>
     </section>

@@ -77,12 +77,12 @@ export default function Navbar() {
               <img
                 src="/logo.png"
                 alt="LightField Logo"
-                className="w-11 h-11 object-contain group-hover:scale-105 transition-transform duration-300"
+                className="w-10 h-10 sm:w-11 sm:h-11 object-contain group-hover:scale-105 transition-transform duration-300"
               />
               <div className="flex flex-col">
                 <div className="text-xl font-bold tracking-tight leading-none">
                   <span className="text-foreground">LIGHT</span>
-                  <span className="text-[var(--brand-primary)]">FIELD</span>
+                  <span className="text-brand-primary">FIELD</span>
                 </div>
                 <div className="text-[10px] text-muted-foreground tracking-widest uppercase mt-0.5">
                   Legal Practitioners
@@ -99,7 +99,7 @@ export default function Navbar() {
                   className="relative px-4 py-2 text-[11px] font-semibold tracking-widest text-muted-foreground hover:text-foreground transition-colors duration-300 group"
                 >
                   {item.label}
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-[var(--brand-primary)] group-hover:w-3/4 transition-all duration-300" />
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-brand-primary group-hover:w-3/4 transition-all duration-300" />
                 </Link>
               ))}
             </div>
@@ -115,7 +115,7 @@ export default function Navbar() {
               </button>
               <Button
                 asChild
-                className="bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-bold text-xs tracking-widest px-6 py-5 rounded-sm shadow-lg hover:shadow-xl transition-all duration-300 uppercase"
+                className="bg-brand-primary hover:bg-brand-primary/90 text-white font-bold text-xs tracking-widest px-6 py-5 rounded-sm shadow-lg hover:shadow-xl transition-all duration-300 uppercase"
               >
                 <Link href="/contact">
                   <span>Book a Call</span>
@@ -181,7 +181,7 @@ export default function Navbar() {
                 >
                   <Button
                     asChild
-                    className="w-full bg-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/90 text-white font-bold text-xs tracking-widest py-6 uppercase"
+                    className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white font-bold text-xs tracking-widest py-6 uppercase"
                   >
                     <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
                       <span>Book a Call</span>

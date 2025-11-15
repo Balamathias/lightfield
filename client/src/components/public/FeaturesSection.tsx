@@ -95,8 +95,8 @@ export default function FeaturesSection() {
         </svg>
 
         {/* Gradient Accents */}
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-to-br from-[var(--brand-primary)]/5 to-transparent blur-3xl rounded-full" />
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-gradient-to-tl from-[var(--brand-secondary)]/5 to-transparent blur-3xl rounded-full" />
+        <div className="absolute top-1/4 left-1/4 w-full sm:w-[500px] h-[500px] bg-gradient-to-br from-brand-primary/5 to-transparent blur-3xl rounded-full" />
+        <div className="absolute bottom-1/4 right-1/4 w-full sm:w-[400px] h-[400px] bg-gradient-to-tl from-brand-secondary/5 to-transparent blur-3xl rounded-full" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -110,10 +110,10 @@ export default function FeaturesSection() {
         >
           <motion.div
             variants={itemVariants}
-            className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/20 mb-8"
+            className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-brand-primary/5 border border-brand-primary/20 mb-8"
           >
-            <Sparkles className="w-4 h-4 text-[var(--brand-primary)]" />
-            <span className="text-sm font-medium text-[var(--brand-primary)] tracking-wide">
+            <Sparkles className="w-4 h-4 text-brand-primary" />
+            <span className="text-sm font-medium text-brand-primary tracking-wide">
               Practice Areas
             </span>
           </motion.div>
@@ -123,7 +123,7 @@ export default function FeaturesSection() {
             className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold mb-6 leading-tight"
           >
             Specialized{' '}
-            <span className="text-[var(--brand-primary)]">Legal Services</span>
+            <span className="text-brand-primary">Legal Services</span>
           </motion.h2>
 
           <motion.p
@@ -154,23 +154,23 @@ export default function FeaturesSection() {
                 }}
                 className="group relative"
               >
-                <div className="relative h-full bg-card border border-border/60 rounded-2xl p-8 hover:border-[var(--brand-primary)]/40 transition-all duration-500 hover:shadow-2xl hover:shadow-[var(--brand-primary)]/10">
+                <div className="relative h-full bg-card border border-border/60 rounded-2xl p-8 hover:border-brand-primary/40 transition-all duration-500 hover:shadow-2xl hover:shadow-brand-primary/10">
                   {/* Gradient Background Effect */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--brand-primary)]/5 via-transparent to-[var(--brand-secondary)]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-transparent to-brand-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
 
                   {/* Animated Border Accent */}
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[var(--brand-primary)]/20 via-transparent to-[var(--brand-secondary)]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10" />
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-brand-primary/20 via-transparent to-brand-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10" />
 
                   {/* Icon Container */}
                   <div className="relative mb-6">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-[var(--brand-primary)]/10 border border-[var(--brand-primary)]/20 group-hover:bg-[var(--brand-primary)]/15 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-[var(--brand-primary)]/10">
-                      <Icon className="w-8 h-8 text-[var(--brand-primary)]" strokeWidth={1.5} />
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-brand-primary/10 border border-brand-primary/20 group-hover:bg-brand-primary/15 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-brand-primary/10">
+                      <Icon className="w-8 h-8 text-brand-primary" strokeWidth={1.5} />
                     </div>
                   </div>
 
                   {/* Content */}
                   <div className="relative">
-                    <h3 className="text-xl font-serif font-bold mb-3 text-foreground group-hover:text-[var(--brand-primary)] transition-colors duration-500">
+                    <h3 className="text-xl font-serif font-bold mb-3 text-foreground group-hover:text-brand-primary transition-colors duration-500">
                       {feature.title}
                     </h3>
                     <p className="text-muted-foreground leading-relaxed text-[15px]">
@@ -184,8 +184,8 @@ export default function FeaturesSection() {
                     initial={{ x: -10 }}
                     whileHover={{ x: 0 }}
                   >
-                    <div className="w-8 h-8 rounded-full bg-[var(--brand-primary)]/10 flex items-center justify-center">
-                      <ArrowRight className="w-4 h-4 text-[var(--brand-primary)]" />
+                    <div className="w-8 h-8 rounded-full bg-brand-primary/10 flex items-center justify-center">
+                      <ArrowRight className="w-4 h-4 text-brand-primary" />
                     </div>
                   </motion.div>
                 </div>

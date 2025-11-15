@@ -34,7 +34,7 @@ class GeminiAIService:
         # Default model
         self.model = "gemini-2.5-flash"
 
-    def generate_completion(self, messages, temperature=0.7, max_tokens=2000):
+    def generate_completion(self, messages, temperature=0.7, max_tokens=2000, model=None):
         """
         Generate a completion using Gemini
 
@@ -48,7 +48,7 @@ class GeminiAIService:
         """
         try:
             response = self.client.chat.completions.create(
-                model=self.model,
+                model=model or self.model,
                 messages=messages,
                 temperature=temperature,
                 max_tokens=max_tokens,
@@ -223,7 +223,7 @@ If you have context, use it intelligently. If not, generate high-quality content
         else:
             temperature = 0.6  # Conservative for general content
 
-        response = self.generate_completion(messages, temperature=temperature, max_tokens=500)
+        response = self.generate_completion(messages, temperature=temperature, max_tokens=500, model="gemini-2.0-flash")
 
         # Aggressive post-processing to remove ALL meta-commentary
         # Remove questions

@@ -82,7 +82,7 @@ export default function Footer() {
           </defs>
           <rect width="100%" height="100%" fill="url(#footer-pattern)" />
         </svg>
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-b from-brand-primary/5 to-transparent blur-3xl" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full sm:w-[600px] h-[300px] bg-gradient-to-b from-brand-primary/5 to-transparent blur-3xl" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

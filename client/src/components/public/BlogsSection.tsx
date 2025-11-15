@@ -60,8 +60,8 @@ export default function BlogsSection() {
           </defs>
           <rect width="100%" height="100%" fill="url(#blog-grid)" />
         </svg>
-        <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-r from-brand-primary/5 to-transparent rounded-full blur-3xl" />
-        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-l from-brand-secondary/5 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-0 -translate-y-1/2 w-full sm:w-[500px] h-[500px] bg-gradient-to-r from-brand-primary/5 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-full sm:w-[500px] h-[500px] bg-gradient-to-l from-brand-secondary/5 to-transparent rounded-full blur-3xl" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
