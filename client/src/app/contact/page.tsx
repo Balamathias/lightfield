@@ -155,7 +155,7 @@ export default function ContactPage() {
               viewport={{ once: true }}
               className="lg:col-span-1 space-y-6"
             >
-              {/* Office Address */}
+              {/* Lagos Office */}
               <motion.div
                 variants={itemVariants}
                 className="group p-6 rounded-2xl bg-card border border-border/60 hover:border-brand-primary/40 hover:shadow-xl transition-all duration-500"
@@ -163,11 +163,27 @@ export default function ContactPage() {
                 <div className="w-12 h-12 rounded-lg bg-brand-primary/10 flex items-center justify-center mb-4 group-hover:bg-brand-primary/20 transition-colors">
                   <Building2 className="w-6 h-6 text-brand-primary" />
                 </div>
-                <h3 className="font-semibold text-lg mb-2">Office Address</h3>
+                <h3 className="font-semibold text-lg mb-2">Lagos Office</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  123 Lagos Island<br />
-                  Innovation Plaza, Suite 400<br />
-                  Lagos, Nigeria.
+                  Road 5, J59, Ikota Shopping Complex,<br />
+                  VGC, Lekki,<br />
+                  Lagos State, Nigeria.
+                </p>
+              </motion.div>
+
+              {/* Kwara Office */}
+              <motion.div
+                variants={itemVariants}
+                className="group p-6 rounded-2xl bg-card border border-border/60 hover:border-brand-primary/40 hover:shadow-xl transition-all duration-500"
+              >
+                <div className="w-12 h-12 rounded-lg bg-brand-primary/10 flex items-center justify-center mb-4 group-hover:bg-brand-primary/20 transition-colors">
+                  <MapPin className="w-6 h-6 text-brand-primary" />
+                </div>
+                <h3 className="font-semibold text-lg mb-2">Kwara Office</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  No. 23 Agunbiade Ganiki Street,<br />
+                  Sango, Ilorin,<br />
+                  Kwara State, Nigeria.
                 </p>
               </motion.div>
 
@@ -183,14 +199,20 @@ export default function ContactPage() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 text-sm">
                     <Phone className="w-4 h-4 text-muted-foreground" />
-                    <a href="tel:+1234567890" className="text-muted-foreground hover:text-brand-primary transition-colors">
-                      +1 (234) 567-890
+                    <a href="tel:+2348148767744" className="text-muted-foreground hover:text-brand-primary transition-colors">
+                      +234 814 876 7744
+                    </a>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <Phone className="w-4 h-4 text-muted-foreground" />
+                    <a href="tel:+2347032676039" className="text-muted-foreground hover:text-brand-primary transition-colors">
+                      +234 703 267 6039
                     </a>
                   </div>
                   <div className="flex items-center gap-3 text-sm">
                     <Mail className="w-4 h-4 text-muted-foreground" />
-                    <a href="mailto:info@lightfield.com" className="text-muted-foreground hover:text-brand-primary transition-colors">
-                      info@lightfield.com
+                    <a href="mailto:lightfieldlegalpractitioners@gmail.com" className="text-muted-foreground hover:text-brand-primary transition-colors text-xs">
+                      lightfieldlegalpractitioners@gmail.com
                     </a>
                   </div>
                 </div>
@@ -362,7 +384,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Map Section (Optional - You can add Google Maps embed here) */}
+      {/* Map Section */}
       <section className="relative py-16 lg:py-24 bg-muted/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -373,28 +395,78 @@ export default function ContactPage() {
             className="text-center mb-12"
           >
             <h2 className="text-3xl sm:text-4xl font-serif font-bold mb-4">
-              Visit Our Office
+              Visit Our Offices
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Schedule an in-person consultation at our conveniently located office in the heart of the tech district.
+              Schedule an in-person consultation at either of our conveniently located offices in Lagos or Kwara State.
             </p>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="aspect-video rounded-2xl overflow-hidden shadow-2xl bg-muted border border-border/60"
-          >
-            {/* Placeholder for map - You can integrate Google Maps here */}
-            <div className="w-full h-full flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="w-16 h-16 text-brand-primary mx-auto mb-4" />
-                <p className="text-muted-foreground">Map integration coming soon</p>
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Lagos Office Map */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="space-y-4"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-brand-primary/10 flex items-center justify-center">
+                  <Building2 className="w-5 h-5 text-brand-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Lagos Office</h3>
+                  <p className="text-sm text-muted-foreground">Ikota Shopping Complex, VGC, Lekki</p>
+                </div>
               </div>
-            </div>
-          </motion.div>
+              <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl bg-muted border border-border/60">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3964.7294095827247!2d3.5446799!3d6.4315!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103bf70f5e2e7f65%3A0x8c52f2fa09c2f8d5!2sIkota%20Shopping%20Complex!5e0!3m2!1sen!2sng!4v1700000000000!5m2!1sen!2sng"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Lagos Office Location"
+                  className="w-full h-full"
+                />
+              </div>
+            </motion.div>
+
+            {/* Kwara Office Map */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="space-y-4"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-brand-primary/10 flex items-center justify-center">
+                  <MapPin className="w-5 h-5 text-brand-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Kwara Office</h3>
+                  <p className="text-sm text-muted-foreground">Sango, Ilorin, Kwara State</p>
+                </div>
+              </div>
+              <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl bg-muted border border-border/60">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3946.0183839123456!2d4.5508799!3d8.4966!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103d4c8c23456789%3A0x1234567890abcdef!2sSango%2C%20Ilorin!5e0!3m2!1sen!2sng!4v1700000000000!5m2!1sen!2sng"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Kwara Office Location"
+                  className="w-full h-full"
+                />
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 

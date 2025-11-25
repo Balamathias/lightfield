@@ -21,10 +21,10 @@ import {
 import Link from 'next/link';
 
 const stats = [
-  { label: 'Years of Excellence', value: '10+', icon: Award },
-  { label: 'Happy Clients', value: '500+', icon: Users },
+  { label: 'Practice Areas', value: '10+', icon: Award },
+  { label: 'Client Satisfaction', value: '100%', icon: Users },
   { label: 'Success Rate', value: '98%', icon: TrendingUp },
-  { label: 'Global Reach', value: '25+', icon: Globe },
+  { label: 'Office Locations', value: '2', icon: Globe },
 ];
 
 const values = [
@@ -52,24 +52,24 @@ const values = [
 
 const timeline = [
   {
-    year: '2014',
-    title: 'Foundation',
-    description: 'LightField Legal Practitioners was founded with a vision to bridge the gap between law and emerging technology.',
-  },
-  {
-    year: '2017',
-    title: 'Blockchain Focus',
-    description: 'Expanded our practice to become specialists in blockchain law and cryptocurrency regulations.',
-  },
-  {
     year: '2020',
-    title: 'AI & ML Expertise',
-    description: 'Pioneered AI regulation practice area, helping clients navigate the evolving AI compliance landscape.',
+    title: 'Foundation',
+    description: 'Lightfield Legal Practitioners was established with a vision to provide tech-driven, innovative legal solutions for Africa\'s digital economy.',
+  },
+  {
+    year: '2021',
+    title: 'Blockchain & Web3 Focus',
+    description: 'Expanded our practice to become specialists in blockchain law, Web3, digital assets, and cryptocurrency regulations.',
+  },
+  {
+    year: '2023',
+    title: 'Multi-Office Expansion',
+    description: 'Opened our second office in Kwara State, extending our reach to serve clients across multiple regions in Nigeria.',
   },
   {
     year: '2024',
-    title: 'Global Recognition',
-    description: 'Recognized as a leading technology law firm, serving innovative companies across 25+ countries.',
+    title: 'Tech Law Leadership',
+    description: 'Established as a leading technology-focused law firm, pioneering digital transformation legal advisory in Nigeria.',
   },
 ];
 
@@ -139,13 +139,11 @@ export default function AboutPage() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold mb-6 leading-tight">
-              Pioneering Legal Excellence in <span className="text-brand-primary">Emerging Technology</span>
+              Pioneering Legal Excellence in <span className="text-brand-primary">Africa's Digital Economy</span>
             </h1>
 
             <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
-              LightField Legal Practitioners is a modern law firm specializing in the intersection
-              of law and cutting-edge technology. We provide innovative legal solutions for businesses
-              navigating the complexities of AI, blockchain, and digital transformation.
+              Lightfield LP is a forward-thinking law firm delivering innovative, research-grounded advisory and litigation services across blockchain, digital assets, technology law, corporate law, and data protection. We empower businesses and emerging industries with clarity, compliance, and sustainable growth.
             </p>
           </motion.div>
         </div>
@@ -185,6 +183,22 @@ export default function AboutPage() {
       {/* Mission & Vision */}
       <section className="relative py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center max-w-3xl mx-auto mb-16"
+          >
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold mb-6">
+              Our Purpose & <span className="text-brand-primary">Direction</span>
+            </h2>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              Guided by a clear mission and ambitious vision, we're shaping the future of legal practice in Africa's digital economy.
+            </p>
+          </motion.div>
+
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
             {/* Mission */}
             <motion.div
@@ -194,27 +208,21 @@ export default function AboutPage() {
               transition={{ duration: 0.8 }}
               className="relative p-8 lg:p-10 rounded-2xl bg-gradient-to-br from-brand-primary/5 via-background to-transparent border border-brand-primary/20"
             >
-              <div className="w-12 h-12 rounded-lg bg-brand-primary/10 flex items-center justify-center mb-6">
-                <Target className="w-6 h-6 text-brand-primary" />
+              <div className="w-14 h-14 rounded-xl bg-brand-primary/10 flex items-center justify-center mb-6">
+                <Target className="w-7 h-7 text-brand-primary" />
               </div>
-              <h2 className="text-3xl font-serif font-bold mb-4">Our Mission</h2>
+              <h2 className="text-3xl font-serif font-bold mb-6">Our Mission</h2>
               <p className="text-muted-foreground leading-relaxed mb-6">
-                To empower innovative businesses with expert legal guidance that enables them to push
-                technological boundaries while maintaining full regulatory compliance and ethical standards.
+                At Lightfield LP, our mission is to deliver forward-thinking, research-driven, and technology-aligned legal solutions that empower individuals, founders, corporations, and emerging industries in the digital era.
               </p>
-              <ul className="space-y-3">
-                {[
-                  'Provide cutting-edge legal solutions for emerging technologies',
-                  'Bridge the gap between complex regulations and business innovation',
-                  'Build lasting partnerships based on trust and results',
-                  'Champion ethical practices in technology development',
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-sm">
-                    <CheckCircle2 className="w-4 h-4 text-brand-primary flex-shrink-0 mt-0.5" />
-                    <span className="text-muted-foreground">{item}</span>
-                  </li>
-                ))}
-              </ul>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                We are committed to excellence in blockchain, Web3, digital assets, technology law, data privacy, constitutional law, property law, corporate legal advisory and litigation.
+              </p>
+              <div className="pt-4 border-t border-border/50">
+                <p className="text-sm text-muted-foreground leading-relaxed italic">
+                  Through innovative strategy and deep legal insight, we simplify complex regulatory landscapes, protect rights, secure digital ecosystems, structure sound business transactions, and provide accessible, reliable, and client-centric legal services that drive sustainable growth and compliance.
+                </p>
+              </div>
             </motion.div>
 
             {/* Vision */}
@@ -225,27 +233,21 @@ export default function AboutPage() {
               transition={{ duration: 0.8 }}
               className="relative p-8 lg:p-10 rounded-2xl bg-gradient-to-br from-brand-secondary/5 via-background to-transparent border border-brand-secondary/20"
             >
-              <div className="w-12 h-12 rounded-lg bg-brand-secondary/10 flex items-center justify-center mb-6">
-                <Eye className="w-6 h-6 text-brand-secondary" />
+              <div className="w-14 h-14 rounded-xl bg-brand-secondary/10 flex items-center justify-center mb-6">
+                <Eye className="w-7 h-7 text-brand-secondary" />
               </div>
-              <h2 className="text-3xl font-serif font-bold mb-4">Our Vision</h2>
+              <h2 className="text-3xl font-serif font-bold mb-6">Our Vision</h2>
               <p className="text-muted-foreground leading-relaxed mb-6">
-                To be the world's most trusted legal partner for companies at the forefront of technological
-                innovation, shaping the future of technology law through expertise, advocacy, and thought leadership.
+                Our vision is to become Africa's leading tech-driven and innovation-focused law firm; setting the benchmark for excellence in corporate legal advisory and shaping the future of digital regulation.
               </p>
-              <ul className="space-y-3">
-                {[
-                  'Lead the evolution of technology law globally',
-                  'Set industry standards for AI and blockchain compliance',
-                  'Foster innovation through progressive legal frameworks',
-                  'Expand our impact across emerging tech sectors',
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-sm">
-                    <CheckCircle2 className="w-4 h-4 text-brand-secondary flex-shrink-0 mt-0.5" />
-                    <span className="text-muted-foreground">{item}</span>
-                  </li>
-                ))}
-              </ul>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                We aspire to be recognized as a powerhouse of young, ambitious legal minds who redefine legal practice, influence global legal frameworks in emerging technologies, and strengthen constitutional governance.
+              </p>
+              <div className="pt-4 border-t border-border/50">
+                <p className="text-sm text-muted-foreground leading-relaxed italic">
+                  We are committed to delivering transformative legal solutions that accelerate digital transformation, business sustainability, and economic progress across Africa and beyond.
+                </p>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -311,7 +313,7 @@ export default function AboutPage() {
               Our Journey
             </h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              A decade of innovation, growth, and excellence in technology law.
+              Building excellence in technology law and shaping Africa's digital legal landscape.
             </p>
           </motion.div>
 
@@ -367,20 +369,20 @@ export default function AboutPage() {
               transition={{ duration: 0.8 }}
             >
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold mb-6">
-                Why <span className="text-brand-primary">LightField</span>?
+                Why <span className="text-brand-primary">Lightfield LP</span>?
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed mb-8">
                 We're not just lawyers—we're strategic partners who understand technology.
-                Our unique combination of legal expertise and technical knowledge sets us apart.
+                Our fusion of deep legal research, technological insight, and innovative strategy sets us apart.
               </p>
 
               <ul className="space-y-4 mb-8">
                 {[
-                  'Deep understanding of blockchain, AI, and emerging technologies',
-                  'Proactive approach to regulatory compliance and risk management',
-                  'Global perspective with local expertise',
-                  'Proven track record with innovative tech companies',
-                  'Committed to your long-term success and growth',
+                  'Deep understanding of blockchain, Web3, and emerging technologies',
+                  'Research-driven approach to regulatory compliance and risk management',
+                  'Young, ambitious legal minds redefining legal practice',
+                  'Client-centric solutions that drive sustainable growth',
+                  'Committed to excellence in corporate legal advisory and litigation',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3">
                     <div className="w-6 h-6 rounded-full bg-brand-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -476,8 +478,8 @@ export default function AboutPage() {
                 Ready to Work Together?
               </h2>
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                Let's discuss how LightField can help your business navigate the complex
-                landscape of emerging technology law.
+                Let's discuss how Lightfield LP can help your business navigate the complex
+                landscape of emerging technology law and digital regulation.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-4">
                 <Link

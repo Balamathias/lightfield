@@ -15,6 +15,7 @@ const navItems = [
   { label: 'WHO WE ARE', href: '/about' },
   { label: 'OUR TEAM', href: '/team' },
   { label: 'BLOG', href: '/blog' },
+  { label: 'FAQS', href: '/faqs' },
   { label: 'GET IN TOUCH', href: '/contact' },
 ];
 

@@ -167,10 +167,10 @@ export default function HeroSection() {
                 transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
                 className="text-5xl sm:text-6xl lg:text-7xl font-serif font-bold leading-[1.1] tracking-tight"
               >
-                <span className="block text-foreground">Expert Legal</span>
-                <span className="block text-foreground">Guidance for</span>
+                <span className="block text-foreground">Your Trusted Legal</span>
+                <span className="block text-foreground">Partner in a</span>
                 <span className="block text-primary">
-                  Emerging Technologies
+                  Fast-Changing Digital World
                 </span>
               </motion.h1>
 
@@ -180,9 +180,7 @@ export default function HeroSection() {
                 transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
                 className="text-lg lg:text-xl text-muted-foreground max-w-xl leading-relaxed"
               >
-                LightField Legal Practitioners provides sophisticated counsel at
-                the intersection of law, artificial intelligence, and blockchain
-                technology.
+                Here at Lightfield LP, we provide innovative, research-grounded advisory and litigation services across blockchain, digital assets, technology law, corporate law, and data protection. Empowering businesses and emerging industries with clarity, compliance, and sustainable growth.
               </motion.p>
             </div>
 

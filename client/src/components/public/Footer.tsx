@@ -22,6 +22,7 @@ const quickLinks = [
   { label: 'Our Services', href: '/services' },
   { label: 'Our Team', href: '/team' },
   { label: 'Blog', href: '/blog' },
+  { label: 'FAQs', href: '/faqs' },
   { label: 'Contact', href: '/contact' },
 ];
 
@@ -109,8 +110,7 @@ export default function Footer() {
               </Link>
 
               <p className="text-muted-foreground leading-relaxed max-w-sm">
-                A modern law firm specializing in emerging technologies, artificial intelligence,
-                and blockchain law. Pioneering legal solutions for the digital age.
+                Delivering forward-thinking, research-driven legal solutions that empower individuals, founders, and corporations in the digital era. Excellence in blockchain, Web3, technology law, and corporate advisory.
               </p>
 
               {/* Social Links */}
@@ -183,22 +183,29 @@ export default function Footer() {
               {/* Contact Info */}
               <div className="space-y-4">
                 <a
-                  href="mailto:info@lightfieldlp.com"
-                  className="flex items-start gap-3 text-muted-foreground hover:text-brand-primary transition-colors duration-300 text-sm group"
+                  href="mailto:lightfieldlegalpractitioners@gmail.com"
+                  className="flex items-start gap-3 text-muted-foreground hover:text-brand-primary transition-colors duration-300 text-xs group"
                 >
                   <Mail className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <span>info@lightfieldlp.com</span>
+                  <span>lightfieldlegalpractitioners@gmail.com</span>
                 </a>
                 <a
-                  href="tel:+234-xxx-xxx-xxxx"
+                  href="tel:+2348148767744"
                   className="flex items-start gap-3 text-muted-foreground hover:text-brand-primary transition-colors duration-300 text-sm group"
                 >
                   <Phone className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <span>+234 xxx xxx xxxx</span>
+                  <span>+234 814 876 7744</span>
+                </a>
+                <a
+                  href="tel:+2347032676039"
+                  className="flex items-start gap-3 text-muted-foreground hover:text-brand-primary transition-colors duration-300 text-sm group"
+                >
+                  <Phone className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <span>+234 703 267 6039</span>
                 </a>
                 <div className="flex items-start gap-3 text-muted-foreground text-sm">
                   <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <span>Lagos, Nigeria</span>
+                  <span>Lagos & Kwara, Nigeria</span>
                 </div>
               </div>
 

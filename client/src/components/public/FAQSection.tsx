@@ -2,32 +2,29 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Minus, HelpCircle } from 'lucide-react';
+import { Plus, Minus, HelpCircle, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 const faqs = [
   {
-    question: "What areas of technology law does LightField specialize in?",
-    answer: "We specialize in emerging technology law including artificial intelligence, blockchain and cryptocurrency, data privacy (GDPR/CCPA), software licensing, intellectual property, and venture capital for tech startups. Our team stays at the forefront of technological and regulatory developments."
+    question: "What areas of law does Lightfield LP specialize in?",
+    answer: "Lightfield LP focuses on technology-driven and high-impact practice areas including blockchain and Web3 law, digital assets, technology and innovation law, data privacy and protection, constitutional law, property law, corporate and commercial advisory, and litigation. Our multidisciplinary approach ensures clients receive holistic legal support in today's digital economy."
   },
   {
-    question: "How do you handle blockchain and cryptocurrency legal matters?",
-    answer: "Our blockchain practice covers token launches, ICO/ITO compliance, smart contract auditing, DeFi protocol structuring, NFT frameworks, and cryptocurrency exchange licensing. We provide comprehensive guidance through the evolving regulatory landscape while ensuring full compliance."
+    question: "How does Lightfield LP support clients operating in emerging technologies such as blockchain, Web3, and digital assets?",
+    answer: "We offer regulatory guidance, compliance structuring, tokenization advisory, smart contract review, digital asset transaction support, and representation before regulators. We help innovators navigate evolving frameworks while protecting their products, users, and intellectual property."
   },
   {
-    question: "What makes LightField different from other law firms?",
-    answer: "We combine deep technical expertise with legal excellence. Our team includes lawyers with backgrounds in computer science and engineering, allowing us to truly understand the technology we're advising on. We offer proactive compliance strategies and innovative solutions tailored to tech companies."
+    question: "Does your firm advise startups, founders, and early-stage companies?",
+    answer: "Yes. Lightfield LP provides strategic legal support to founders and startups at every stage—incorporation, fundraising, product development, compliance, IP protection, employment matters, and organizational governance. We help founders scale legally and sustainably."
   },
   {
-    question: "Do you work with international clients?",
-    answer: "Yes, we serve clients across 25+ countries. Our global perspective allows us to navigate cross-border regulations, international data transfers, and multi-jurisdictional compliance requirements. We have experience with EU, US, and Asian regulatory frameworks."
+    question: "How does Lightfield LP stay updated on fast-evolving global and Nigerian technology regulations?",
+    answer: "Our team conducts continuous legal research, monitors developments from global tech regulators, engages with policy and industry bodies, and leverages advanced legal research tools. This ensures our clients receive informed and forward-thinking legal advice."
   },
   {
-    question: "How do you stay current with rapidly changing tech regulations?",
-    answer: "Our team actively participates in technology law conferences, maintains relationships with regulatory bodies, and invests in continuous education. We use AI-powered legal research tools to track regulatory changes and provide timely updates to our clients."
-  },
-  {
-    question: "What is your approach to AI and machine learning compliance?",
-    answer: "We help organizations navigate AI ethics, algorithm auditing, bias testing, and compliance with regulations like the EU AI Act. Our approach includes risk assessments, governance frameworks, and practical implementation strategies that balance innovation with regulatory requirements."
+    question: "Can your firm assist with compliance in data privacy, cybersecurity, and digital ecosystem protection?",
+    answer: "Absolutely. We help clients comply with the Nigeria Data Protection Act (NDPA), GDPR-aligned frameworks, cybersecurity standards, and risk mitigation rules. We structure internal policies, conduct compliance audits, manage data breach responses, and protect digital infrastructure."
   }
 ];
 
@@ -154,6 +151,29 @@ export default function FAQSection() {
               </button>
             </motion.div>
           ))}
+        </motion.div>
+
+        {/* CTA to Full FAQs Page */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mt-12 text-center"
+        >
+          <Link
+            href="/faqs"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-brand-primary hover:bg-brand-primary/90 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 group"
+          >
+            <span>View All FAQs</span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+          </Link>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Have more questions? Browse our complete FAQ collection or{' '}
+            <Link href="/contact" className="text-brand-primary hover:underline">
+              get in touch
+            </Link>
+          </p>
         </motion.div>
       </div>
     </section>
