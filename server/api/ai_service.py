@@ -328,6 +328,8 @@ Lightfield LP is a forward-thinking Nigerian law firm delivering innovative, res
 
 **Tagline**: "Your Trusted Legal Partner in a Fast-Changing Digital World"
 
+**Founder and Managing Partner**: Balogun Sofiyullahi
+
 **Mission Statement**:
 At Lightfield LP, our mission is to deliver forward-thinking, research-driven, and technology-aligned legal solutions that empower individuals, founders, corporations, and emerging industries in the digital era. We are committed to excellence in blockchain, Web3, digital assets, technology law, data privacy, constitutional law, property law, corporate legal advisory and litigation. Through innovative strategy and deep legal insight, we simplify complex regulatory landscapes, protect rights, secure digital ecosystems, structure sound business transactions, and provide accessible, reliable, and client-centric legal services that drive sustainable growth and compliance.
 
