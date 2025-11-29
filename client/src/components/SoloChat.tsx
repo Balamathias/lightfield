@@ -335,37 +335,6 @@ export default function SoloChat() {
                   </div>
                 </motion.div>
               )}
-
-              {/* Typing Indicator */}
-              {/* {isStreaming && messages[messages.length - 1]?.content === '' && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="flex gap-3"
-                >
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] flex items-center justify-center text-white">
-                    <Bot className="w-4 h-4" />
-                  </div>
-                  <div className="bg-muted/60 rounded-2xl p-3 flex gap-1">
-                    <motion.div
-                      animate={{ y: [0, -5, 0] }}
-                      transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
-                      className="w-2 h-2 bg-[var(--brand-primary)]/60 rounded-full"
-                    />
-                    <motion.div
-                      animate={{ y: [0, -5, 0] }}
-                      transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
-                      className="w-2 h-2 bg-[var(--brand-primary)]/60 rounded-full"
-                    />
-                    <motion.div
-                      animate={{ y: [0, -5, 0] }}
-                      transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
-                      className="w-2 h-2 bg-[var(--brand-primary)]/60 rounded-full"
-                    />
-                  </div>
-                </motion.div>
-              )} */}
-
               <div ref={messagesEndRef} />
             </div>
 
@@ -384,7 +353,7 @@ export default function SoloChat() {
                   style={{ height: 'auto' }}
                 />
                 <Button
-                  onClick={handleSendMessage as any}
+                  onClick={() => handleSendMessage()}
                   disabled={!input.trim() || isStreaming}
                   size="icon"
                   className="flex-shrink-0 w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] hover:opacity-90 text-white rounded-xl shadow-lg shadow-[var(--brand-primary)]/25 disabled:opacity-50 disabled:cursor-not-allowed"

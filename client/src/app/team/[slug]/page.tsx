@@ -125,7 +125,7 @@ export default function TeamMemberPage() {
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="lg:col-span-1"
             >
-              <div className="sticky top-32">
+              <div className="sticky top-20">
                 <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-muted shadow-2xl">
                   {associate.image_url ? (
                     <img
@@ -212,9 +212,13 @@ export default function TeamMemberPage() {
                   <Award className="w-6 h-6 text-brand-primary" />
                   <span>About</span>
                 </h2>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  {associate.bio}
-                </p>
+                <div className="text-lg text-muted-foreground leading-relaxed">
+                  {associate.bio.split('\n').map((paragraph, idx) => (
+                    <p key={idx} className="mb-5 last:mb-0">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
               </div>
 
               {/* Expertise */}
