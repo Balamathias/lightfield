@@ -11,7 +11,7 @@ import {
 } from '@/hooks/useAssociates';
 import { AssociateListItem } from '@/types';
 import { associateSchema, type AssociateFormValues } from '@/schemas';
-import ImageUpload from '@/components/ImageUpload';
+import CroppableImageUpload from '@/components/CroppableImageUpload';
 import {
   Users,
   Plus,
@@ -769,12 +769,12 @@ export default function AdminAssociatesPage() {
                   {/* Image & Settings */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <ImageUpload
+                      <CroppableImageUpload
                         value={formData.image_url || ''}
                         onChange={(url) => setFormData({ ...formData, image_url: url })}
                         folder="associates"
                         label="Profile Image"
-                        aspectRatio="square"
+                        aspectRatio={1}
                       />
                     </div>
 
