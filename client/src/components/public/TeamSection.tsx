@@ -130,7 +130,7 @@ export default function TeamSection() {
 
           <motion.h2
             variants={itemVariants}
-            className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold mb-6 leading-tight"
+            className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold mb-6 leading-tight"
           >
             Meet the{' '}
             <span className="text-brand-primary">Legal Minds</span>{' '}
@@ -139,7 +139,7 @@ export default function TeamSection() {
 
           <motion.p
             variants={itemVariants}
-            className="text-lg lg:text-xl text-muted-foreground leading-relaxed"
+            className="text-sm sm:text-lg lg:text-xl text-muted-foreground leading-relaxed"
           >
             A team of exceptional legal professionals with deep expertise in emerging technologies,
             blockchain, and artificial intelligence law

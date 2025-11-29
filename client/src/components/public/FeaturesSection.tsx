@@ -120,7 +120,7 @@ export default function FeaturesSection() {
 
           <motion.h2
             variants={itemVariants}
-            className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold mb-6 leading-tight"
+            className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold mb-6 leading-tight"
           >
             Specialized{' '}
             <span className="text-brand-primary">Legal Services</span>
@@ -128,7 +128,7 @@ export default function FeaturesSection() {
 
           <motion.p
             variants={itemVariants}
-            className="text-lg lg:text-xl text-muted-foreground leading-relaxed"
+            className="text-sm md:text-lg lg:text-xl text-muted-foreground leading-relaxed"
           >
             Expert counsel at the intersection of law and emerging technology
           </motion.p>
@@ -173,7 +173,7 @@ export default function FeaturesSection() {
                     <h3 className="text-xl font-serif font-bold mb-3 text-foreground group-hover:text-brand-primary transition-colors duration-500">
                       {feature.title}
                     </h3>
-                    <p className="text-muted-foreground leading-relaxed text-[15px]">
+                    <p className="text-sm text-muted-foreground leading-relaxed sm:text-[15px]">
                       {feature.description}
                     </p>
                   </div>

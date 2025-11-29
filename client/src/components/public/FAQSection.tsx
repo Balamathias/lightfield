@@ -80,7 +80,7 @@ export default function FAQSection() {
             Have Questions? We Have <span className="text-brand-primary">Answers</span>
           </h2>
 
-          <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+          <p className="text-sm sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
             Find answers to common questions about our services, expertise, and approach to technology law.
           </p>
         </motion.div>
@@ -112,7 +112,7 @@ export default function FAQSection() {
                 `}>
                   <div className="flex items-center justify-between">
                     <h3 className={`
-                      text-lg font-semibold pr-4 transition-colors duration-300
+                      text-base sm:text-lg font-semibold pr-4 transition-colors duration-300
                       ${openIndex === index ? 'text-brand-primary' : 'text-foreground group-hover:text-brand-primary'}
                     `}>
                       {faq.question}
@@ -141,7 +141,7 @@ export default function FAQSection() {
                         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                         className="overflow-hidden"
                       >
-                        <p className="mt-4 text-muted-foreground leading-relaxed">
+                        <p className="text-sm sm:text-base mt-4 text-muted-foreground leading-relaxed">
                           {faq.answer}
                         </p>
                       </motion.div>

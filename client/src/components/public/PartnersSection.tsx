@@ -115,7 +115,7 @@ export default function PartnersSection() {
             Who We <span className="text-brand-primary">Work With</span>
           </h2>
 
-          <p className="text-lg text-muted-foreground leading-relaxed">
+          <p className="text-sm sm:text-lg text-muted-foreground leading-relaxed">
             We're proud to partner with leading technology companies and innovative organizations
             across various industries.
           </p>

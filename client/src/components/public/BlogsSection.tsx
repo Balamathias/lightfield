@@ -84,7 +84,7 @@ export default function BlogsSection() {
             Stay Informed with Our Latest <span className="text-brand-primary">Legal Updates</span>
           </h2>
 
-          <p className="text-lg text-muted-foreground leading-relaxed">
+          <p className="text-sm sm:text-lg lg:text-xl text-muted-foreground leading-relaxed">
             Expert analysis and insights on emerging technology law, AI regulation,
             blockchain compliance, and more.
           </p>
@@ -117,7 +117,7 @@ export default function BlogsSection() {
                 className="group"
               >
                 <Link href={`/blog/${blog.slug}`} className="block h-full">
-                  <div className="h-full bg-card border border-border/60 rounded-2xl overflow-hidden hover:border-brand-primary/40 hover:shadow-2xl hover:shadow-brand-primary/10 transition-all duration-500">
+                  <div className="h-full bg-card border border-border/60 rounded-2xl overflow-hidden hover:border-brand-primary/40 hover:shadow-2xl hover:shadow-brand-primary/10 transition-all duration-500 flex flex-col gap-2 justify-between">
                     {/* Featured Image */}
                     {blog.featured_image_url ? (
                       <div className="aspect-video overflow-hidden bg-muted">

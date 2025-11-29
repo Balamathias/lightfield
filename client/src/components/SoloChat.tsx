@@ -174,9 +174,9 @@ export default function SoloChat() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 right-6 z-50 w-16 h-16 bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] text-white rounded-full shadow-2xl shadow-[var(--brand-primary)]/30 flex items-center justify-center group"
+            className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] text-white rounded-full shadow-2xl shadow-[var(--brand-primary)]/30 flex items-center justify-center group"
           >
-            <MessageCircle className="w-7 h-7 group-hover:scale-110 transition-transform duration-300" />
+            <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform duration-300" />
 
             {/* Pulse Animation */}
             <span className="absolute inset-0 rounded-full bg-[var(--brand-primary)] animate-ping opacity-20" />
@@ -188,39 +188,24 @@ export default function SoloChat() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-6 right-6 z-50 max-sm:w-full max-sm:max-w-[90%] sm:w-[420px] h-[600px] bg-background/95 backdrop-blur-xl border border-border/60 rounded-3xl shadow-2xl flex flex-col overflow-hidden"
+            className="fixed bottom-3 right-3 left-3 sm:left-auto sm:bottom-6 sm:right-6 z-50 sm:w-[400px] h-[calc(100vh-100px)] sm:h-[550px] max-h-[600px] bg-background/95 backdrop-blur-xl border border-border/60 rounded-2xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden"
           >
-            {/* Header */}
-            <div className="relative bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] p-6">
-              {/* Animated Background Pattern */}
-              <div className="absolute inset-0 opacity-10">
-                <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <pattern id="solo-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-                      <circle cx="10" cy="10" r="1" fill="white" />
-                    </pattern>
-                  </defs>
-                  <rect width="100%" height="100%" fill="url(#solo-pattern)" />
-                </svg>
-              </div>
-
+            {/* Header - Minimal on mobile */}
+            <div className="relative bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] p-3 sm:p-4">
               <div className="relative flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-                    className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30"
-                  >
-                    <img src='/logo.png' className='w-8 h-8 rounded-full' />
-                  </motion.div>
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
+                    <img src='/logo.png' className='w-5 h-5 sm:w-6 sm:h-6 rounded-full' />
+                  </div>
                   <div>
-                    <h3 className="text-white font-bold text-lg">Solo</h3>
-                    <div className="flex items-center gap-1.5">
-                      <p className="text-white/90 text-xs">Solo AI</p>
+                    <h3 className="text-white font-bold text-sm sm:text-base">Solo AI</h3>
+                    <div className="hidden sm:flex items-center gap-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                      <p className="text-white/80 text-xs">Online</p>
                     </div>
                   </div>
                 </div>
@@ -228,15 +213,15 @@ export default function SoloChat() {
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsOpen(false)}
-                  className="text-white hover:bg-white/20 rounded-full"
+                  className="text-white hover:bg-white/20 rounded-full w-8 h-8 sm:w-9 sm:h-9"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
               </div>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
               {messages.map((message, index) => (
                 <motion.div
                   key={index}
@@ -326,8 +311,8 @@ export default function SoloChat() {
                   transition={{ delay: 0.3 }}
                   className="space-y-2"
                 >
-                  <p className="text-xs text-muted-foreground px-1">Suggested questions:</p>
-                  <div className="grid grid-cols-2 gap-2">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground px-1">Suggested questions:</p>
+                  <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                     {SUGGESTED_QUESTIONS.map((item, index) => {
                       const Icon = item.icon;
                       return (
@@ -336,11 +321,11 @@ export default function SoloChat() {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => handleSuggestedQuestion(item.question)}
-                          className="flex items-start gap-2 p-3 bg-card hover:bg-[var(--brand-primary)]/5 border border-border/50 hover:border-[var(--brand-primary)]/30 rounded-xl transition-all duration-200 text-left group"
+                          className="flex items-start gap-1.5 sm:gap-2 p-2 sm:p-3 bg-card hover:bg-[var(--brand-primary)]/5 border border-border/50 hover:border-[var(--brand-primary)]/30 rounded-lg sm:rounded-xl transition-all duration-200 text-left group"
                         >
-                          <Icon className="w-4 h-4 text-[var(--brand-primary)] flex-shrink-0 mt-0.5" />
+                          <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[var(--brand-primary)] flex-shrink-0 mt-0.5" />
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs font-medium text-foreground group-hover:text-[var(--brand-primary)] transition-colors line-clamp-2">
+                            <p className="text-[10px] sm:text-xs font-medium text-foreground group-hover:text-[var(--brand-primary)] transition-colors line-clamp-2">
                               {item.question}
                             </p>
                           </div>
@@ -385,33 +370,34 @@ export default function SoloChat() {
             </div>
 
             {/* Input */}
-            <div className="p-4 border-t border-border/50 bg-muted/30">
-              <div className="flex gap-2">
+            <div className="p-2.5 sm:p-4 border-t border-border/50 bg-muted/30">
+              <div className="flex items-end gap-2">
                 <textarea
                   ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Ask me anything about LightField..."
+                  placeholder="Ask about LightField..."
                   disabled={isStreaming}
                   rows={1}
-                  className="flex-1 resize-none bg-background border border-border/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 min-h-[40px] max-h-[120px] resize-none bg-background border border-border/50 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ height: 'auto' }}
                 />
                 <Button
                   onClick={handleSendMessage as any}
                   disabled={!input.trim() || isStreaming}
                   size="icon"
-                  className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] hover:opacity-90 text-white rounded-xl shadow-lg shadow-[var(--brand-primary)]/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-shrink-0 w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] hover:opacity-90 text-white rounded-xl shadow-lg shadow-[var(--brand-primary)]/25 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isStreaming ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                   ) : (
-                    <Send className="w-5 h-5" />
+                    <Send className="w-4 h-4 sm:w-5 sm:h-5" />
                   )}
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground mt-2 text-center">
-                Powered by AI • Press Enter to send
+              <p className="text-[10px] sm:text-xs text-muted-foreground mt-1.5 sm:mt-2 text-center">
+                Press Enter to send
               </p>
             </div>
           </motion.div>

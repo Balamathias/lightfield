@@ -24,7 +24,7 @@ const stats = [
   { label: 'Practice Areas', value: '10+', icon: Award },
   { label: 'Client Satisfaction', value: '100%', icon: Users },
   { label: 'Success Rate', value: '98%', icon: TrendingUp },
-  { label: 'Office Locations', value: '2', icon: Globe },
+  { label: 'Office Locations', value: '3', icon: Globe },
 ];
 
 const values = [

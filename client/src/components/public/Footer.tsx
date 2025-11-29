@@ -181,7 +181,7 @@ export default function Footer() {
               </h3>
 
               {/* Contact Info */}
-              <div className="space-y-4">
+              <div className="space-y-4 text-sm">
                 <a
                   href="mailto:lightfieldlegalpractitioners@gmail.com"
                   className="flex items-start gap-3 text-muted-foreground hover:text-brand-primary transition-colors duration-300 text-xs group"
@@ -205,7 +205,7 @@ export default function Footer() {
                 </a>
                 <div className="flex items-start gap-3 text-muted-foreground text-sm">
                   <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <span>Lagos & Kwara, Nigeria</span>
+                  <span>Suite T7, 3rd Floor, Alibro Atrium Plaza, Utako District, FCT Abuja</span>
                 </div>
               </div>
 
@@ -242,14 +242,14 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="py-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
               <Scale className="w-4 h-4 text-brand-primary" />
               <span>
                 © {new Date().getFullYear()} LightField Legal Practitioners. All rights reserved.
               </span>
             </div>
 
-            <div className="flex items-center gap-6 text-sm">
+            <div className="flex items-center gap-6 text-xs sm:text-sm">
               <Link
                 href="/privacy"
                 className="text-muted-foreground hover:text-brand-primary transition-colors duration-300"
@@ -269,13 +269,6 @@ export default function Footer() {
                 Legal Disclaimer
               </Link>
             </div>
-          </div>
-
-          {/* Credits */}
-          <div className="mt-6 text-center">
-            <p className="text-xs text-muted-foreground/70">
-              Designed with excellence for the digital age
-            </p>
           </div>
         </div>
       </div>
