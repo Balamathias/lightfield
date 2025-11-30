@@ -413,7 +413,7 @@ export default function GrantDetailPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="relative aspect-[21/9] rounded-3xl overflow-hidden shadow-2xl"
+              className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl"
             >
               <img
                 src={grant.image_url}
@@ -518,24 +518,28 @@ export default function GrantDetailPage() {
               )}
 
               {/* How to Apply */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-              >
-                <h2 className="text-2xl font-serif font-bold mb-6 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-brand-primary/10 flex items-center justify-center">
-                    <Mail className="w-5 h-5 text-brand-primary" />
-                  </div>
-                  How to Apply
-                </h2>
-                <div className="prose prose-lg dark:prose-invert max-w-none bg-gradient-to-br from-brand-primary/5 to-brand-secondary/5 p-6 rounded-2xl border border-brand-primary/10">
-                  <p className="text-foreground leading-relaxed whitespace-pre-line">
-                    {grant.how_to_apply}
-                  </p>
-                </div>
-              </motion.div>
+              {
+                grant.how_to_apply && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <h2 className="text-2xl font-serif font-bold mb-6 flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-brand-primary/10 flex items-center justify-center">
+                        <Mail className="w-5 h-5 text-brand-primary" />
+                      </div>
+                      How to Apply
+                    </h2>
+                    <div className="prose prose-lg dark:prose-invert max-w-none bg-gradient-to-br from-brand-primary/5 to-brand-secondary/5 p-6 rounded-2xl border border-brand-primary/10">
+                      <p className="text-foreground leading-relaxed whitespace-pre-line">
+                        {grant.how_to_apply}
+                      </p>
+                    </div>
+                  </motion.div>
+              )
+              }
 
               {/* Guidelines */}
               {grant.guidelines && grant.guidelines.length > 0 && (
@@ -734,14 +738,14 @@ export default function GrantDetailPage() {
               className="text-center mb-12"
             >
               <h2 className="text-3xl sm:text-4xl font-serif font-bold mb-4">
-                Similar Opportunities
+                Similar Grants & Scholarships
               </h2>
               <p className="text-muted-foreground">
                 Explore more {grant.grant_type}s that might interest you
               </p>
             </motion.div>
 
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-3 gap-8 h-full">
               {relatedGrants.map((relatedGrant, index) => {
                 const RelatedTypeIcon = getTypeIcon(relatedGrant.grant_type);
                 return (
@@ -754,7 +758,7 @@ export default function GrantDetailPage() {
                     className="group"
                   >
                     <Link href={`/grants/${relatedGrant.slug}`} className="block">
-                      <div className="relative bg-card border border-border/60 rounded-2xl overflow-hidden hover:border-brand-primary/40 transition-all duration-500 hover:shadow-xl h-full flex flex-col">
+                      <div className="relative bg-card border border-border/60 rounded-2xl overflow-hidden hover:border-brand-primary/40 transition-all duration-500 hover:shadow-xl h-full flex flex-col justify-between">
                         <div className="relative h-40 overflow-hidden bg-gradient-to-br from-brand-primary/10 to-brand-secondary/10">
                           {relatedGrant.image_url ? (
                             <img
@@ -786,13 +790,19 @@ export default function GrantDetailPage() {
                           <h3 className="text-lg font-bold text-foreground group-hover:text-brand-primary transition-colors mb-2 line-clamp-2 flex-1">
                             {relatedGrant.title}
                           </h3>
-                          <p className="text-xl font-bold text-brand-primary mb-3">
-                            {relatedGrant.formatted_amount}
-                          </p>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <Target className="w-3 h-3" />
-                            <span className="line-clamp-1">{relatedGrant.target_audience}</span>
-                          </div>
+                          {relatedGrant.formatted_amount && (
+                            <p className="text-xl font-bold text-brand-primary mb-3">
+                              {relatedGrant.formatted_amount}
+                            </p>
+                          )}
+                          {
+                            relatedGrant?.target_audience && (
+                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                <Target className="w-3 h-3" />
+                                <span className="line-clamp-1">{relatedGrant.target_audience}</span>
+                              </div>
+                            )
+                          }
                         </div>
                       </div>
                     </Link>

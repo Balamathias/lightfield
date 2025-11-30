@@ -235,7 +235,7 @@ export default function GrantsSection() {
                   <Link href={`/grants/${grant.slug}`} className="block h-full">
                     <div className="h-full bg-card border border-border/60 rounded-3xl overflow-hidden hover:border-brand-primary/40 hover:shadow-2xl hover:shadow-brand-primary/10 transition-all duration-500 flex flex-col">
                       {/* Image Section */}
-                      <div className="relative h-52 overflow-hidden bg-gradient-to-br from-brand-primary/10 to-brand-secondary/10">
+                      <div className="relative h-64 overflow-hidden bg-gradient-to-br from-brand-primary/10 to-brand-secondary/10">
                         {grant.image_url ? (
                           <img
                             src={grant.image_url}
@@ -279,13 +279,6 @@ export default function GrantsSection() {
 
                       {/* Content Section */}
                       <div className="p-6 flex-1 flex flex-col">
-                        {/* Featured Badge */}
-                        {/* {grant.is_featured && (
-                          <div className="flex items-center gap-1.5 text-amber-500 text-xs font-medium mb-2">
-                            <Sparkles className="w-3.5 h-3.5" />
-                            Featured Opportunity
-                          </div>
-                        )} */}
 
                         {/* Title */}
                         <h3 className="text-xl font-bold text-foreground group-hover:text-brand-primary transition-colors duration-300 line-clamp-2 mb-3">
@@ -299,10 +292,14 @@ export default function GrantsSection() {
 
                         {/* Meta Info */}
                         <div className="space-y-2 text-sm">
-                          <div className="flex items-center gap-2 text-muted-foreground">
-                            <Target className="w-4 h-4 text-brand-primary" />
-                            <span className="line-clamp-1">{grant.target_audience}</span>
-                          </div>
+                          {
+                            grant?.target_audience && (
+                              <div className="flex items-center gap-2 text-muted-foreground">
+                                <Target className="w-4 h-4 text-brand-primary" />
+                                <span className="line-clamp-1">{grant.target_audience}</span>
+                              </div>
+                            )
+                          }
                           {grant.application_deadline && (
                             <div className="flex items-center gap-2 text-muted-foreground">
                               <Calendar className="w-4 h-4 text-brand-primary" />
@@ -369,7 +366,7 @@ export default function GrantsSection() {
               href="/grants"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-brand-primary text-white font-semibold hover:bg-brand-primary/90 transition-all duration-300 shadow-lg shadow-brand-primary/20 hover:shadow-xl hover:shadow-brand-primary/30 hover:scale-105 group"
             >
-              <span>Explore All Opportunities</span>
+              <span>Explore All Grants & Scholarships</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>
