@@ -235,6 +235,112 @@ export interface SoloChatResponse {
   session_id: string;
 }
 
+// Grant & Scholarship types
+export type GrantType = 'scholarship' | 'grant' | 'award' | 'fellowship';
+export type GrantStatus = 'upcoming' | 'open' | 'closed' | 'awarded';
+
+export interface Grant {
+  id: number;
+  title: string;
+  slug: string;
+  grant_type: GrantType;
+  amount: number | null;
+  currency: string;
+  formatted_amount: string | null;
+  short_description: string;
+  full_description: string;
+  eligibility_criteria: string[];
+  how_to_apply: string;
+  requirements: string[];
+  application_email: string | null;
+  application_url: string | null;
+  guidelines: string[];
+  image_url: string | null;
+  banner_image_url: string | null;
+  target_audience: string;
+  target_institutions: string[];
+  application_deadline: string | null;
+  announcement_date: string | null;
+  status: GrantStatus;
+  is_featured: boolean;
+  is_active: boolean;
+  order_priority: number;
+  social_links: Record<string, string>;
+  is_application_open: boolean;
+  days_until_deadline: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface GrantListItem {
+  id: number;
+  title: string;
+  slug: string;
+  grant_type: GrantType;
+  amount: number | null;
+  currency: string;
+  formatted_amount: string | null;
+  short_description: string;
+  image_url: string | null;
+  target_audience: string;
+  application_deadline: string | null;
+  status: GrantStatus;
+  is_featured: boolean;
+  is_active: boolean;
+  order_priority: number;
+  is_application_open: boolean;
+  days_until_deadline: number | null;
+  created_at: string;
+}
+
+export interface GrantPublicItem {
+  id: number;
+  title: string;
+  slug: string;
+  grant_type: GrantType;
+  formatted_amount: string;
+  short_description: string;
+  image_url: string | null;
+  target_audience: string;
+  application_deadline: string | null;
+  status: GrantStatus;
+  is_application_open: boolean;
+  days_until_deadline: number | null;
+}
+
+export interface GrantFormData {
+  title: string;
+  grant_type: GrantType;
+  amount?: number | null;
+  currency?: string;
+  short_description?: string;
+  full_description?: string;
+  eligibility_criteria?: string[];
+  how_to_apply?: string;
+  requirements?: string[];
+  application_email?: string | null;
+  application_url?: string | null;
+  guidelines?: string[];
+  image_url?: string | null;
+  banner_image_url?: string | null;
+  target_audience?: string;
+  target_institutions?: string[];
+  application_deadline?: string | null;
+  announcement_date?: string | null;
+  status?: GrantStatus;
+  is_featured?: boolean;
+  is_active?: boolean;
+  order_priority?: number;
+  social_links?: Record<string, string>;
+}
+
+export interface GrantFilters {
+  search?: string;
+  type?: GrantType;
+  status?: GrantStatus;
+  is_featured?: boolean;
+}
+
 // Dashboard Stats types
 export interface DashboardStats {
   total_blogs: number;
@@ -247,6 +353,8 @@ export interface DashboardStats {
   total_views: number;
   total_testimonials: number;
   active_testimonials: number;
+  total_grants: number;
+  active_grants: number;
 }
 
 // Reorder types

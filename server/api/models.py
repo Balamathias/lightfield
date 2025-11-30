@@ -258,6 +258,141 @@ class Testimonial(models.Model):
         return f"{self.client_name} - {self.client_company or 'Individual'}"
 
 
+class Grant(models.Model):
+    """
+    Model for grants and scholarships offered by Lightfield LP
+    """
+    GRANT_TYPE_CHOICES = [
+        ('scholarship', 'Scholarship'),
+        ('grant', 'Grant'),
+        ('award', 'Award'),
+        ('fellowship', 'Fellowship'),
+    ]
+
+    STATUS_CHOICES = [
+        ('upcoming', 'Upcoming'),
+        ('open', 'Open for Applications'),
+        ('closed', 'Closed'),
+        ('awarded', 'Awarded'),
+    ]
+
+    title = models.CharField(max_length=255, help_text="e.g., 'Most Outstanding Student Judge'")
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
+    grant_type = models.CharField(max_length=20, choices=GRANT_TYPE_CHOICES, default='grant')
+
+    # Amount and value (optional - for display purposes only)
+    amount = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True, help_text="Grant amount (optional)")
+    currency = models.CharField(max_length=10, default='NGN')
+
+    # Description fields
+    short_description = models.TextField(max_length=300, blank=True, default='', help_text="Brief description for listing cards")
+    full_description = models.TextField(blank=True, default='', help_text="Full description with details")
+
+    # Eligibility and requirements (all optional)
+    eligibility_criteria = models.JSONField(
+        default=list,
+        blank=True,
+        help_text="List of eligibility requirements"
+    )
+    how_to_apply = models.TextField(blank=True, default='', help_text="Application instructions")
+    requirements = models.JSONField(
+        default=list,
+        blank=True,
+        help_text="List of required documents/materials"
+    )
+
+    # Contact and application
+    application_email = models.EmailField(blank=True, null=True)
+    application_url = models.URLField(blank=True, null=True, help_text="External application link if any")
+
+    # Guidelines
+    guidelines = models.JSONField(
+        default=list,
+        blank=True,
+        help_text="List of guidelines for applicants"
+    )
+
+    # Images
+    image_url = models.URLField(blank=True, null=True, help_text="Main grant/scholarship image")
+    banner_image_url = models.URLField(blank=True, null=True, help_text="Banner image for detail page")
+
+    # Target audience (optional)
+    target_audience = models.CharField(
+        max_length=255,
+        blank=True,
+        default='',
+        help_text="e.g., 'Law Students', 'Student Judges'"
+    )
+    target_institutions = models.JSONField(
+        default=list,
+        blank=True,
+        help_text="List of eligible institutions"
+    )
+
+    # Dates
+    application_deadline = models.DateField(blank=True, null=True)
+    announcement_date = models.DateField(blank=True, null=True, help_text="When winners will be announced")
+
+    # Status and visibility
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='upcoming')
+    is_featured = models.BooleanField(default=False, help_text="Show on homepage")
+    is_active = models.BooleanField(default=True, help_text="Show on website")
+
+    # Ordering
+    order_priority = models.IntegerField(default=0, help_text="Lower numbers appear first")
+
+    # Social sharing
+    social_links = models.JSONField(
+        default=dict,
+        help_text="Social media links for the grant (twitter, linkedin, etc.)"
+    )
+
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'grants'
+        ordering = ['order_priority', '-created_at']
+        verbose_name = 'Grant/Scholarship'
+        verbose_name_plural = 'Grants & Scholarships'
+        indexes = [
+            models.Index(fields=['slug']),
+            models.Index(fields=['status']),
+            models.Index(fields=['is_active', 'is_featured']),
+            models.Index(fields=['application_deadline']),
+        ]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    @property
+    def formatted_amount(self):
+        """Return formatted amount with currency symbol"""
+        if self.amount is None:
+            return None
+        if self.currency == 'NGN':
+            return f"₦{self.amount:,.0f}"
+        elif self.currency == 'USD':
+            return f"${self.amount:,.2f}"
+        return f"{self.currency} {self.amount:,.2f}"
+
+    @property
+    def is_application_open(self):
+        """Check if applications are still open"""
+        from django.utils import timezone
+        if self.status != 'open':
+            return False
+        if self.application_deadline:
+            return timezone.now().date() <= self.application_deadline
+        return True
+
+    def __str__(self):
+        return f"{self.title} - {self.formatted_amount}"
+
+
 class ChatAnalytics(models.Model):
     """
     Model for tracking Solo AI chat analytics

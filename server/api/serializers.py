@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Associate, BlogCategory, BlogPost, AIConversation, ContactSubmission, Testimonial
+from .models import Associate, BlogCategory, BlogPost, AIConversation, ContactSubmission, Testimonial, Grant
 
 User = get_user_model()
 
@@ -330,3 +330,164 @@ class DashboardStatsSerializer(serializers.Serializer):
     total_views = serializers.IntegerField()
     total_testimonials = serializers.IntegerField()
     active_testimonials = serializers.IntegerField()
+    total_grants = serializers.IntegerField()
+    active_grants = serializers.IntegerField()
+
+
+class GrantListSerializer(serializers.ModelSerializer):
+    """
+    Serializer for listing grants (public and admin list views)
+    """
+    formatted_amount = serializers.ReadOnlyField()
+    is_application_open = serializers.ReadOnlyField()
+    days_until_deadline = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Grant
+        fields = [
+            'id', 'title', 'slug', 'grant_type', 'amount', 'currency',
+            'formatted_amount', 'short_description', 'image_url',
+            'target_audience', 'application_deadline', 'status',
+            'is_featured', 'is_active', 'order_priority',
+            'is_application_open', 'days_until_deadline', 'created_at'
+        ]
+
+    def get_days_until_deadline(self, obj):
+        """Calculate days remaining until application deadline"""
+        from django.utils import timezone
+        if obj.application_deadline:
+            delta = obj.application_deadline - timezone.now().date()
+            return max(0, delta.days)
+        return None
+
+
+class GrantDetailSerializer(serializers.ModelSerializer):
+    """
+    Serializer for grant detail view (complete data)
+    """
+    formatted_amount = serializers.ReadOnlyField()
+    is_application_open = serializers.ReadOnlyField()
+    days_until_deadline = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Grant
+        fields = '__all__'
+        read_only_fields = ['id', 'slug', 'created_at', 'updated_at']
+
+    def get_days_until_deadline(self, obj):
+        """Calculate days remaining until application deadline"""
+        from django.utils import timezone
+        if obj.application_deadline:
+            delta = obj.application_deadline - timezone.now().date()
+            return max(0, delta.days)
+        return None
+
+
+class GrantWriteSerializer(serializers.ModelSerializer):
+    """
+    Serializer for creating/updating grants
+    Minimal required fields - most are optional for display-only grants
+    """
+    application_deadline = serializers.DateField(
+        required=False,
+        allow_null=True,
+        input_formats=['iso-8601', '%Y-%m-%d']
+    )
+    announcement_date = serializers.DateField(
+        required=False,
+        allow_null=True,
+        input_formats=['iso-8601', '%Y-%m-%d']
+    )
+    amount = serializers.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        required=False,
+        allow_null=True
+    )
+
+    class Meta:
+        model = Grant
+        exclude = ['slug', 'created_at', 'updated_at']
+
+    def to_internal_value(self, data):
+        # Make a mutable copy of the data
+        mutable_data = dict(data)
+        # Convert empty strings to None for nullable fields
+        if 'application_deadline' in mutable_data and mutable_data['application_deadline'] == '':
+            mutable_data['application_deadline'] = None
+        if 'announcement_date' in mutable_data and mutable_data['announcement_date'] == '':
+            mutable_data['announcement_date'] = None
+        if 'amount' in mutable_data and (mutable_data['amount'] == '' or mutable_data['amount'] == 0):
+            mutable_data['amount'] = None
+        return super().to_internal_value(mutable_data)
+
+    def validate_eligibility_criteria(self, value):
+        if value is not None and not isinstance(value, list):
+            raise serializers.ValidationError("Eligibility criteria must be a list")
+        return value or []
+
+    def validate_requirements(self, value):
+        if value is not None and not isinstance(value, list):
+            raise serializers.ValidationError("Requirements must be a list")
+        return value or []
+
+    def validate_guidelines(self, value):
+        if value is not None and not isinstance(value, list):
+            raise serializers.ValidationError("Guidelines must be a list")
+        return value or []
+
+    def validate_target_institutions(self, value):
+        if value is not None and not isinstance(value, list):
+            raise serializers.ValidationError("Target institutions must be a list")
+        return value or []
+
+    def validate_amount(self, value):
+        if value is not None and value <= 0:
+            raise serializers.ValidationError("Amount must be greater than 0")
+        return value
+
+
+class GrantPublicListSerializer(serializers.ModelSerializer):
+    """
+    Serializer for public grant listing (limited fields)
+    """
+    formatted_amount = serializers.ReadOnlyField()
+    is_application_open = serializers.ReadOnlyField()
+    days_until_deadline = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Grant
+        fields = [
+            'id', 'title', 'slug', 'grant_type', 'formatted_amount',
+            'short_description', 'image_url', 'target_audience',
+            'application_deadline', 'status', 'is_application_open',
+            'days_until_deadline'
+        ]
+
+    def get_days_until_deadline(self, obj):
+        from django.utils import timezone
+        if obj.application_deadline:
+            delta = obj.application_deadline - timezone.now().date()
+            return max(0, delta.days)
+        return None
+
+
+class GrantPublicDetailSerializer(serializers.ModelSerializer):
+    """
+    Serializer for public grant detail view
+    """
+    formatted_amount = serializers.ReadOnlyField()
+    is_application_open = serializers.ReadOnlyField()
+    days_until_deadline = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Grant
+        exclude = ['order_priority', 'is_active', 'updated_at']
+        read_only_fields = ['id', 'slug', 'created_at']
+
+    def get_days_until_deadline(self, obj):
+        from django.utils import timezone
+        if obj.application_deadline:
+            delta = obj.application_deadline - timezone.now().date()
+            return max(0, delta.days)
+        return None

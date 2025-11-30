@@ -42,6 +42,13 @@ urlpatterns = [
     path('testimonials/reorder/', views.reorder_testimonials, name='reorder-testimonials'),
     path('testimonials/<int:pk>/', views.testimonial_detail, name='testimonial-detail'),
 
+    # Grants & Scholarships
+    path('grants/', views.grants_list_create, name='grants-list-create'),
+    path('grants/reorder/', views.reorder_grants, name='reorder-grants'),
+    path('grants/featured/', views.featured_grants, name='featured-grants'),
+    path('grants/open/', views.open_grants, name='open-grants'),
+    path('grants/<slug:slug>/', views.grant_detail, name='grant-detail'),
+
     # Admin Dashboard
     path('admin/stats/', views.dashboard_stats, name='dashboard-stats'),
     path('admin/charts/blog-views/', views.blog_views_over_time, name='blog-views-chart'),

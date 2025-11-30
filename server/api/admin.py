@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User, Associate, BlogCategory, BlogPost, AIConversation, ContactSubmission
+from .models import User, Associate, BlogCategory, BlogPost, AIConversation, ContactSubmission, Grant
 
 
 @admin.register(User)
@@ -154,6 +154,58 @@ class ContactSubmissionAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False
+
+
+@admin.register(Grant)
+class GrantAdmin(admin.ModelAdmin):
+    """
+    Grant & Scholarship admin with comprehensive management
+    """
+    list_display = [
+        'title', 'grant_type', 'formatted_amount', 'status',
+        'is_featured', 'is_active', 'application_deadline', 'order_priority'
+    ]
+    list_filter = ['grant_type', 'status', 'is_featured', 'is_active', 'created_at']
+    search_fields = ['title', 'short_description', 'full_description', 'target_audience']
+    prepopulated_fields = {'slug': ('title',)}
+    ordering = ['order_priority', '-created_at']
+    list_editable = ['status', 'is_featured', 'is_active', 'order_priority']
+    date_hierarchy = 'created_at'
+
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('title', 'slug', 'grant_type', 'short_description', 'full_description')
+        }),
+        ('Amount & Value', {
+            'fields': ('amount', 'currency')
+        }),
+        ('Target Audience', {
+            'fields': ('target_audience', 'target_institutions')
+        }),
+        ('Requirements & Eligibility', {
+            'fields': ('eligibility_criteria', 'requirements', 'guidelines')
+        }),
+        ('Application Details', {
+            'fields': ('how_to_apply', 'application_email', 'application_url')
+        }),
+        ('Important Dates', {
+            'fields': ('application_deadline', 'announcement_date')
+        }),
+        ('Media', {
+            'fields': ('image_url', 'banner_image_url')
+        }),
+        ('Social Links', {
+            'fields': ('social_links',),
+            'classes': ('collapse',)
+        }),
+        ('Status & Priority', {
+            'fields': ('status', 'is_featured', 'is_active', 'order_priority')
+        }),
+    )
+
+    def formatted_amount(self, obj):
+        return obj.formatted_amount
+    formatted_amount.short_description = 'Amount'
 
 
 # Customize admin site header and title

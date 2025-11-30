@@ -15,6 +15,7 @@ import {
   Scale,
   MessageSquare,
   BarChart3,
+  Award,
 } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
@@ -48,6 +49,7 @@ export default function AdminLayout({
     { href: '/admin/', icon: LayoutDashboard, label: 'Dashboard' },
     { href: '/admin/blogs', icon: FileText, label: 'Blog Posts' },
     { href: '/admin/associates', icon: Users, label: 'Associates' },
+    { href: '/admin/grants', icon: Award, label: 'Grants/Scholarships' },
     { href: '/admin/categories', icon: FolderOpen, label: 'Categories' },
     { href: '/admin/testimonials', icon: MessageSquare, label: 'Testimonials' },
     { href: '/admin/analytics', icon: BarChart3, label: 'AI Analytics' },

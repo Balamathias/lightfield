@@ -433,11 +433,12 @@ IMPORTANT: You can discuss all information provided above about Lightfield LP. F
         Returns:
             dict: Context containing blog_posts, associates, services
         """
-        from .models import BlogPost, Associate
+        from .models import BlogPost, Associate, Grant
 
         context = {
             'blog_posts': [],
             'associates': [],
+            'grants': [],
             'services': []
         }
 
@@ -488,6 +489,40 @@ IMPORTANT: You can discuss all information provided above about Lightfield LP. F
             for assoc in associates
         ]
 
+         # Search for relevant grants and scholarships
+        grant_keywords = ['grant', 'scholarship', 'award', 'fellowship', 'funding', 'financial aid',
+                         'bursary', 'sponsorship', 'education', 'student', 'apply', 'application',
+                         'deadline', 'eligibility', 'opportunity']
+
+        message_lower = user_message.lower()
+
+        # Check if user is asking about grants/scholarships
+        is_grant_query = any(kw in message_lower for kw in grant_keywords)
+
+        if is_grant_query or any(kw in keywords for kw in ['grant', 'scholarship', 'award', 'fellowship']):
+            grant_query = Q(is_active=True)
+            grants = Grant.objects.filter(grant_query).order_by('-is_featured', 'order_priority', '-created_at')[:3]
+
+            context['grants'] = [
+                {
+                    'id': grant.id,
+                    'title': grant.title,
+                    'slug': grant.slug,
+                    'grant_type': grant.grant_type,
+                    'formatted_amount': grant.formatted_amount,
+                    'short_description': grant.short_description,
+                    'target_audience': grant.target_audience,
+                    'status': grant.status,
+                    'application_deadline': str(grant.application_deadline) if grant.application_deadline else None,
+                    'is_application_open': grant.is_application_open,
+                    'how_to_apply': grant.how_to_apply[:500] if grant.how_to_apply else None,
+                    'eligibility_criteria': grant.eligibility_criteria[:5] if grant.eligibility_criteria else [],
+                    'application_email': grant.application_email,
+                    'application_url': grant.application_url,
+                }
+                for grant in grants
+            ]
+
         # Identify relevant practice areas/services
         practice_areas = {
             'artificial intelligence': ['ai', 'artificial intelligence', 'machine learning', 'neural network', 'algorithm'],
@@ -498,10 +533,11 @@ IMPORTANT: You can discuss all information provided above about Lightfield LP. F
             'data privacy': ['privacy', 'data protection', 'gdpr', 'ccpa', 'personal data'],
             'property law': ['property', 'real estate', 'land', 'lease', 'tenant', 'landlord'],
             'litigation': ['litigation', 'lawsuit', 'dispute', 'court', 'trial', 'legal action'],
+            'grants and scholarships': ['grant', 'scholarship', 'award', 'fellowship', 'funding', 'bursary'],
         }
 
         for area, area_keywords in practice_areas.items():
-            if any(keyword in user_message.lower() for keyword in area_keywords):
+            if any(keyword in message_lower for keyword in area_keywords):
                 context['services'].append(area)
 
         return context
@@ -536,6 +572,27 @@ IMPORTANT: You can discuss all information provided above about Lightfield LP. F
                 parts.append(f"Title: {post['title']}")
                 parts.append(f"Excerpt: {post['excerpt']}")
                 parts.append(f"URL: /blog/{post['slug']}")
+                parts.append("")
+
+        if context.get('grants'):
+            parts.append("=== GRANTS & SCHOLARSHIPS ===")
+            for grant in context['grants']:
+                parts.append(f"**{grant['title']}** ({grant['grant_type'].title()})")
+                parts.append(f"Amount: {grant['formatted_amount']}")
+                parts.append(f"Status: {grant['status'].replace('_', ' ').title()}")
+                parts.append(f"Target Audience: {grant['target_audience']}")
+                parts.append(f"Description: {grant['short_description']}")
+                if grant.get('application_deadline'):
+                    parts.append(f"Deadline: {grant['application_deadline']}")
+                if grant.get('how_to_apply'):
+                    parts.append(f"How to Apply: {grant['how_to_apply'][:300]}...")
+                if grant.get('eligibility_criteria'):
+                    parts.append(f"Eligibility: {', '.join(grant['eligibility_criteria'][:3])}")
+                if grant.get('application_email'):
+                    parts.append(f"Email: {grant['application_email']}")
+                if grant.get('application_url'):
+                    parts.append(f"Apply Online: {grant['application_url']}")
+                parts.append(f"Details: /grants/{grant['slug']}")
                 parts.append("")
 
         if context['associates']:

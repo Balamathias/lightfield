@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.http import StreamingHttpResponse
 import json
 
-from .models import Associate, BlogCategory, BlogPost, AIConversation, ContactSubmission, Testimonial, User
+from .models import Associate, BlogCategory, BlogPost, AIConversation, ContactSubmission, Testimonial, User, Grant
 from .serializers import (
     AssociateListSerializer, AssociateDetailSerializer, AssociateWriteSerializer,
     BlogCategorySerializer, BlogCategoryWriteSerializer,
@@ -19,7 +19,9 @@ from .serializers import (
     AIConversationSerializer, AIMessageSerializer,
     ContactSubmissionSerializer, ContactSubmissionListSerializer,
     TestimonialListSerializer, TestimonialDetailSerializer, TestimonialWriteSerializer,
-    ReorderSerializer, DashboardStatsSerializer, UserSerializer
+    ReorderSerializer, DashboardStatsSerializer, UserSerializer,
+    GrantListSerializer, GrantDetailSerializer, GrantWriteSerializer,
+    GrantPublicListSerializer, GrantPublicDetailSerializer
 )
 from .permissions import IsAdminOrReadOnly, IsStaffOrSuperUser
 
@@ -561,6 +563,8 @@ def dashboard_stats(request):
         'total_views': BlogPost.objects.aggregate(Sum('view_count'))['view_count__sum'] or 0,
         'total_testimonials': Testimonial.objects.count(),
         'active_testimonials': Testimonial.objects.filter(is_active=True).count(),
+        'total_grants': Grant.objects.count(),
+        'active_grants': Grant.objects.filter(is_active=True).count(),
     }
 
     serializer = DashboardStatsSerializer(stats)
@@ -1051,3 +1055,141 @@ def solo_analytics_trends(request):
         'trends': trends_data,
         'period_days': days,
     })
+
+
+# ==================== Grants & Scholarships Views ====================
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAdminOrReadOnly])
+def grants_list_create(request):
+    """
+    GET: List all active grants (public) or all grants (admin)
+    POST: Create new grant (admin only)
+    """
+    if request.method == 'GET':
+        # Get query parameters
+        search = request.query_params.get('search', '')
+        grant_type = request.query_params.get('type', '')
+        grant_status = request.query_params.get('status', '')
+        is_featured = request.query_params.get('is_featured', '')
+
+        # Build queryset
+        queryset = Grant.objects.all()
+
+        # If not admin, show only active grants
+        if not (request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser)):
+            queryset = queryset.filter(is_active=True)
+            serializer_class = GrantPublicListSerializer
+        else:
+            serializer_class = GrantListSerializer
+
+        # Filters
+        if search:
+            queryset = queryset.filter(
+                Q(title__icontains=search) |
+                Q(short_description__icontains=search) |
+                Q(target_audience__icontains=search)
+            )
+
+        if grant_type:
+            queryset = queryset.filter(grant_type=grant_type)
+
+        if grant_status:
+            queryset = queryset.filter(status=grant_status)
+
+        if is_featured:
+            queryset = queryset.filter(is_featured=True)
+
+        serializer = serializer_class(queryset, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = GrantWriteSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
+@permission_classes([IsAdminOrReadOnly])
+def grant_detail(request, slug):
+    """
+    GET: Retrieve grant detail (public)
+    PUT/PATCH: Update grant (admin only)
+    DELETE: Delete grant (admin only)
+    """
+    grant = get_object_or_404(Grant, slug=slug)
+
+    if request.method == 'GET':
+        # Check if grant is active for non-admin users
+        if not (request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser)):
+            if not grant.is_active:
+                return Response(
+                    {'error': 'Grant not found'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            serializer = GrantPublicDetailSerializer(grant)
+        else:
+            serializer = GrantDetailSerializer(grant)
+        return Response(serializer.data)
+
+    elif request.method in ['PUT', 'PATCH']:
+        partial = request.method == 'PATCH'
+        serializer = GrantWriteSerializer(grant, data=request.data, partial=partial)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        grant.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+@permission_classes([IsStaffOrSuperUser])
+def reorder_grants(request):
+    """
+    Reorder grants by updating their order_priority
+    Expects: { "items": [{"id": 1, "order_priority": 0}, {"id": 2, "order_priority": 1}, ...] }
+    """
+    serializer = ReorderSerializer(data=request.data)
+    if serializer.is_valid():
+        for item in serializer.validated_data['items']:
+            Grant.objects.filter(id=item['id']).update(order_priority=item['order_priority'])
+        return Response({'message': 'Grants reordered successfully'})
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def featured_grants(request):
+    """
+    Get featured grants for homepage display (public)
+    Returns top 3 featured active grants
+    """
+    queryset = Grant.objects.filter(
+        is_active=True,
+        is_featured=True
+    ).order_by('order_priority', '-created_at')[:3]
+
+    serializer = GrantPublicListSerializer(queryset, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def open_grants(request):
+    """
+    Get currently open grants (public)
+    Returns grants that are accepting applications
+    """
+    queryset = Grant.objects.filter(
+        is_active=True,
+        status='open'
+    ).order_by('application_deadline', 'order_priority')
+
+    serializer = GrantPublicListSerializer(queryset, many=True)
+    return Response(serializer.data)
