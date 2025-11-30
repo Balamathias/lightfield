@@ -280,12 +280,12 @@ export default function GrantsSection() {
                       {/* Content Section */}
                       <div className="p-6 flex-1 flex flex-col">
                         {/* Featured Badge */}
-                        {grant.is_featured && (
+                        {/* {grant.is_featured && (
                           <div className="flex items-center gap-1.5 text-amber-500 text-xs font-medium mb-2">
                             <Sparkles className="w-3.5 h-3.5" />
                             Featured Opportunity
                           </div>
-                        )}
+                        )} */}
 
                         {/* Title */}
                         <h3 className="text-xl font-bold text-foreground group-hover:text-brand-primary transition-colors duration-300 line-clamp-2 mb-3">
