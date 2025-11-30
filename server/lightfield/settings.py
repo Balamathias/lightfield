@@ -153,10 +153,10 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3002",
     "http://127.0.0.1:3001",
     "http://127.0.0.1:3002",
+    "https://lightfieldlegal.com",
     "https://lightfield.vercel.app",
     "https://lightfieldlp.vercel.app",
     "https://lightfieldlp.com",
-    "https://lightfieldlegal.com",
 ]
 CORS_ALLOW_CREDENTIALS = True
 
