@@ -171,22 +171,6 @@ export default function ContactPage() {
                 </p>
               </motion.div>
 
-              {/* Kwara Office */}
-              <motion.div
-                variants={itemVariants}
-                className="group p-6 rounded-2xl bg-card border border-border/60 hover:border-brand-primary/40 hover:shadow-xl transition-all duration-500"
-              >
-                <div className="w-12 h-12 rounded-lg bg-brand-primary/10 flex items-center justify-center mb-4 group-hover:bg-brand-primary/20 transition-colors">
-                  <MapPin className="w-6 h-6 text-brand-primary" />
-                </div>
-                <h3 className="font-semibold text-lg mb-2">Kwara Office</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  No. 23 Agunbiade Ganiki Street,<br />
-                  Sango, Ilorin,<br />
-                  Kwara State, Nigeria.
-                </p>
-              </motion.div>
-
               {/* Abuja Office */}
               <motion.div
                 variants={itemVariants}
@@ -414,7 +398,7 @@ export default function ContactPage() {
               Visit Our Offices
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Schedule an in-person consultation at any of our conveniently located offices in Lagos, Abuja, or Kwara State.
+              Schedule an in-person consultation at any of our conveniently located offices in Lagos, or Abuja.
             </p>
           </motion.div>
 
@@ -478,38 +462,6 @@ export default function ContactPage() {
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   title="Abuja Office Location"
-                  className="w-full h-full"
-                />
-              </div>
-            </motion.div>
-
-            {/* Kwara Office Map */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="space-y-4 md:col-span-2 lg:col-span-1"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-brand-primary/10 flex items-center justify-center">
-                  <MapPin className="w-5 h-5 text-brand-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">Kwara Office</h3>
-                  <p className="text-sm text-muted-foreground">Sango, Ilorin, Kwara State</p>
-                </div>
-              </div>
-              <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl bg-muted border border-border/60">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3946.0183839123456!2d4.5508799!3d8.4966!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103d4c8c23456789%3A0x1234567890abcdef!2sSango%2C%20Ilorin!5e0!3m2!1sen!2sng!4v1700000000000!5m2!1sen!2sng"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Kwara Office Location"
                   className="w-full h-full"
                 />
               </div>

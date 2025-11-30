@@ -359,10 +359,6 @@ Suite T7, 3rd Floor,
 Alibro Atrium Plaza,
 Utako District, FCT Abuja, Nigeria.
 
-**Kwara Office**:
-No. 23 Agunbiade Ganiki Street,
-Sango, Ilorin,
-Kwara State, Nigeria.
 
 === CONTACT INFORMATION ===
 
@@ -500,6 +496,8 @@ IMPORTANT: You can discuss all information provided above about Lightfield LP. F
             'regulatory compliance': ['compliance', 'regulation', 'regulatory', 'sec', 'finra', 'gdpr'],
             'corporate law': ['corporate', 'company', 'startup', 'm&a', 'merger', 'acquisition', 'fundraising'],
             'data privacy': ['privacy', 'data protection', 'gdpr', 'ccpa', 'personal data'],
+            'property law': ['property', 'real estate', 'land', 'lease', 'tenant', 'landlord'],
+            'litigation': ['litigation', 'lawsuit', 'dispute', 'court', 'trial', 'legal action'],
         }
 
         for area, area_keywords in practice_areas.items():
@@ -608,8 +606,8 @@ Our vision is to become Africa's leading tech-driven and innovation-focused law 
 **Lagos Office (Head Office)**:
 Road 5, J59, Ikota Shopping Complex, VGC, Lekki, Lagos State, Nigeria.
 
-**Kwara Office**:
-No. 23 Agunbiade Ganiki Street, Sango, Ilorin, Kwara State, Nigeria.
+**Abuja Office**:
+Suite T7, 3rd Floor, Alibro Atrium Plaza, Utako District, FCT Abuja, Nigeria.
 
 === CONTACT INFORMATION ===
 

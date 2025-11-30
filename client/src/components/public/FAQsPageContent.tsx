@@ -149,8 +149,8 @@ export default function FAQsPageContent() {
       {/* Background Elements */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-brand-primary/5 to-transparent" />
-        <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-radial from-brand-primary/5 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 left-0 w-[400px] h-[400px] bg-gradient-radial from-brand-secondary/5 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-1/4 right-0 w-full md:w-[600px] h-[600px] bg-gradient-radial from-brand-primary/5 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 left-0 w-full md:w-[400px] h-[400px] bg-gradient-radial from-brand-secondary/5 to-transparent rounded-full blur-3xl" />
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">

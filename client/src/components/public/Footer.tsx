@@ -33,6 +33,9 @@ const practiceAreas = [
   { label: 'Smart Contract Auditing', href: '/services#smart-contracts' },
   { label: 'Regulatory Compliance', href: '/services#compliance' },
   { label: 'Corporate Advisory', href: '/services#corporate' },
+  { label: 'Property Law', href: '/services#property-law' },
+  { label: 'Litigation Services', href: '/services#litigation' },
+  { label: 'Data Privacy & Protection', href: '/services#data-privacy' },
 ];
 
 const socialLinks = [

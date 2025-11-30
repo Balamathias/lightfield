@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import Navbar from '@/components/public/Navbar';
 import Footer from '@/components/public/Footer';
+import { CountUp } from '@/hooks/useCountUp';
 import {
   Target,
   Eye,
@@ -17,14 +18,15 @@ import {
   Scale,
   Lightbulb,
   Heart,
+  BadgeCheck,
 } from 'lucide-react';
 import Link from 'next/link';
 
 const stats = [
-  { label: 'Practice Areas', value: '10+', icon: Award },
-  { label: 'Client Satisfaction', value: '100%', icon: Users },
-  { label: 'Success Rate', value: '98%', icon: TrendingUp },
-  { label: 'Office Locations', value: '3', icon: Globe },
+  { label: 'Practice Areas', value: 10, suffix: '+', icon: Award },
+  { label: 'Client Satisfaction', value: 100, suffix: '%', icon: Users },
+  { label: 'Success Rate', value: 98, suffix: '%', icon: TrendingUp },
+  { label: 'Office Locations', value: 2, suffix: '', icon: Globe },
 ];
 
 const values = [
@@ -64,7 +66,7 @@ const timeline = [
   {
     year: '2023',
     title: 'Multi-Office Expansion',
-    description: 'Opened our second office in Kwara State, extending our reach to serve clients across multiple regions in Nigeria.',
+    description: 'Opened our second office in Abuja, extending our reach to serve clients across multiple regions in Nigeria.',
   },
   {
     year: '2024',
@@ -169,7 +171,12 @@ export default function AboutPage() {
                   <stat.icon className="w-7 h-7 text-brand-primary" />
                 </div>
                 <div className="text-4xl font-serif font-bold text-brand-primary mb-2">
-                  {stat.value}
+                  <CountUp
+                    end={stat.value}
+                    suffix={stat.suffix}
+                    duration={2000}
+                    delay={index * 150}
+                  />
                 </div>
                 <div className="text-sm text-muted-foreground font-medium">
                   {stat.label}
@@ -333,7 +340,7 @@ export default function AboutPage() {
                 >
                   {/* Year Badge */}
                   <div className="hidden md:flex w-16 h-16 rounded-full bg-brand-primary flex-shrink-0 items-center justify-center text-white font-bold text-sm shadow-lg shadow-brand-primary/20">
-                    {milestone.year}
+                    <BadgeCheck />
                   </div>
 
                   {/* Mobile Year Badge */}

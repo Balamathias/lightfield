@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Building2, Handshake } from 'lucide-react';
+import { CountUp } from '@/hooks/useCountUp';
 
 // Placeholder partner data - replace with actual logos later
 const partners = [
@@ -160,13 +161,20 @@ export default function PartnersSection() {
           className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 py-8 border-t border-border/50"
         >
           {[
-            { number: '500+', label: 'Clients Served' },
-            { number: '25+', label: 'Countries' },
-            { number: '98%', label: 'Client Satisfaction' },
-            { number: '10+', label: 'Years Experience' },
+            { number: 500, suffix: '+', label: 'Clients Served' },
+            { number: 25, suffix: '+', label: 'Countries' },
+            { number: 98, suffix: '%', label: 'Client Satisfaction' },
+            { number: 10, suffix: '+', label: 'Years Experience' },
           ].map((stat, index) => (
             <div key={index} className="text-center">
-              <div className="text-3xl font-bold text-brand-primary mb-1">{stat.number}</div>
+              <div className="text-3xl font-bold text-brand-primary mb-1">
+                <CountUp
+                  end={stat.number}
+                  suffix={stat.suffix}
+                  duration={2000}
+                  delay={index * 100}
+                />
+              </div>
               <div className="text-sm text-muted-foreground">{stat.label}</div>
             </div>
           ))}

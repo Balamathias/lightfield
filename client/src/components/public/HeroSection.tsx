@@ -263,7 +263,7 @@ export default function HeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="relative hidden lg:block"
+            className="relative flex lg:block"
           >
             <div className="relative w-full h-[500px] lg:h-[600px] max-w-[500px] lg:max-w-[600px] mx-auto">
               {/* Animated Background Rings */}
