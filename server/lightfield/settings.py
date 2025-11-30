@@ -156,6 +156,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://lightfield.vercel.app",
     "https://lightfieldlp.vercel.app",
     "https://lightfieldlp.com",
+    "https://lightfieldlegal.com",
 ]
 CORS_ALLOW_CREDENTIALS = True
 
