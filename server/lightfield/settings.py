@@ -154,11 +154,21 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3001",
     "http://127.0.0.1:3002",
     "https://lightfieldlegal.com",
+    "https://www.lightfieldlegal.com",
     "https://lightfield.vercel.app",
     "https://lightfieldlp.vercel.app",
     "https://lightfieldlp.com",
 ]
 CORS_ALLOW_CREDENTIALS = True
+
+# CSRF Trusted Origins (required when CORS_ALLOW_CREDENTIALS = True)
+CSRF_TRUSTED_ORIGINS = [
+    "https://lightfieldlegal.com",
+    "https://www.lightfieldlegal.com",
+    "https://lightfield.vercel.app",
+    "https://lightfieldlp.vercel.app",
+    "https://lightfieldlp.com",
+]
 
 # REST Framework Configuration
 REST_FRAMEWORK = {
