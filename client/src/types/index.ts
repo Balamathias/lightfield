@@ -355,6 +355,10 @@ export interface DashboardStats {
   active_testimonials: number;
   total_grants: number;
   active_grants: number;
+  total_bookings: number;
+  paid_bookings: number;
+  consultation_revenue: string;
+  pending_confirmations: number;
 }
 
 // Reorder types
@@ -438,4 +442,179 @@ export interface TrendDataPoint {
 export interface SoloAnalyticsTrends {
   trends: TrendDataPoint[];
   period_days: number;
+}
+
+// Consultation types
+export type ConsultationCategory = 'ai_law' | 'blockchain' | 'data_privacy' | 'tech_contracts' | 'ip' | 'corporate' | 'other';
+export type BookingStatus = 'pending_payment' | 'paid' | 'confirmed' | 'completed' | 'cancelled' | 'refunded';
+
+export interface ConsultationService {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  short_description: string;
+  category: ConsultationCategory;
+  price: number;
+  currency: string;
+  formatted_price: string;
+  duration_minutes: number;
+  formatted_duration: string;
+  icon_name: string;
+  image_url: string | null;
+  order_priority: number;
+  is_active: boolean;
+  is_featured: boolean;
+  booking_count?: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ConsultationServiceListItem {
+  id: number;
+  name: string;
+  slug: string;
+  short_description: string;
+  category: ConsultationCategory;
+  price: number;
+  currency: string;
+  formatted_price: string;
+  duration_minutes: number;
+  formatted_duration: string;
+  icon_name: string;
+  image_url: string | null;
+  order_priority: number;
+  is_active: boolean;
+  is_featured: boolean;
+  created_at: string;
+}
+
+export interface ConsultationServicePublic {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  short_description: string;
+  category: ConsultationCategory;
+  price: number;
+  currency: string;
+  formatted_price: string;
+  duration_minutes: number;
+  formatted_duration: string;
+  icon_name: string;
+  image_url: string | null;
+  is_featured: boolean;
+}
+
+export interface ConsultationServiceFormData {
+  name: string;
+  description: string;
+  short_description: string;
+  category: ConsultationCategory;
+  price: number;
+  currency?: string;
+  duration_minutes: number;
+  icon_name?: string;
+  image_url?: string | null;
+  order_priority?: number;
+  is_active?: boolean;
+  is_featured?: boolean;
+}
+
+export interface BookingFormData {
+  service_id?: number | null;
+  custom_service_description?: string;
+  client_name: string;
+  client_email: string;
+  client_phone: string;
+  client_company?: string;
+  preferred_date: string;
+  preferred_time: string;
+  notes?: string;
+}
+
+export interface BookingCreateResponse {
+  reference: string;
+  access_code: string;
+  authorization_url: string;
+  amount: number;
+  currency: string;
+}
+
+export interface BookingStatusResponse {
+  reference: string;
+  service_name: string;
+  amount: number;
+  currency: string;
+  formatted_amount: string;
+  status: BookingStatus;
+  payment_verified: boolean;
+  preferred_date: string;
+  preferred_time: string;
+  client_name: string;
+  client_email: string;
+}
+
+export interface BookingAdminListItem {
+  id: number;
+  reference: string;
+  service_name: string;
+  client_name: string;
+  client_email: string;
+  client_phone: string;
+  formatted_amount: string;
+  status: BookingStatus;
+  payment_verified: boolean;
+  preferred_date: string;
+  preferred_time: string;
+  assigned_associate_name: string | null;
+  created_at: string;
+}
+
+export interface BookingAdminDetail {
+  id: number;
+  reference: string;
+  service: number | null;
+  service_name: string;
+  service_detail: ConsultationServiceListItem | null;
+  custom_service_description: string;
+  client_name: string;
+  client_email: string;
+  client_phone: string;
+  client_company: string;
+  preferred_date: string;
+  preferred_time: string;
+  notes: string;
+  amount: number;
+  currency: string;
+  formatted_amount: string;
+  paystack_reference: string;
+  paystack_access_code: string;
+  payment_verified: boolean;
+  payment_verified_at: string | null;
+  payment_channel: string;
+  status: BookingStatus;
+  admin_notes: string;
+  assigned_associate: number | null;
+  assigned_associate_name: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BookingFilters {
+  search?: string;
+  status?: BookingStatus;
+  date_from?: string;
+  date_to?: string;
+  service_id?: number;
+}
+
+export interface ConsultationStats {
+  total_bookings: number;
+  paid_bookings: number;
+  revenue: number;
+  formatted_revenue: string;
+  pending_confirmations: number;
+  status_breakdown: Array<{ status: string; count: number }>;
+  popular_services: Array<{ service__name: string; count: number }>;
 }

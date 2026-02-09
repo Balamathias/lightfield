@@ -1,6 +1,10 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Associate, BlogCategory, BlogPost, AIConversation, ContactSubmission, Testimonial, Grant
+from .models import (
+    Associate, BlogCategory, BlogPost, AIConversation,
+    ContactSubmission, Testimonial, Grant,
+    ConsultationService, ConsultationBooking
+)
 
 User = get_user_model()
 
@@ -491,3 +495,219 @@ class GrantPublicDetailSerializer(serializers.ModelSerializer):
             delta = obj.application_deadline - timezone.now().date()
             return max(0, delta.days)
         return None
+
+
+# ==================== Consultation Service Serializers ====================
+
+class ConsultationServiceListSerializer(serializers.ModelSerializer):
+    """
+    Serializer for listing consultation services (admin)
+    """
+    formatted_price = serializers.ReadOnlyField()
+    formatted_duration = serializers.ReadOnlyField()
+
+    class Meta:
+        model = ConsultationService
+        fields = [
+            'id', 'name', 'slug', 'short_description', 'category',
+            'price', 'currency', 'formatted_price', 'duration_minutes',
+            'formatted_duration', 'icon_name', 'image_url',
+            'order_priority', 'is_active', 'is_featured', 'created_at'
+        ]
+
+
+class ConsultationServiceDetailSerializer(serializers.ModelSerializer):
+    """
+    Serializer for consultation service detail (admin)
+    """
+    formatted_price = serializers.ReadOnlyField()
+    formatted_duration = serializers.ReadOnlyField()
+    booking_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ConsultationService
+        fields = '__all__'
+        read_only_fields = ['id', 'slug', 'created_at', 'updated_at']
+
+    def get_booking_count(self, obj):
+        return obj.bookings.filter(payment_verified=True).count()
+
+
+class ConsultationServiceWriteSerializer(serializers.ModelSerializer):
+    """
+    Serializer for creating/updating consultation services
+    """
+    class Meta:
+        model = ConsultationService
+        exclude = ['slug', 'created_at', 'updated_at']
+
+    def validate_price(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Price must be greater than 0")
+        return value
+
+    def validate_duration_minutes(self, value):
+        if value < 15 or value > 480:
+            raise serializers.ValidationError("Duration must be between 15 and 480 minutes")
+        return value
+
+
+class ConsultationServicePublicSerializer(serializers.ModelSerializer):
+    """
+    Serializer for public-facing service display
+    """
+    formatted_price = serializers.ReadOnlyField()
+    formatted_duration = serializers.ReadOnlyField()
+
+    class Meta:
+        model = ConsultationService
+        fields = [
+            'id', 'name', 'slug', 'description', 'short_description',
+            'category', 'price', 'currency', 'formatted_price',
+            'duration_minutes', 'formatted_duration', 'icon_name',
+            'image_url', 'is_featured'
+        ]
+
+
+# ==================== Consultation Booking Serializers ====================
+
+class BookingCreateSerializer(serializers.Serializer):
+    """
+    Serializer for creating a new booking (public)
+    """
+    service_id = serializers.IntegerField(required=False, allow_null=True)
+    custom_service_description = serializers.CharField(required=False, allow_blank=True, default='')
+    client_name = serializers.CharField(max_length=255)
+    client_email = serializers.EmailField()
+    client_phone = serializers.CharField(max_length=50)
+    client_company = serializers.CharField(max_length=255, required=False, allow_blank=True, default='')
+    preferred_date = serializers.DateField()
+    preferred_time = serializers.TimeField()
+    notes = serializers.CharField(required=False, allow_blank=True, default='')
+
+    def validate(self, data):
+        service_id = data.get('service_id')
+        custom_desc = data.get('custom_service_description', '')
+
+        if not service_id and not custom_desc:
+            raise serializers.ValidationError(
+                "Either a service must be selected or a custom description provided."
+            )
+
+        if service_id:
+            try:
+                service = ConsultationService.objects.get(id=service_id, is_active=True)
+                data['service'] = service
+            except ConsultationService.DoesNotExist:
+                raise serializers.ValidationError({"service_id": "Selected service not found or inactive."})
+
+        # Validate date is in the future
+        from django.utils import timezone
+        if data['preferred_date'] <= timezone.now().date():
+            raise serializers.ValidationError({"preferred_date": "Preferred date must be in the future."})
+
+        return data
+
+
+class BookingStatusSerializer(serializers.ModelSerializer):
+    """
+    Serializer for public booking status lookup
+    """
+    service_name = serializers.ReadOnlyField()
+    formatted_amount = serializers.ReadOnlyField()
+
+    class Meta:
+        model = ConsultationBooking
+        fields = [
+            'reference', 'service_name', 'amount', 'currency',
+            'formatted_amount', 'status', 'payment_verified',
+            'preferred_date', 'preferred_time', 'client_name', 'client_email',
+        ]
+
+
+class BookingAdminListSerializer(serializers.ModelSerializer):
+    """
+    Serializer for admin booking list
+    """
+    service_name = serializers.ReadOnlyField()
+    formatted_amount = serializers.ReadOnlyField()
+    assigned_associate_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ConsultationBooking
+        fields = [
+            'id', 'reference', 'service_name', 'client_name', 'client_email',
+            'client_phone', 'formatted_amount', 'status', 'payment_verified',
+            'preferred_date', 'preferred_time', 'assigned_associate_name',
+            'created_at',
+        ]
+
+    def get_assigned_associate_name(self, obj):
+        if obj.assigned_associate:
+            return obj.assigned_associate.name
+        return None
+
+
+class BookingAdminDetailSerializer(serializers.ModelSerializer):
+    """
+    Serializer for admin booking detail
+    """
+    service_name = serializers.ReadOnlyField()
+    formatted_amount = serializers.ReadOnlyField()
+    service_detail = ConsultationServiceListSerializer(source='service', read_only=True)
+    assigned_associate_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ConsultationBooking
+        fields = '__all__'
+        read_only_fields = [
+            'id', 'reference', 'paystack_reference', 'paystack_access_code',
+            'payment_verified', 'payment_verified_at', 'payment_channel',
+            'created_at', 'updated_at',
+        ]
+
+    def get_assigned_associate_name(self, obj):
+        if obj.assigned_associate:
+            return obj.assigned_associate.name
+        return None
+
+
+VALID_STATUS_TRANSITIONS = {
+    'pending_payment': ['cancelled'],
+    'paid': ['confirmed', 'cancelled', 'refunded'],
+    'confirmed': ['completed', 'cancelled', 'refunded'],
+    'completed': ['refunded'],
+    'cancelled': [],
+    'refunded': [],
+}
+
+
+class BookingAdminUpdateSerializer(serializers.Serializer):
+    """
+    Serializer for admin booking updates (status, notes, assignment)
+    """
+    status = serializers.ChoiceField(
+        choices=ConsultationBooking.STATUS_CHOICES,
+        required=False
+    )
+    admin_notes = serializers.CharField(required=False, allow_blank=True)
+    assigned_associate = serializers.IntegerField(required=False, allow_null=True)
+
+    def validate_status(self, value):
+        booking = self.context.get('booking')
+        if booking:
+            allowed = VALID_STATUS_TRANSITIONS.get(booking.status, [])
+            if value not in allowed and value != booking.status:
+                raise serializers.ValidationError(
+                    f"Cannot transition from '{booking.status}' to '{value}'. "
+                    f"Allowed transitions: {', '.join(allowed) if allowed else 'none (terminal state)'}"
+                )
+        return value
+
+    def validate_assigned_associate(self, value):
+        if value is not None:
+            try:
+                Associate.objects.get(id=value, is_active=True)
+            except Associate.DoesNotExist:
+                raise serializers.ValidationError("Associate not found or inactive.")
+        return value

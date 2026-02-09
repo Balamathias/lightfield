@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Search, Plus, Loader2, ArrowRight, FileText, User, Phone } from 'lucide-react';
+import { Menu, X, Search, Plus, Loader2, ArrowRight, FileText, User, Phone, CalendarCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '../ThemeToggle';
 import { useBlogs } from '@/hooks/useBlogs';
@@ -16,7 +16,7 @@ const navItems = [
   { label: 'OUR TEAM', href: '/team' },
   { label: 'BLOG', href: '/blog' },
   { label: 'FAQS', href: '/faqs' },
-  { label: 'GET IN TOUCH', href: '/contact' },
+  { label: 'CONTACT', href: '/contact' },
 ];
 
 export default function Navbar() {
@@ -117,12 +117,12 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Navigation - Center */}
-            <div className="hidden lg:flex items-center space-x-1 absolute left-1/2 -translate-x-1/2">
+            <div className="hidden lg:flex items-center absolute left-1/2 -translate-x-1/2">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="relative px-4 py-2 text-[11px] font-semibold tracking-widest text-muted-foreground hover:text-foreground transition-colors duration-300 group"
+                  className="relative px-3 xl:px-4 py-2 text-[11px] font-semibold tracking-wider text-muted-foreground hover:text-foreground transition-colors duration-300 group whitespace-nowrap"
                 >
                   {item.label}
                   <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-brand-primary group-hover:w-3/4 transition-all duration-300" />
@@ -143,9 +143,9 @@ export default function Navbar() {
                 asChild
                 className="bg-brand-primary hover:bg-brand-primary/90 text-white font-bold text-xs tracking-widest px-6 py-5 rounded-sm shadow-lg hover:shadow-xl transition-all duration-300 uppercase"
               >
-                <Link href="/contact">
-                  <span>Book a Call</span>
-                  <Plus className="w-4 h-4 ml-2" strokeWidth={3} />
+                <Link href="/consultations">
+                  <CalendarCheck className="w-4 h-4 mr-2" strokeWidth={2} />
+                  <span>Book a Consultation</span>
                 </Link>
               </Button>
               <ThemeToggle />
@@ -258,9 +258,9 @@ export default function Navbar() {
                     asChild
                     className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white font-bold text-xs tracking-widest py-5 uppercase"
                   >
-                    <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
-                      <Phone className="w-4 h-4 mr-2" strokeWidth={2} />
-                      <span>Book a Call</span>
+                    <Link href="/consultations" onClick={() => setMobileMenuOpen(false)}>
+                      <CalendarCheck className="w-4 h-4 mr-2" strokeWidth={2} />
+                      <span>Book a Consultation</span>
                     </Link>
                   </Button>
                 </motion.div>

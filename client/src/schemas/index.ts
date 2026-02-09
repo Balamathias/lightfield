@@ -112,3 +112,42 @@ export const blogAIAssistantSchema = z.object({
 });
 
 export type BlogAIAssistantFormValues = z.infer<typeof blogAIAssistantSchema>;
+
+// Consultation Service schema (admin)
+export const consultationServiceSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters').max(255),
+  description: z.string().min(20, 'Description must be at least 20 characters'),
+  short_description: z.string().min(10, 'Short description must be at least 10 characters').max(300),
+  category: z.enum(['ai_law', 'blockchain', 'data_privacy', 'tech_contracts', 'ip', 'corporate', 'other']),
+  price: z.number().positive('Price must be greater than 0'),
+  currency: z.string().default('NGN'),
+  duration_minutes: z.number().int().min(15, 'Minimum 15 minutes').max(480, 'Maximum 8 hours'),
+  icon_name: z.string().optional().or(z.literal('')),
+  image_url: z.string().url('Invalid URL').optional().or(z.literal('')),
+  order_priority: z.number().int().min(0).optional(),
+  is_active: z.boolean().optional(),
+  is_featured: z.boolean().optional(),
+});
+
+export type ConsultationServiceFormValues = z.infer<typeof consultationServiceSchema>;
+
+// Booking form schema (public)
+export const bookingFormSchema = z.object({
+  service_id: z.number().nullable().optional(),
+  custom_service_description: z.string().optional().default(''),
+  client_name: z.string().min(2, 'Name must be at least 2 characters').max(255),
+  client_email: z.string().email('Invalid email address'),
+  client_phone: z.string().min(7, 'Phone number must be at least 7 digits').max(50),
+  client_company: z.string().max(255).optional().default(''),
+  preferred_date: z.string().min(1, 'Date is required'),
+  preferred_time: z.string().min(1, 'Time is required'),
+  notes: z.string().optional().default(''),
+}).refine(
+  (data) => data.service_id || (data.custom_service_description && data.custom_service_description.length > 0),
+  {
+    message: 'Please select a service or describe your consultation needs',
+    path: ['service_id'],
+  }
+);
+
+export type BookingFormValues = z.infer<typeof bookingFormSchema>;

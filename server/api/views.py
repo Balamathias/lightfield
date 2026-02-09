@@ -11,7 +11,11 @@ from django.shortcuts import get_object_or_404
 from django.http import StreamingHttpResponse
 import json
 
-from .models import Associate, BlogCategory, BlogPost, AIConversation, ContactSubmission, Testimonial, User, Grant
+from .models import (
+    Associate, BlogCategory, BlogPost, AIConversation,
+    ContactSubmission, Testimonial, User, Grant,
+    ConsultationService, ConsultationBooking
+)
 from .serializers import (
     AssociateListSerializer, AssociateDetailSerializer, AssociateWriteSerializer,
     BlogCategorySerializer, BlogCategoryWriteSerializer,
@@ -21,7 +25,11 @@ from .serializers import (
     TestimonialListSerializer, TestimonialDetailSerializer, TestimonialWriteSerializer,
     ReorderSerializer, DashboardStatsSerializer, UserSerializer,
     GrantListSerializer, GrantDetailSerializer, GrantWriteSerializer,
-    GrantPublicListSerializer, GrantPublicDetailSerializer
+    GrantPublicListSerializer, GrantPublicDetailSerializer,
+    ConsultationServiceListSerializer, ConsultationServiceDetailSerializer,
+    ConsultationServiceWriteSerializer, ConsultationServicePublicSerializer,
+    BookingCreateSerializer, BookingStatusSerializer,
+    BookingAdminListSerializer, BookingAdminDetailSerializer, BookingAdminUpdateSerializer,
 )
 from .permissions import IsAdminOrReadOnly, IsStaffOrSuperUser
 
@@ -552,6 +560,10 @@ def dashboard_stats(request):
     """
     Get dashboard statistics (admin only)
     """
+    # Consultation stats
+    paid_bookings = ConsultationBooking.objects.filter(payment_verified=True)
+    consultation_revenue = paid_bookings.aggregate(Sum('amount'))['amount__sum'] or 0
+
     stats = {
         'total_blogs': BlogPost.objects.count(),
         'published_blogs': BlogPost.objects.filter(is_published=True).count(),
@@ -565,10 +577,13 @@ def dashboard_stats(request):
         'active_testimonials': Testimonial.objects.filter(is_active=True).count(),
         'total_grants': Grant.objects.count(),
         'active_grants': Grant.objects.filter(is_active=True).count(),
+        'total_bookings': ConsultationBooking.objects.count(),
+        'paid_bookings': paid_bookings.count(),
+        'consultation_revenue': float(consultation_revenue),
+        'pending_confirmations': ConsultationBooking.objects.filter(status='paid').count(),
     }
 
-    serializer = DashboardStatsSerializer(stats)
-    return Response(serializer.data)
+    return Response(stats)
 
 
 @api_view(['GET'])
@@ -1193,3 +1208,425 @@ def open_grants(request):
 
     serializer = GrantPublicListSerializer(queryset, many=True)
     return Response(serializer.data)
+
+
+# ==================== Consultation Services Views ====================
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAdminOrReadOnly])
+def consultation_services_list_create(request):
+    """
+    GET: List consultation services (public gets active only, admin gets all)
+    POST: Create service (admin only)
+    """
+    if request.method == 'GET':
+        is_admin = request.user and request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser)
+
+        if is_admin:
+            queryset = ConsultationService.objects.all()
+            search = request.query_params.get('search', '')
+            category = request.query_params.get('category', '')
+            is_active_param = request.query_params.get('is_active', '')
+
+            if search:
+                queryset = queryset.filter(
+                    Q(name__icontains=search) | Q(description__icontains=search)
+                )
+            if category:
+                queryset = queryset.filter(category=category)
+            if is_active_param in ('true', 'false'):
+                queryset = queryset.filter(is_active=is_active_param == 'true')
+
+            serializer = ConsultationServiceListSerializer(queryset, many=True)
+        else:
+            queryset = ConsultationService.objects.filter(is_active=True)
+            serializer = ConsultationServicePublicSerializer(queryset, many=True)
+
+        return Response(serializer.data)
+
+    # POST - create service
+    serializer = ConsultationServiceWriteSerializer(data=request.data)
+    if serializer.is_valid():
+        service = serializer.save()
+        return Response(
+            ConsultationServiceDetailSerializer(service).data,
+            status=status.HTTP_201_CREATED
+        )
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
+@permission_classes([IsAdminOrReadOnly])
+def consultation_service_detail(request, slug):
+    """
+    GET: Get service detail (public read, admin full)
+    PUT/PATCH: Update service (admin only)
+    DELETE: Delete service (admin only)
+    """
+    service = get_object_or_404(ConsultationService, slug=slug)
+
+    if request.method == 'GET':
+        is_admin = request.user and request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser)
+        if is_admin:
+            serializer = ConsultationServiceDetailSerializer(service)
+        else:
+            serializer = ConsultationServicePublicSerializer(service)
+        return Response(serializer.data)
+
+    if request.method in ('PUT', 'PATCH'):
+        serializer = ConsultationServiceWriteSerializer(
+            service, data=request.data, partial=request.method == 'PATCH'
+        )
+        if serializer.is_valid():
+            service = serializer.save()
+            return Response(ConsultationServiceDetailSerializer(service).data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == 'DELETE':
+        service.delete()
+        return Response({'message': 'Service deleted'}, status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def featured_consultation_services(request):
+    """
+    Get featured consultation services for homepage
+    """
+    queryset = ConsultationService.objects.filter(
+        is_active=True, is_featured=True
+    ).order_by('order_priority')[:6]
+    serializer = ConsultationServicePublicSerializer(queryset, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsStaffOrSuperUser])
+def reorder_consultation_services(request):
+    """
+    Reorder consultation services (admin only)
+    """
+    serializer = ReorderSerializer(data=request.data)
+    if serializer.is_valid():
+        for item in serializer.validated_data['items']:
+            ConsultationService.objects.filter(id=item['id']).update(
+                order_priority=item['order_priority']
+            )
+        return Response({'message': 'Services reordered successfully'})
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# ==================== Consultation Booking Views ====================
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def create_booking(request):
+    """
+    Create a new consultation booking and initialize Paystack payment
+    """
+    from .paystack import initialize_transaction
+    from decimal import Decimal
+    from django.conf import settings as conf_settings
+
+    serializer = BookingCreateSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    data = serializer.validated_data
+    service = data.get('service')
+
+    # Determine price
+    if service:
+        amount = service.price
+        currency = service.currency
+    else:
+        amount = Decimal(conf_settings.DEFAULT_CONSULTATION_FEE)
+        currency = 'NGN'
+
+    # Create booking
+    booking = ConsultationBooking.objects.create(
+        service=service,
+        custom_service_description=data.get('custom_service_description', ''),
+        client_name=data['client_name'],
+        client_email=data['client_email'],
+        client_phone=data['client_phone'],
+        client_company=data.get('client_company', ''),
+        preferred_date=data['preferred_date'],
+        preferred_time=data['preferred_time'],
+        notes=data.get('notes', ''),
+        amount=amount,
+        currency=currency,
+    )
+
+    # Initialize Paystack transaction
+    try:
+        amount_kobo = int(amount * 100)
+        paystack_data = initialize_transaction(
+            email=booking.client_email,
+            amount_kobo=amount_kobo,
+            reference=booking.reference,
+            metadata={
+                'booking_reference': booking.reference,
+                'service_name': booking.service_name,
+                'client_name': booking.client_name,
+            }
+        )
+
+        booking.paystack_reference = paystack_data.get('reference', booking.reference)
+        booking.paystack_access_code = paystack_data.get('access_code', '')
+        booking.save(update_fields=['paystack_reference', 'paystack_access_code'])
+
+        return Response({
+            'reference': booking.reference,
+            'access_code': booking.paystack_access_code,
+            'authorization_url': paystack_data.get('authorization_url', ''),
+            'amount': float(amount),
+            'currency': currency,
+        }, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        booking.delete()
+        return Response(
+            {'error': f'Payment initialization failed: {str(e)}'},
+            status=status.HTTP_502_BAD_GATEWAY
+        )
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def verify_payment(request):
+    """
+    Verify Paystack payment by reference and update booking status
+    """
+    from .paystack import verify_transaction
+    from .email_service import send_booking_confirmation, send_admin_booking_notification
+
+    reference = request.data.get('reference')
+    if not reference:
+        return Response({'error': 'Reference is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        booking = ConsultationBooking.objects.get(reference=reference)
+    except ConsultationBooking.DoesNotExist:
+        return Response({'error': 'Booking not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    # Idempotent
+    if booking.payment_verified:
+        return Response(BookingStatusSerializer(booking).data)
+
+    try:
+        tx_data = verify_transaction(reference)
+    except Exception as e:
+        return Response(
+            {'error': f'Payment verification failed: {str(e)}'},
+            status=status.HTTP_502_BAD_GATEWAY
+        )
+
+    if tx_data.get('status') != 'success':
+        return Response(
+            {'error': 'Payment was not successful', 'paystack_status': tx_data.get('status')},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Verify amount matches
+    paid_amount_kobo = tx_data.get('amount', 0)
+    expected_kobo = int(booking.amount * 100)
+    if paid_amount_kobo != expected_kobo:
+        return Response(
+            {'error': 'Payment amount mismatch'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    booking.payment_verified = True
+    booking.payment_verified_at = timezone.now()
+    booking.payment_channel = tx_data.get('channel', '')
+    booking.status = 'paid'
+    booking.save(update_fields=[
+        'payment_verified', 'payment_verified_at', 'payment_channel', 'status'
+    ])
+
+    try:
+        send_booking_confirmation(booking)
+        send_admin_booking_notification(booking)
+    except Exception:
+        pass
+
+    return Response(BookingStatusSerializer(booking).data)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def paystack_webhook(request):
+    """
+    Handle Paystack webhook events (charge.success)
+    Protected by HMAC signature validation
+    """
+    from .paystack import validate_webhook_signature
+    from .email_service import send_booking_confirmation, send_admin_booking_notification
+
+    signature = request.headers.get('X-Paystack-Signature', '')
+    if not validate_webhook_signature(request.body, signature):
+        return Response({'error': 'Invalid signature'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        payload = json.loads(request.body)
+    except json.JSONDecodeError:
+        return Response({'error': 'Invalid JSON'}, status=status.HTTP_400_BAD_REQUEST)
+
+    event = payload.get('event')
+    if event != 'charge.success':
+        return Response({'status': 'ignored'})
+
+    data = payload.get('data', {})
+    reference = data.get('reference')
+    if not reference:
+        return Response({'status': 'no reference'})
+
+    try:
+        booking = ConsultationBooking.objects.get(reference=reference)
+    except ConsultationBooking.DoesNotExist:
+        return Response({'status': 'booking not found'})
+
+    if booking.payment_verified:
+        return Response({'status': 'already verified'})
+
+    paid_amount_kobo = data.get('amount', 0)
+    expected_kobo = int(booking.amount * 100)
+    if paid_amount_kobo != expected_kobo:
+        return Response({'status': 'amount mismatch'})
+
+    booking.payment_verified = True
+    booking.payment_verified_at = timezone.now()
+    booking.payment_channel = data.get('channel', '')
+    booking.status = 'paid'
+    booking.save(update_fields=[
+        'payment_verified', 'payment_verified_at', 'payment_channel', 'status'
+    ])
+
+    try:
+        send_booking_confirmation(booking)
+        send_admin_booking_notification(booking)
+    except Exception:
+        pass
+
+    return Response({'status': 'success'})
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def booking_status(request, ref):
+    """
+    Public booking status lookup by reference
+    """
+    try:
+        booking = ConsultationBooking.objects.get(reference=ref)
+    except ConsultationBooking.DoesNotExist:
+        return Response({'error': 'Booking not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    return Response(BookingStatusSerializer(booking).data)
+
+
+# ==================== Admin Booking Views ====================
+
+@api_view(['GET'])
+@permission_classes([IsStaffOrSuperUser])
+def admin_bookings_list(request):
+    """
+    Admin: list all bookings with filters
+    """
+    queryset = ConsultationBooking.objects.select_related('service', 'assigned_associate').all()
+
+    search = request.query_params.get('search', '')
+    status_filter = request.query_params.get('status', '')
+    date_from = request.query_params.get('date_from', '')
+    date_to = request.query_params.get('date_to', '')
+    service_id = request.query_params.get('service_id', '')
+
+    if search:
+        queryset = queryset.filter(
+            Q(client_name__icontains=search) |
+            Q(client_email__icontains=search) |
+            Q(reference__icontains=search)
+        )
+    if status_filter:
+        queryset = queryset.filter(status=status_filter)
+    if date_from:
+        queryset = queryset.filter(preferred_date__gte=date_from)
+    if date_to:
+        queryset = queryset.filter(preferred_date__lte=date_to)
+    if service_id:
+        queryset = queryset.filter(service_id=service_id)
+
+    serializer = BookingAdminListSerializer(queryset, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET', 'PATCH'])
+@permission_classes([IsStaffOrSuperUser])
+def admin_booking_detail(request, pk):
+    """
+    Admin: Get booking detail or update status/notes/assignment
+    """
+    booking = get_object_or_404(
+        ConsultationBooking.objects.select_related('service', 'assigned_associate'),
+        pk=pk
+    )
+
+    if request.method == 'GET':
+        return Response(BookingAdminDetailSerializer(booking).data)
+
+    serializer = BookingAdminUpdateSerializer(
+        data=request.data,
+        context={'booking': booking}
+    )
+    if serializer.is_valid():
+        validated = serializer.validated_data
+        if 'status' in validated:
+            booking.status = validated['status']
+        if 'admin_notes' in validated:
+            booking.admin_notes = validated['admin_notes']
+        if 'assigned_associate' in validated:
+            if validated['assigned_associate'] is None:
+                booking.assigned_associate = None
+            else:
+                booking.assigned_associate = Associate.objects.get(id=validated['assigned_associate'])
+        booking.save()
+        return Response(BookingAdminDetailSerializer(booking).data)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsStaffOrSuperUser])
+def consultation_stats(request):
+    """
+    Admin: Get consultation-specific statistics
+    """
+    total_bookings = ConsultationBooking.objects.count()
+    paid_bookings = ConsultationBooking.objects.filter(payment_verified=True).count()
+    revenue = ConsultationBooking.objects.filter(
+        payment_verified=True
+    ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+    status_breakdown = list(
+        ConsultationBooking.objects.values('status')
+        .annotate(count=Count('id'))
+        .order_by('status')
+    )
+
+    popular_services = list(
+        ConsultationBooking.objects.filter(service__isnull=False, payment_verified=True)
+        .values('service__name')
+        .annotate(count=Count('id'))
+        .order_by('-count')[:5]
+    )
+
+    return Response({
+        'total_bookings': total_bookings,
+        'paid_bookings': paid_bookings,
+        'revenue': float(revenue),
+        'formatted_revenue': f"₦{revenue:,.0f}" if revenue else "₦0",
+        'pending_confirmations': ConsultationBooking.objects.filter(status='paid').count(),
+        'status_breakdown': status_breakdown,
+        'popular_services': popular_services,
+    })

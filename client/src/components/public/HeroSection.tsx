@@ -208,7 +208,7 @@ export default function HeroSection() {
                 variant="outline"
                 className="hover:border-primary/50 cursor-pointer font-semibold text-sm sm:text-base px-6 sm:px-8 py-5 sm:py-6 hover:bg-primary/5 transition-all duration-300 z-10 rounded-xl"
               >
-                <Link href="/contact">Schedule Consultation</Link>
+                <Link href="/consultations">Schedule Consultation</Link>
               </Button>
             </motion.div>
 

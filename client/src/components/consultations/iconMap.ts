@@ -1,0 +1,30 @@
+import {
+  Scale,
+  Shield,
+  Brain,
+  FileCode,
+  Fingerprint,
+  Building2,
+  HelpCircle,
+  Gavel,
+  Lock,
+  Globe,
+  Cpu,
+  Landmark,
+  type LucideIcon,
+} from 'lucide-react';
+
+export const iconMap: Record<string, LucideIcon> = {
+  Scale,
+  Shield,
+  Brain,
+  FileCode,
+  Fingerprint,
+  Building2,
+  HelpCircle,
+  Gavel,
+  Lock,
+  Globe,
+  Cpu,
+  Landmark,
+};

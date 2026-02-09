@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework_simplejwt.views import TokenRefreshView
 from . import views
 
@@ -55,6 +56,23 @@ urlpatterns = [
     path('admin/charts/posts-timeline/', views.posts_over_time, name='posts-timeline-chart'),
     path('admin/charts/posts-by-category/', views.posts_by_category, name='posts-by-category-chart'),
     path('admin/charts/contacts-by-status/', views.contacts_by_status, name='contacts-by-status-chart'),
+
+    # Consultation Services
+    path('consultations/services/', views.consultation_services_list_create, name='consultation-services-list-create'),
+    path('consultations/services/reorder/', views.reorder_consultation_services, name='reorder-consultation-services'),
+    path('consultations/services/featured/', views.featured_consultation_services, name='featured-consultation-services'),
+    path('consultations/services/<slug:slug>/', views.consultation_service_detail, name='consultation-service-detail'),
+
+    # Consultation Bookings (public)
+    path('consultations/book/', views.create_booking, name='create-booking'),
+    path('consultations/verify-payment/', views.verify_payment, name='verify-payment'),
+    path('consultations/webhook/', csrf_exempt(views.paystack_webhook), name='paystack-webhook'),
+    path('consultations/booking/<str:ref>/', views.booking_status, name='booking-status'),
+
+    # Consultation Bookings (admin)
+    path('consultations/bookings/', views.admin_bookings_list, name='admin-bookings-list'),
+    path('consultations/bookings/<int:pk>/', views.admin_booking_detail, name='admin-booking-detail'),
+    path('consultations/stats/', views.consultation_stats, name='consultation-stats'),
 
     # Image Upload
     path('upload-image/', views.upload_image, name='upload-image'),

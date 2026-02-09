@@ -12,7 +12,9 @@ import {
   AlertCircle,
   Plus,
   ChevronDown,
-  Sparkles
+  Sparkles,
+  CalendarCheck,
+  DollarSign,
 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import {
@@ -31,6 +33,7 @@ import BlogViewsChart from '@/components/dashboard/BlogViewsChart';
 import PostsTimelineChart from '@/components/dashboard/PostsTimelineChart';
 import PostsByCategoryChart from '@/components/dashboard/PostsByCategoryChart';
 import ContactsByStatusChart from '@/components/dashboard/ContactsByStatusChart';
+import BookingsByStatusChart from '@/components/dashboard/BookingsByStatusChart';
 import { useRouter } from 'next/navigation';
 
 export default function AdminDashboardPage() {
@@ -155,6 +158,22 @@ export default function AdminDashboardPage() {
       bgColor: 'bg-chart-4/10',
       iconColor: 'text-chart-4'
     },
+    {
+      title: 'Consultations',
+      value: stats?.total_bookings || 0,
+      subtitle: `${stats?.paid_bookings || 0} paid`,
+      icon: CalendarCheck,
+      bgColor: 'bg-chart-5/10',
+      iconColor: 'text-chart-5'
+    },
+    {
+      title: 'Revenue',
+      value: stats?.consultation_revenue || '₦0.00',
+      subtitle: `${stats?.pending_confirmations || 0} pending`,
+      icon: DollarSign,
+      bgColor: 'bg-chart-1/10',
+      iconColor: 'text-chart-1'
+    },
   ];
 
   // Chart colors from CSS variables
@@ -235,7 +254,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {statCards.map((card, index) => (
           <div
             key={index}
@@ -372,9 +391,14 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Bar and Pie Charts Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <PostsByCategoryChart />
           <ContactsByStatusChart />
+        </div>
+
+        {/* Consultation Chart */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <BookingsByStatusChart />
         </div>
       </div>
     </div>

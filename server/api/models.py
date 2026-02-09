@@ -1,3 +1,6 @@
+import random
+import string
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.text import slugify
@@ -435,3 +438,176 @@ class ChatAnalytics(models.Model):
 
     def __str__(self):
         return f"Chat {self.session_id[:8]}... - {self.created_at.strftime('%Y-%m-%d %H:%M')}"
+
+
+def generate_booking_reference():
+    """Generate a unique booking reference like LF-XXXX-XXXX"""
+    chars = string.ascii_uppercase + string.digits
+    part1 = ''.join(random.choices(chars, k=4))
+    part2 = ''.join(random.choices(chars, k=4))
+    return f'LF-{part1}-{part2}'
+
+
+class ConsultationService(models.Model):
+    """
+    Model for consultation services offered by the firm
+    """
+    CATEGORY_CHOICES = [
+        ('ai_law', 'AI Law & Regulation'),
+        ('blockchain', 'Blockchain & Crypto'),
+        ('data_privacy', 'Data Privacy'),
+        ('tech_contracts', 'Tech Contracts'),
+        ('ip', 'Intellectual Property'),
+        ('corporate', 'Corporate Law'),
+        ('other', 'Other'),
+    ]
+
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(unique=True, blank=True)
+    description = models.TextField()
+    short_description = models.CharField(max_length=300)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='other')
+
+    price = models.DecimalField(max_digits=12, decimal_places=2)
+    currency = models.CharField(max_length=10, default='NGN')
+    duration_minutes = models.IntegerField(
+        default=60,
+        validators=[MinValueValidator(15), MaxValueValidator(480)]
+    )
+
+    icon_name = models.CharField(max_length=50, blank=True, help_text="Lucide icon name")
+    image_url = models.URLField(blank=True, null=True, help_text="Cloudinary URL")
+
+    order_priority = models.IntegerField(default=0, help_text="Lower numbers appear first")
+    is_active = models.BooleanField(default=True)
+    is_featured = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'consultation_services'
+        ordering = ['order_priority', '-created_at']
+        verbose_name = 'Consultation Service'
+        verbose_name_plural = 'Consultation Services'
+        indexes = [
+            models.Index(fields=['slug']),
+            models.Index(fields=['is_active', 'is_featured']),
+            models.Index(fields=['category']),
+        ]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    @property
+    def formatted_price(self):
+        if self.currency == 'NGN':
+            return f"₦{self.price:,.0f}"
+        elif self.currency == 'USD':
+            return f"${self.price:,.2f}"
+        return f"{self.currency} {self.price:,.2f}"
+
+    @property
+    def formatted_duration(self):
+        if self.duration_minutes >= 60:
+            hours = self.duration_minutes // 60
+            minutes = self.duration_minutes % 60
+            if minutes:
+                return f"{hours}h {minutes}m"
+            return f"{hours}h"
+        return f"{self.duration_minutes}m"
+
+    def __str__(self):
+        return f"{self.name} - {self.formatted_price}"
+
+
+class ConsultationBooking(models.Model):
+    """
+    Model for consultation bookings with Paystack payment
+    """
+    STATUS_CHOICES = [
+        ('pending_payment', 'Pending Payment'),
+        ('paid', 'Paid'),
+        ('confirmed', 'Confirmed'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+        ('refunded', 'Refunded'),
+    ]
+
+    reference = models.CharField(
+        max_length=50, unique=True, default=generate_booking_reference,
+        help_text="Booking reference number"
+    )
+
+    # Service (nullable for "Other")
+    service = models.ForeignKey(
+        ConsultationService, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='bookings'
+    )
+    custom_service_description = models.TextField(blank=True)
+
+    # Client info
+    client_name = models.CharField(max_length=255)
+    client_email = models.EmailField()
+    client_phone = models.CharField(max_length=50)
+    client_company = models.CharField(max_length=255, blank=True)
+
+    # Schedule
+    preferred_date = models.DateField()
+    preferred_time = models.TimeField()
+    notes = models.TextField(blank=True)
+
+    # Payment
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    currency = models.CharField(max_length=10, default='NGN')
+    paystack_reference = models.CharField(max_length=100, blank=True, db_index=True)
+    paystack_access_code = models.CharField(max_length=100, blank=True)
+    payment_verified = models.BooleanField(default=False)
+    payment_verified_at = models.DateTimeField(null=True, blank=True)
+    payment_channel = models.CharField(max_length=50, blank=True)
+
+    # Status
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending_payment')
+
+    # Admin
+    admin_notes = models.TextField(blank=True)
+    assigned_associate = models.ForeignKey(
+        Associate, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='assigned_bookings'
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'consultation_bookings'
+        ordering = ['-created_at']
+        verbose_name = 'Consultation Booking'
+        verbose_name_plural = 'Consultation Bookings'
+        indexes = [
+            models.Index(fields=['reference']),
+            models.Index(fields=['paystack_reference']),
+            models.Index(fields=['status']),
+            models.Index(fields=['client_email']),
+            models.Index(fields=['-created_at']),
+            models.Index(fields=['preferred_date']),
+        ]
+
+    @property
+    def formatted_amount(self):
+        if self.currency == 'NGN':
+            return f"₦{self.amount:,.0f}"
+        elif self.currency == 'USD':
+            return f"${self.amount:,.2f}"
+        return f"{self.currency} {self.amount:,.2f}"
+
+    @property
+    def service_name(self):
+        if self.service:
+            return self.service.name
+        return "Custom Consultation"
+
+    def __str__(self):
+        return f"{self.reference} - {self.client_name} ({self.status})"

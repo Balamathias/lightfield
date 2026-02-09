@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User, Associate, BlogCategory, BlogPost, AIConversation, ContactSubmission, Grant
+from .models import (
+    User, Associate, BlogCategory, BlogPost, AIConversation,
+    ContactSubmission, Grant, ConsultationService, ConsultationBooking
+)
 
 
 @admin.register(User)
@@ -202,6 +205,38 @@ class GrantAdmin(admin.ModelAdmin):
             'fields': ('status', 'is_featured', 'is_active', 'order_priority')
         }),
     )
+
+    def formatted_amount(self, obj):
+        return obj.formatted_amount
+    formatted_amount.short_description = 'Amount'
+
+
+@admin.register(ConsultationService)
+class ConsultationServiceAdmin(admin.ModelAdmin):
+    list_display = ['name', 'category', 'formatted_price', 'duration_minutes', 'is_active', 'is_featured', 'order_priority']
+    list_filter = ['category', 'is_active', 'is_featured']
+    search_fields = ['name', 'description', 'short_description']
+    prepopulated_fields = {'slug': ('name',)}
+    ordering = ['order_priority', '-created_at']
+    list_editable = ['is_active', 'is_featured', 'order_priority']
+
+    def formatted_price(self, obj):
+        return obj.formatted_price
+    formatted_price.short_description = 'Price'
+
+
+@admin.register(ConsultationBooking)
+class ConsultationBookingAdmin(admin.ModelAdmin):
+    list_display = ['reference', 'client_name', 'service_name', 'formatted_amount', 'status', 'payment_verified', 'preferred_date', 'created_at']
+    list_filter = ['status', 'payment_verified', 'preferred_date', 'created_at']
+    search_fields = ['reference', 'client_name', 'client_email', 'client_phone']
+    readonly_fields = ['reference', 'paystack_reference', 'paystack_access_code', 'payment_verified', 'payment_verified_at', 'payment_channel', 'created_at', 'updated_at']
+    ordering = ['-created_at']
+    list_editable = ['status']
+
+    def service_name(self, obj):
+        return obj.service_name
+    service_name.short_description = 'Service'
 
     def formatted_amount(self, obj):
         return obj.formatted_amount
