@@ -59,14 +59,18 @@ apiClient.interceptors.response.use(
             localStorage.removeItem('refresh_token');
             localStorage.removeItem('user');
 
-            if (typeof window !== 'undefined' && window.location.pathname.startsWith('/admin')) {
+            if (window.location.pathname.startsWith('/admin')) {
               window.location.href = '/admin/login';
             }
 
             return Promise.reject(refreshError);
           }
         } else {
-          if (typeof window !== 'undefined' && window.location.pathname.startsWith('/admin')) {
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          localStorage.removeItem('user');
+
+          if (window.location.pathname.startsWith('/admin')) {
             window.location.href = '/admin/login';
           }
         }
